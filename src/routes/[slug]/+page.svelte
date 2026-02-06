@@ -26,8 +26,6 @@
     }
   
     let chat_history : string[] = [];
-
-    
 </script>
 
 <button onclick={() => sendMessage("1")}>
