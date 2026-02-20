@@ -1,44 +1,78 @@
 <script lang="ts">
-    import { PartySocket } from 'partysocket';
+	import { PartySocket } from 'partysocket';
+	import { onDestroy } from 'svelte';
+	import LobbyScreen from '$lib/components/ui/LobbyScreen.svelte';
+	import { globalState } from '$lib/state/state.svelte.js';
+	import UsernameModal from '$lib/components/ui/UsernameModal.svelte';
 
-    let { data } = $props();
+	let { data } = $props();
 
-    let socket : PartySocket;
+	const roomId = $derived(data.roomId);
 
-    let username : string;
-    let message : string;
+	let socket: PartySocket | null = $state(null);
+	// let username = $state(data.username ?? undefined);
 
-    socket = new PartySocket({
-        host: "localhost:1999",
-        room: data.roomId,
-    });
+    // let isUsernameModalOpen = $derived(username ? false : true);
 
-    socket.onmessage = (event) => {
-        console.log(event.data);
-    }
+	function connectToParty(): void {
+		const s = new PartySocket({
+			host: import.meta.env.VITE_PARTYKIT_HOST ?? 'localhost:1999',
+			room: roomId
+		});
+		s.onmessage = (event: MessageEvent) => {
+			const json = JSON.parse(event.data);
+			console.log(json);
+			switch (json.type) {
+				case 'initial_state':
+					globalState.data = json.data;
+					break;
+				case 'new_connection':
+					globalState.data = json.data;
+					break;
+			    case 'connection_closed':
+					globalState.data = json.data;
+					break;
+				default:
+					console.error('Unknown message type:', json.type);
+					break;
+			}
+			console.log($state.snapshot(globalState).data);
+		};
 
-    socket.onopen = () => {
-        console.log('Connected to party');
-    }
+		s.onopen = () => {
+			s.send(
+				JSON.stringify({
+					type: 'join',
+					// username: username
+				})
+			);
+		};
+		socket = s;
+	}
 
-    function sendMessage(message: string): void {
-        socket.send(JSON.stringify({ message: message, username: username }));
-    }
-  
-    let chat_history : string[] = [];
+
+
+	$effect(() => {
+		// if (!isUsernameModalOpen) {
+			connectToParty();
+        // }
+	});
+
+	onDestroy(() => {
+		socket?.close();
+	});
 </script>
 
-<button onclick={() => sendMessage("1")}>
-    Send message 1
-</button>
+<!-- {#if !username}
+	<UsernameModal bind:isOpen={isUsernameModalOpen} />
+{/if} -->
 
-<style>
-    button {
-        background-color: #000;
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-    }
-</style>
+{#if globalState.data.phase === 'lobby'}
+	<LobbyScreen />
+{:else if globalState.data.phase === 'drafting'}
+	<h1>Drafting</h1>
+	<p>Drafting in progress...</p>
+{:else if globalState.data.phase === 'done'}
+	<h1>Done</h1>
+	<p>Drafting is done...</p>
+{/if}

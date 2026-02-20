@@ -1,28 +1,64 @@
-import type * as Party from "partykit/server";
+import type * as Party from 'partykit/server';
+import type { DraftState } from './types';
 
 export default class Server implements Party.Server {
-  constructor(readonly party: Party.Party) {}
+	state: DraftState = {
+		options: {},
+		teamA: {
+			captainId: null,
+			picks: [],
+			members: []
+		},
+		teamB: {
+			captainId: null,
+			picks: [],
+			members: []
+		},
+		players: [],
+		turn: 0,
+		phase: 'lobby'
+	};
 
-  onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
-    const envelope = JSON.stringify({
-      content: `${conn.id} has connected!`
-    });
-    // when joining, broadcast what connection (ID) the client has
-    this.party.broadcast(envelope);
-  }
+	constructor(readonly room: Party.Room) {}
 
-  onMessage(message: string, sender: Party.Connection) {
-    // get parcel sent from client by parsing 'message'
-    const parcel : { message: string, username: string } = JSON.parse(message);
+	onConnect(conn: Party.Connection) {
+		this.state.players.push({ id: conn.id, username: undefined });
 
-    // what we are sending back
-    const envelope = JSON.stringify({ 
-      content: `[ID: ${sender.id}] ${parcel.username}: ${parcel.message}` 
-    });
+		// Send full state to the new connection
+		conn.send(JSON.stringify({
+			type: 'initial_state',
+			data: this.state
+		}));
 
-    // broadcast what was said to everyone
-    this.party.broadcast(envelope);
-  }
+		// Broadcast only connections change to other connections
+		this.room.broadcast(
+			JSON.stringify({
+				type: 'new_connection',
+				data: this.state
+			}), [conn.id]
+		);
+	}
+	
+	// onMessage(message: string, sender: Party.Connection) {
+	// 	// get parcel sent from client by parsing 'message'
+	// 	const parcel: { message: string; username: string } = JSON.parse(message);
+
+	// 	// what we are sending back
+	// 	const envelope = JSON.stringify({
+	// 		content: `[ID: ${sender.id}] ${parcel.username}: ${parcel.message}`
+	// 	});
+
+	// 	// broadcast what was said to everyone
+	// 	this.room.broadcast(envelope);
+	// }
+
+	onClose(conn: Party.Connection) {
+		this.state.players = this.state.players.filter(player => player.id !== conn.id);
+		this.room.broadcast(JSON.stringify({
+			type: 'connection_closed',
+			data: this.state
+		}));
+	}
 }
 
 Server satisfies Party.Worker;
