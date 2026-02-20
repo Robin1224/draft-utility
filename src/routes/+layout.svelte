@@ -4,7 +4,9 @@
 	import Header from '$lib/components/ui/Header.svelte';
 	import '$lib/css/fonts.css';
 
-	let { children } = $props();
+	let { data, children } = $props();
+
+	const session = $derived(data.session);
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
