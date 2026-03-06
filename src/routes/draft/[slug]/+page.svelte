@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import LobbyCard from '$lib/components/organisms/LobbyCard.svelte';
+	import Lobby from '$lib/components/organisms/Lobby.svelte';
+	// import Drafting from '$lib/components/organisms/Drafting.svelte';
 	import { globalState, connectToParty, getSocket } from '$lib/state/state.svelte.js';
 
 	let { data } = $props();
@@ -24,10 +25,9 @@
 {/if} -->
 
 {#if globalState.data.phase === 'lobby'}
-	<LobbyCard />
+	<Lobby />
 {:else if globalState.data.phase === 'drafting'}
-	<h1>Drafting</h1>
-	<p>Drafting in progress...</p>
+	<!-- <Drafting /> -->
 {:else if globalState.data.phase === 'done'}
 	<h1>Done</h1>
 	<p>Drafting is done...</p>

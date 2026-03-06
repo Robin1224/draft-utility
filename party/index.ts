@@ -1,5 +1,5 @@
 import type * as Party from 'partykit/server';
-import type { DraftState, Player, ServerMessage, TeamId } from './types';
+import type { DraftState, Player, ServerMessage, TeamId, JoinMessage, ChangeTeamMessage, MessageType } from './types';
 
 function createInitialState(): DraftState {
 	return {
@@ -18,19 +18,19 @@ export default class Server implements Party.Server {
 	constructor(readonly room: Party.Room) {}
 
 	onMessage(raw: string, sender: Party.Connection) {
-		let msg: { type: string; [k: string]: unknown };
+		let msg: { type: MessageType; [k: string]: unknown };
 		try {
-			msg = JSON.parse(raw) as { type: string; [k: string]: unknown };
+			msg = JSON.parse(raw) as { type: MessageType; [k: string]: unknown };
 		} catch {
 			return;
 		}
 
 		switch (msg.type) {
 			case 'join':
-				this.handleJoin(sender, msg as { username?: string; avatar_url?: string });
+				this.handleJoin(sender, msg as JoinMessage);
 				break;
 			case 'change_team':
-				this.handleChangeTeam(sender, msg as { team?: TeamId; playerId?: string });
+				this.handleChangeTeam(sender, msg as ChangeTeamMessage);
 				break;
 			default:
 				console.error('Unknown message type:', msg.type);

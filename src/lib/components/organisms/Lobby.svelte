@@ -1,22 +1,8 @@
 <script lang="ts">
 	import {
 		globalState,
-		getUnassignedPlayers,
-		getTeam1Players,
-		getTeam2Players,
-		getCurrentPlayerId
 	} from '$lib/state/state.svelte';
 	import TeamCard from '$lib/components/molecules/TeamCard.svelte';
-	import type { Player } from '$lib/shared/types';
-
-	const currentPlayerId = $derived(getCurrentPlayerId());
-	const unassignedPlayers = $derived(getUnassignedPlayers());
-	const team1Players = $derived(getTeam1Players());
-	const team2Players = $derived(getTeam2Players());
-
-	const currentPlayerIsUnassigned = $derived(
-		currentPlayerId != null && !unassignedPlayers.some((p: Player) => p.id === currentPlayerId)
-	);
 </script>
 
 <main class="flex min-h-[calc(100vh-48px)] items-center justify-center p-4">

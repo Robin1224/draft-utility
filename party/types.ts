@@ -62,3 +62,19 @@ export const DEFAULT_OPTIONS = [
   "Option 11",
   "Option 12",
 ];
+
+// Message types
+
+export type MessageType = "join" | "change_team";
+
+export type JoinMessage = {
+  type: "join";
+  username: string;
+  avatar_url: string;
+};
+
+export type ChangeTeamMessage = {
+  type: "change_team";
+  team: TeamId;
+  playerId: string;
+};
