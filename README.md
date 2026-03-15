@@ -15,7 +15,7 @@ To recreate this project with the same configuration:
 
 ```sh
 # recreate this project
-npx sv create --template minimal --types ts --add prettier eslint tailwindcss="plugins:none" mcp="ide:cursor+setup:local" devtools-json --install npm ./
+npx sv@0.12.7 create --template minimal --types ts --add prettier eslint tailwindcss="plugins:none" sveltekit-adapter="adapter:auto" devtools-json better-auth="demo:password,github" drizzle="database:postgresql+postgresql:neon" mcp="ide:cursor,claude-code+setup:remote" --install npm ./
 ```
 
 ## Developing
