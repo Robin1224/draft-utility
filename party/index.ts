@@ -1,5 +1,6 @@
 import type * as Party from 'partykit/server';
 import type { DraftState, Player, ServerMessage, TeamId, JoinMessage, ChangeTeamMessage, MessageType } from './types';
+import { MAX_TEAM_SIZE } from './types';
 
 function createInitialState(): DraftState {
 	return {
@@ -50,7 +51,7 @@ export default class Server implements Party.Server {
 			id: sender.id,
 			username: msg.username ?? 'Anonymous',
 			avatar_url: msg.avatar_url,
-			team: undefined
+			team: 0
 		});
 		this.broadcast('new_connection');
 	}
@@ -67,19 +68,23 @@ export default class Server implements Party.Server {
 
 		this.removeFromTeams(player);
 		if (teamId === 1) {
+			if (this.state.teamA.members.length >= MAX_TEAM_SIZE) return;
 			this.state.teamA.members.push(player.id);
 			player.team = 1;
 		} else if (teamId === 2) {
+			if (this.state.teamB.members.length >= MAX_TEAM_SIZE) return;
 			this.state.teamB.members.push(player.id);
 			player.team = 2;
+		} else {
+			// teamId === 0: already removed in removeFromTeams, player.team is 0
+			player.team = 0;
 		}
-		// teamId === 0: already removed, player.team stays undefined
 		this.broadcast('state_update');
 	}
 
 	private removeFromTeams(player: Player) {
 		if (!player) return;
-		player.team = undefined;
+		player.team = 0;
 		this.state.teamA.members = this.state.teamA.members.filter((id) => id !== player.id);
 		this.state.teamB.members = this.state.teamB.members.filter((id) => id !== player.id);
 	}

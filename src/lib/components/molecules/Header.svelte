@@ -4,10 +4,10 @@
 	let { session, supabase } = $props();
 </script>
 
-<header class="flex flex-row items-center justify-between gap-2 bg-stone-800 p-2 text-stone-100">
+<header class="mx-4 mt-4 rounded-xl border border-border-card bg-background p-2 shadow-card flex flex-row items-center justify-between gap-2 text-stone-100">
 	<div class="flex flex-row items-center gap-2">
 		<img src={logo} alt="Logo" class="h-6 w-6 text-stone-100" />
-		<h1 class="text-lg">Draft Utility</h1>
+		<h1 class="text-lg">Drafta</h1>
 	</div>
 	<div class="flex flex-row items-center gap-2">
 		{#if session}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import { Preview } from 'shaders/svelte';
 	import Lobby from '$lib/components/organisms/Lobby.svelte';
 	// import Drafting from '$lib/components/organisms/Drafting.svelte';
 	import { globalState, connectToParty, getSocket } from '$lib/state/state.svelte.js';
@@ -32,3 +33,5 @@
 	<h1>Done</h1>
 	<p>Drafting is done...</p>
 {/if}
+
+<Preview shader="08fff320-a715-437f-ad28-a1d56538fc28" />

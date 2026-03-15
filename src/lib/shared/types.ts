@@ -1,11 +1,15 @@
 /** 0 = unassigned, 1 = Team A, 2 = Team B */
 export type TeamId = 0 | 1 | 2;
 
+/** Maximum players per team (Team A / Team B). Unassigned has no limit. */
+export const MAX_TEAM_SIZE = 3;
+
 export interface Player {
 	id: string;
 	username: string | undefined;
 	avatar_url: string | undefined;
-	team: TeamId | undefined;
+	/** 0 = unassigned, 1 = Team A, 2 = Team B */
+	team: TeamId;
 }
 
 export interface TeamState {

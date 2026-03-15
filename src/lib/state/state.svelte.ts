@@ -32,23 +32,15 @@ export const getSocket = (): PartySocket | null => {
 };
 
 export const getUnassignedPlayers = (): Player[] => {
-	return globalState.data.players.filter(
-		(p: Player) =>
-			!globalState.data.teamA.members.includes(p.id) &&
-			!globalState.data.teamB.members.includes(p.id)
-	);
+	return globalState.data.players.filter((p: Player) => p.team === 0);
 };
 
 export const getTeam1Players = (): Player[] => {
-	return globalState.data.players.filter((p: Player) =>
-		globalState.data.teamA.members.includes(p.id)
-	);
+	return globalState.data.players.filter((p: Player) => p.team === 1);
 };
 
 export const getTeam2Players = (): Player[] => {
-	return globalState.data.players.filter((p: Player) =>
-		globalState.data.teamB.members.includes(p.id)
-	);
+	return globalState.data.players.filter((p: Player) => p.team === 2);
 };
 
 export const connectToParty = (session: Session, roomId: string): void => {
@@ -69,7 +61,6 @@ export const connectToParty = (session: Session, roomId: string): void => {
 		} else {
 			console.error('Unknown message type:', json.type);
 		}
-		console.log($state.snapshot(globalState).data);
 	};
 
 	s.onopen = () => {
