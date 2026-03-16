@@ -5,6 +5,9 @@ import { env } from '$env/dynamic/private';
 
 if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
-const client = neon(env.DATABASE_URL);
+// Strip quotes and whitespace (env files / Docker can leave these on)
+const connectionString = env.DATABASE_URL.trim().replace(/^["']|["']$/g, '');
+
+const client = neon(connectionString);
 
 export const db = drizzle(client, { schema });
