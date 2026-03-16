@@ -1,0 +1,16 @@
+[Unit]
+Description=Draft Utility (SvelteKit + uWS)
+After=network.target
+
+[Service]
+Type=simple
+User=deploy
+Group=deploy
+WorkingDirectory=/home/deploy/draft-utility
+EnvironmentFile=/home/deploy/draft-utility/.env
+ExecStart=/usr/bin/node build/index.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
