@@ -210,8 +210,8 @@ Set these to **your** values:
 |-------------------|--------|
 | `User=`           | User that runs the app (e.g. `deploy` or your login). |
 | `Group=`          | Usually same as `User` (e.g. `deploy`). |
-| `WorkingDirectory=` | Full path to the app directory (e.g. `/home/deploy/draft-utility`). |
-| `EnvironmentFile=`  | Full path to the app’s `.env` (e.g. `/home/deploy/draft-utility/.env`). |
+| `WorkingDirectory=` | **Absolute** path to the app directory (e.g. `/home/app/draft-utility`). Must start with `/`; systemd does not expand `~`. |
+| `EnvironmentFile=`  | **Absolute** path to the app’s `.env` (e.g. `/home/app/draft-utility/.env`). |
 
 `ExecStart` can stay as `/usr/bin/node build/index.js` if Node is installed system-wide. To use a specific Node (e.g. from nvm), use the full path: `ExecStart=/home/deploy/.nvm/versions/node/v22.x.x/bin/node build/index.js`.
 
@@ -242,6 +242,63 @@ journalctl -u draft-utility -n 50 --no-pager
 ```
 
 Ensure `.env` contains `SSL_CERT`, `SSL_KEY`, `PORT=443`, and `ORIGIN=https://yourdomain.com` (and any other vars the app needs).
+
+**If you see “Failed to load environment files: No such file or directory”**
+
+systemd can’t find the file at `EnvironmentFile=`. Check that the path is **absolute** (starts with `/`) and that the file exists, e.g.:
+
+```bash
+ls -la /home/app/draft-utility/.env
+```
+
+Fix the path in the unit to match. If you run the app with `node -r dotenv/config build/index.js`, you can instead **remove** the `EnvironmentFile=` line; dotenv will load `.env` from `WorkingDirectory`. Then run `sudo systemctl daemon-reload` and `sudo systemctl start draft-utility`.
+
+**If you see “Failed to spawn … task: No such file or directory”**
+
+systemd can’t find the **executable** in `ExecStart`. The template uses `/usr/bin/node`; if Node is installed elsewhere (e.g. via nvm or NodeSource), use the **full path** to the `node` binary.
+
+As the user that runs the service (e.g. `app`), run:
+
+```bash
+which node
+```
+
+Use that path in `ExecStart`, for example:
+
+```ini
+ExecStart=/home/app/.nvm/versions/node/v22.11.0/bin/node build/index.js
+```
+
+Then run `sudo systemctl daemon-reload` and `sudo systemctl start draft-utility` again.
+
+**If you see “Failed with result 'resources'”**
+
+This usually means a **resource limit** (file descriptors, processes) or that systemd couldn’t set up the process (e.g. bad permissions or missing path).
+
+1. **Get more detail** – Often the real error appears a line or two above:
+   ```bash
+   journalctl -u draft-utility -n 30 --no-pager
+   ```
+   Look for “Permission denied”, “No such file”, “ENOENT”, “EACCES”, or “cannot change directory”.
+
+2. **Run the app manually as the service user** – Replaces `User=` and paths with your actual user and app path; use the same node path as in `ExecStart`:
+   ```bash
+   sudo -u app bash -c 'cd /home/app/draft-utility && /home/app/.nvm/versions/node/v22.11.0/bin/node build/index.js'
+   ```
+   (Use your real user and node path.) Any error you see here (e.g. “Cannot find module”, “EACCES”, “address already in use”) is what’s failing under systemd.
+
+3. **Check paths and permissions** – The service user must be able to read the app dir and `.env`:
+   ```bash
+   sudo -u app test -r /home/app/draft-utility/.env && echo "OK" || echo "Cannot read .env"
+   sudo -u app test -x /home/app/draft-utility/build/index.js && echo "OK" || echo "Cannot run build/index.js"
+   ```
+
+4. **Raise resource limits** – The uWS adapter uses worker threads and many file descriptors. Add to your unit under `[Service]` (then `sudo systemctl daemon-reload` and `start` again):
+   ```ini
+   LimitNOFILE=65536
+   LimitNPROC=512
+   ```
+   The template in `deploy/draft-utility.service` includes these.
 
 ## Summary
 
