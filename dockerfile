@@ -11,7 +11,7 @@ WORKDIR /app
 
 # Install all deps (including dev) so we can build
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm cia
 
 # Verify uWebSockets.js native addon loads before running the full build
 RUN node -e "require('uWebSockets.js'); console.log('uWebSockets.js OK');"

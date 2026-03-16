@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
+		"start": "node -r dotenv/config build/index.js",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -48,6 +49,7 @@
 		"ws": "^8.19.0"
 	},
 	"dependencies": {
+		"dotenv": "^16.4.5",
 		"svelte-adapter-uws": "^0.3.4",
 		"uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.60.0"
 	}
