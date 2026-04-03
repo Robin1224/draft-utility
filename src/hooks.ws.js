@@ -41,7 +41,19 @@ function cookieFromHeaders(headers, name) {
  * @param {{ headers: Headers }} param
  */
 export async function upgrade({ headers }) {
-	const session = await auth.api.getSession({ headers });
+	// auth.api.getSession is wrapped in try/catch because the sveltekitCookies
+	// Better Auth plugin calls getRequestEvent() in its after-hook when a
+	// set-cookie header is present (e.g. session refresh). getRequestEvent()
+	// throws outside a SvelteKit request context, which is always the case
+	// during a WebSocket upgrade. Falling back to guest on any error is safe —
+	// the session lookup is best-effort and the WS upgrade must never throw.
+	let session = null;
+	try {
+		session = await auth.api.getSession({ headers });
+	} catch {
+		// getSession threw (e.g. sveltekitCookies after-hook called
+		// getRequestEvent() outside SK context) — treat as unauthenticated
+	}
 
 	if (!session) {
 		// D-12: allow unauthenticated connections through as guests

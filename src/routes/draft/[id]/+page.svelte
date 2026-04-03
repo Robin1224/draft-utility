@@ -147,7 +147,15 @@
 	{#if loading}
 		<p class="text-text-secondary">Loading room…</p>
 	{:else if loadError}
-		<p class="text-red-600">{errMsg(loadError)}</p>
+		{#if isGuest}
+			<p class="text-text-secondary">
+				<a href="/login?redirect=/draft/{code}" class="underline hover:text-text-primary"
+					>Sign in</a
+				> to join this draft, or wait for the host to start it.
+			</p>
+		{:else}
+			<p class="text-red-600">{errMsg(loadError)}</p>
+		{/if}
 	{:else if snapshot}
 		<LobbyHostBar
 			isHost={isHost}
