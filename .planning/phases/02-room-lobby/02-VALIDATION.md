@@ -36,11 +36,16 @@ created: 2026-04-03
 
 ## Per-Task Verification Map
 
-| Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
-|---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| TBD | — | — | ROOM-01–08, HOST-02/03 | see RESEARCH | see plan `<automated>` | Wave 0 | ⬜ pending |
+Six plans (`02-01` … `02-06`) define per-task `<automated>` commands. Reconcile row-by-row after first execution wave; source: `02-RESEARCH.md` § Validation Architecture.
 
-*Populate after PLAN.md files exist. Source of truth: `02-RESEARCH.md` § Validation Architecture.*
+| Plan | Tasks | Primary verify pattern |
+|------|-------|-------------------------|
+| 02-01 | 3 | `npm run check`, targeted `test:unit` |
+| 02-02 | 3 | `rg` + `npm run check` |
+| 02-03 | 3 | `npm run check`, `room.spec.js` |
+| 02-04 | 3 | `npm run check`, `room.spec.js` (incl. HOST-02 kick) |
+| 02-06 | 3 | `test:unit`, `rg`, `check` |
+| 02-05 | 3 | `npm run check` (full `build` at wave / manual) |
 
 ---
 
