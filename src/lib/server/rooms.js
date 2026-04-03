@@ -67,6 +67,15 @@ export async function createRoom(db, hostUserId) {
 }
 
 /**
+ * Resolve a room by public join code for HTTP loads and lobby snapshots.
+ *
+ * **ROOM-08 closure:** Rows with `phase === 'ended'` or non-null `ended_at` are not returned.
+ * Lobby rows idle for 24h+ since `created_at` are lazily ended here (see `room-lifecycle.js`).
+ *
+ * **Host cancel:** {@link cancelRoomAsHost} (plan 02-04) sets `phase` to `ended` and `ended_at`.
+ * **Phase 3 — draft completion:** When a draft finishes, the server must set `phase` and `ended_at`
+ * (same shape as cancel) so join-by-code stays closed for finished rooms.
+ *
  * @param {any} db Drizzle database instance
  * @param {string} code
  */
