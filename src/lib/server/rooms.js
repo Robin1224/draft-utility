@@ -1,6 +1,10 @@
 import { and, asc, count, eq, isNotNull, sql } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 import { parseRoomCode } from '$lib/join-parse.js';
+import {
+	shouldAbandonLobby,
+	shouldHideRoomFromPublic
+} from './room-lifecycle.js';
 import { room, room_member, user } from './db/schema.js';
 
 export const ROOM_CODE_ALPHABET =
@@ -69,7 +73,22 @@ export async function createRoom(db, hostUserId) {
 export async function getRoomByPublicCode(db, code) {
 	const normalized = parseRoomCode(code);
 	const rows = await db.select().from(room).where(eq(room.public_code, normalized)).limit(1);
-	return rows[0] ?? null;
+	const row = rows[0];
+	if (row == null) return null;
+
+	const now = new Date();
+	if (shouldHideRoomFromPublic(row, now)) {
+		return null;
+	}
+	if (shouldAbandonLobby(row, now)) {
+		const endNow = new Date();
+		await db
+			.update(room)
+			.set({ phase: 'ended', ended_at: endNow, updated_at: endNow })
+			.where(and(eq(room.id, row.id), eq(room.phase, 'lobby')));
+		return null;
+	}
+	return row;
 }
 
 /** Error code thrown by {@link joinTeamForUser} when a team already has 3 players. */

@@ -126,6 +126,66 @@ describe('getRoomByPublicCode', () => {
 		};
 		await expect(getRoomByPublicCode(db, 'Ab3xY9z')).resolves.toEqual(row);
 	});
+
+	it('returns null when phase is ended', async () => {
+		const row = {
+			id: '00000000-0000-0000-0000-000000000004',
+			public_code: 'enddlob',
+			host_user_id: 'host',
+			phase: 'ended',
+			created_at: new Date(0),
+			updated_at: new Date(),
+			ended_at: null
+		};
+		const db = {
+			select: () => ({
+				from: () => ({
+					where: () => ({
+						limit: () => Promise.resolve([row])
+					})
+				})
+			})
+		};
+		await expect(getRoomByPublicCode(db, 'enddlob')).resolves.toBeNull();
+	});
+
+	it('returns null and ends stale lobby in one update', async () => {
+		const created = new Date('2020-01-01T00:00:00.000Z');
+		const row = {
+			id: '00000000-0000-0000-0000-000000000005',
+			public_code: 'stalexx',
+			host_user_id: 'host',
+			phase: 'lobby',
+			created_at: created,
+			updated_at: created,
+			ended_at: null
+		};
+		/** @type {unknown} */
+		let setPayload;
+		const db = {
+			select: () => ({
+				from: () => ({
+					where: () => ({
+						limit: () => Promise.resolve([row])
+					})
+				})
+			}),
+			update: () => ({
+				set: (/** @type {unknown} */ v) => {
+					setPayload = v;
+					return {
+						where: () => Promise.resolve(undefined)
+					};
+				}
+			})
+		};
+		await expect(getRoomByPublicCode(db, 'stalexx')).resolves.toBeNull();
+		expect(setPayload).toMatchObject({
+			phase: 'ended'
+		});
+		expect(setPayload).toHaveProperty('ended_at');
+		expect(setPayload).toHaveProperty('updated_at');
+	});
 });
 
 describe('host immutability (API)', () => {
