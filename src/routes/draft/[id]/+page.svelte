@@ -4,5 +4,5 @@
 </script>
 
 <Header>
-	<Phases phase={1} />
+	<Phases roomPhase="lobby" />
 </Header>
