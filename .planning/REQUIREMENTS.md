@@ -12,7 +12,7 @@
 
 - [x] **AUTH-01** — User can create an account with email and password
 - [x] **AUTH-02** — User can sign in with email and password and stay signed in across sessions
-- [ ] **AUTH-03** — User can sign out from any page
+- [x] **AUTH-03** — User can sign out from any page
 - [x] **AUTH-04** — User can sign in with OAuth (Google and/or GitHub)
 
 ### Room Management (ROOM)
@@ -94,7 +94,7 @@
 |-------------|-------|--------|
 | AUTH-01 | Phase 1 — Auth & Realtime Transport | Complete |
 | AUTH-02 | Phase 1 — Auth & Realtime Transport | Complete |
-| AUTH-03 | Phase 1 — Auth & Realtime Transport | Pending |
+| AUTH-03 | Phase 1 — Auth & Realtime Transport | Complete |
 | AUTH-04 | Phase 1 — Auth & Realtime Transport | Complete |
 | ROOM-01 | Phase 2 — Room & Lobby | Pending |
 | ROOM-02 | Phase 2 — Room & Lobby | Pending |

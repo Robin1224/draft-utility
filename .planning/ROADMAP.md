@@ -12,7 +12,7 @@ Six phases carry the project from a working auth foundation to a complete real-t
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Auth & Realtime Transport** - Production auth flows work end-to-end and WebSocket upgrade identifies users via Better Auth sessions
+- [x] **Phase 1: Auth & Realtime Transport** - Production auth flows work end-to-end and WebSocket upgrade identifies users via Better Auth sessions (completed 2026-04-03)
 - [ ] **Phase 2: Room & Lobby** - Players create and join rooms, form teams, captains auto-assign, host manages the lobby before the draft starts
 - [ ] **Phase 3: Draft Engine** - Server-authoritative pick/ban FSM runs to completion with configurable settings and a bundled class catalog
 - [ ] **Phase 4: Draft UI & Disconnect Resilience** - Draft state is visible in real time; captain disconnects pause, grace, and resolve without losing the draft
@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — Auth config (Discord OAuth) + adapter swap to svelte-adapter-uws with Vite plugins
 - [x] 01-02-PLAN.md — WebSocket identity layer (hooks.ws.js) + auth schema sync
-- [ ] 01-03-PLAN.md — /login route (LoginCard, server actions, unit tests) + demo cleanup
+- [x] 01-03-PLAN.md — /login route (LoginCard, server actions, unit tests) + demo cleanup
 **UI hint**: yes
 
 ### Phase 2: Room & Lobby
@@ -109,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Auth & Realtime Transport | 2/3 | In Progress|  |
+| 1. Auth & Realtime Transport | 3/3 | Complete   | 2026-04-03 |
 | 2. Room & Lobby | 0/TBD | Not started | - |
 | 3. Draft Engine | 0/TBD | Not started | - |
 | 4. Draft UI & Disconnect Resilience | 0/TBD | Not started | - |
