@@ -7,6 +7,8 @@
 	import TeamColumn from '$lib/components/molecules/TeamColumn.svelte';
 	import { fromStore } from 'svelte/store';
 	import { lobby, joinTeam, kickMember, movePlayer, startDraft, cancelRoom } from '$live/room';
+	import { nanoid } from 'nanoid';
+	import { DEFAULT_SCRIPT, DEFAULT_TIMER_MS } from '$lib/draft-script.js';
 
 	let { data } = $props();
 
@@ -16,6 +18,12 @@
 
 	let actionError = $state(/** @type {string | null} */ (null));
 	let copied = $state(false);
+
+	// Settings state — lifted here so handleStart can read it for the RPC payload
+	let draftScript = $state(
+		DEFAULT_SCRIPT.map((turn) => ({ ...turn, id: nanoid(8) }))
+	);
+	let timerSeconds = $state(DEFAULT_TIMER_MS / 1000); // 30
 	/** @type {ReturnType<typeof setTimeout> | null} */
 	let copyTimer = null;
 
@@ -119,7 +127,10 @@
 	async function handleStart() {
 		actionError = null;
 		try {
-			await startDraft(code);
+			// Strip client-only 'id' field; convert timerSeconds to ms
+			const script = draftScript.map(({ team, action }) => ({ team, action }));
+			const timerMs = timerSeconds * 1000;
+			await startDraft(code, { script, timerMs });
 		} catch (e) {
 			actionError = errMsg(e);
 		}
@@ -164,6 +175,8 @@
 			onMove={handleMove}
 			onStartDraft={handleStart}
 			onCancelRoom={handleCancel}
+			bind:script={draftScript}
+			bind:timerSeconds={timerSeconds}
 		/>
 
 		<div class="mb-6 flex flex-wrap items-center gap-3">
