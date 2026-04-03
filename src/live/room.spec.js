@@ -15,9 +15,33 @@ vi.mock('$lib/server/rooms.js', async (importOriginal) => {
 		kickMember: vi.fn(),
 		movePlayer: vi.fn(),
 		startDraftIfReady: vi.fn(),
+		startDraftWithSettings: vi.fn(),
 		cancelRoomAsHost: vi.fn()
 	};
 });
+
+vi.mock('$lib/server/draft.js', () => ({
+	loadDraftSnapshot: vi.fn(),
+	writeDraftAction: vi.fn(),
+	completeDraft: vi.fn(),
+	updateDraftState: vi.fn(),
+	advanceTurnIfCurrent: vi.fn()
+}));
+
+vi.mock('./draft-timers.js', () => ({
+	roomTimers: new Map(),
+	clearRoomTimer: vi.fn(),
+	scheduleTimer: vi.fn()
+}));
+
+vi.mock('./draft.js', () => ({
+	autoAdvanceTurn: vi.fn(),
+	clearRoomTimer: vi.fn(),
+	pickBan: {}
+}));
+
+import * as draftMod from '$lib/server/draft.js';
+import * as timersMod from './draft-timers.js';
 
 const baseRoom = {
 	id: '00000000-0000-0000-0000-000000000099',
@@ -36,6 +60,18 @@ const baseSnapshot = {
 	hostUserId: 'host-1',
 	teams: { A: [], B: [] },
 	spectators: []
+};
+
+const draftSnapshot = {
+	...baseSnapshot,
+	phase: 'drafting',
+	draftState: {
+		script: [{ team: 'A', action: 'ban' }],
+		turnIndex: 0,
+		turnEndsAt: new Date(Date.now() + 30000).toISOString(),
+		timerMs: 30000
+	},
+	actions: []
 };
 
 describe('room live (ROOM-03 guest; captain/cap in rooms.spec.js)', () => {
@@ -60,9 +96,11 @@ describe('room live host RPCs (02-04)', () => {
 	beforeEach(() => {
 		vi.mocked(rooms.getRoomByPublicCode).mockResolvedValue(/** @type {any} */ (baseRoom));
 		vi.mocked(rooms.loadLobbySnapshot).mockResolvedValue(/** @type {any} */ (baseSnapshot));
+		vi.mocked(draftMod.loadDraftSnapshot).mockResolvedValue(/** @type {any} */ (draftSnapshot));
 		vi.mocked(rooms.kickMember).mockResolvedValue(undefined);
 		vi.mocked(rooms.movePlayer).mockResolvedValue(undefined);
 		vi.mocked(rooms.startDraftIfReady).mockResolvedValue(/** @type {any} */ (baseRoom));
+		vi.mocked(rooms.startDraftWithSettings).mockResolvedValue(/** @type {any} */ (baseRoom));
 		vi.mocked(rooms.cancelRoomAsHost).mockResolvedValue(/** @type {any} */ (baseRoom));
 	});
 
@@ -71,7 +109,7 @@ describe('room live host RPCs (02-04)', () => {
 		vi.clearAllMocks();
 	});
 
-	it('non-host startDraft rejects with FORBIDDEN and does not call startDraftIfReady', async () => {
+	it('non-host startDraft rejects with FORBIDDEN and does not call startDraftWithSettings', async () => {
 		vi.mocked(rooms.getRoomByPublicCode).mockResolvedValue(
 			/** @type {any} */ ({ ...baseRoom, host_user_id: 'real-host' })
 		);
@@ -80,17 +118,48 @@ describe('room live host RPCs (02-04)', () => {
 		const err = await client.call('room/startDraft', 'abc1234').catch((e) => e);
 		expect(err).toBeInstanceOf(LiveError);
 		expect(err.code).toBe('FORBIDDEN');
-		expect(rooms.startDraftIfReady).not.toHaveBeenCalled();
+		expect(rooms.startDraftWithSettings).not.toHaveBeenCalled();
 	});
 
 	it('host startDraft rejects when a team lacks captain (mock DB)', async () => {
-		vi.mocked(rooms.startDraftIfReady).mockRejectedValue(rooms.DRAFT_NOT_READY);
+		vi.mocked(rooms.startDraftWithSettings).mockRejectedValue(rooms.DRAFT_NOT_READY);
 		env.register('room', roomModule);
 		const client = env.connect({ role: 'player', id: 'host-1', name: 'Host' });
 		const err = await client.call('room/startDraft', 'abc1234').catch((e) => e);
 		expect(err).toBeInstanceOf(LiveError);
 		expect(err.code).toBe('FORBIDDEN');
-		expect(rooms.startDraftIfReady).toHaveBeenCalled();
+		expect(rooms.startDraftWithSettings).toHaveBeenCalled();
+	});
+
+	it('startDraft with invalid script payload rejects with VALIDATION error', async () => {
+		env.register('room', roomModule);
+		const client = env.connect({ role: 'player', id: 'host-1', name: 'Host' });
+		const err = await client
+			.call('room/startDraft', 'abc1234', {
+				script: [{ team: 'X', action: 'ban' }] // invalid team
+			})
+			.catch((e) => e);
+		expect(err).toBeInstanceOf(LiveError);
+		expect(err.code).toBe('VALIDATION');
+		expect(rooms.startDraftWithSettings).not.toHaveBeenCalled();
+	});
+
+	it('startDraft with timerMs out of range rejects with VALIDATION error', async () => {
+		env.register('room', roomModule);
+		const client = env.connect({ role: 'player', id: 'host-1', name: 'Host' });
+		const err = await client
+			.call('room/startDraft', 'abc1234', { timerMs: 5000 }) // below 10000
+			.catch((e) => e);
+		expect(err).toBeInstanceOf(LiveError);
+		expect(err.code).toBe('VALIDATION');
+	});
+
+	it('cancelRoom calls clearRoomTimer before cancelling the room', async () => {
+		env.register('room', roomModule);
+		const client = env.connect({ role: 'player', id: 'host-1', name: 'Host' });
+		await client.call('room/cancelRoom', 'abc1234');
+		expect(timersMod.clearRoomTimer).toHaveBeenCalledWith(baseRoom.id);
+		expect(rooms.cancelRoomAsHost).toHaveBeenCalled();
 	});
 
 	it('movePlayer rejects when phase is drafting (mock)', async () => {

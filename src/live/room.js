@@ -17,9 +17,14 @@ import {
 	loadLobbySnapshot,
 	movePlayer as movePlayerDb,
 	startDraftIfReady,
+	startDraftWithSettings,
 	topicForRoom,
 	upsertGuestSpectator
 } from '$lib/server/rooms.js';
+import { loadDraftSnapshot } from '$lib/server/draft.js';
+import { DEFAULT_SCRIPT, DEFAULT_TIMER_MS } from '$lib/draft-script.js';
+import { clearRoomTimer, scheduleTimer } from './draft-timers.js';
+import { autoAdvanceTurn } from './draft.js';
 
 /** @param {unknown} e */
 function mapRoomMutationError(e) {
@@ -159,7 +164,7 @@ export const movePlayer = live(async (ctx, publicCode, payload) => {
 	return snap;
 });
 
-export const startDraft = live(async (ctx, publicCode) => {
+export const startDraft = live(async (ctx, publicCode, payload) => {
 	if (ctx.user?.role !== 'player' || !ctx.user?.id) {
 		throw new LiveError('UNAUTHORIZED', 'Sign in required');
 	}
@@ -169,14 +174,45 @@ export const startDraft = live(async (ctx, publicCode) => {
 	if (roomRow.host_user_id !== ctx.user.id) {
 		throw new LiveError('FORBIDDEN', 'Host only');
 	}
+
+	const p = payload && typeof payload === 'object' ? payload : {};
+
+	// Resolve script: validate custom or fall back to default
+	let script = DEFAULT_SCRIPT;
+	if (Array.isArray(p.script) && p.script.length > 0) {
+		const valid = p.script.every(
+			(t) => (t.team === 'A' || t.team === 'B') && (t.action === 'pick' || t.action === 'ban')
+		);
+		if (!valid) {
+			throw new LiveError(
+				'VALIDATION',
+				'Invalid script: each turn needs team A|B and action pick|ban'
+			);
+		}
+		script = p.script;
+	}
+
+	// Resolve timer
+	let timerMs = DEFAULT_TIMER_MS;
+	if (typeof p.timerMs === 'number') {
+		if (p.timerMs < 10_000 || p.timerMs > 120_000) {
+			throw new LiveError('VALIDATION', 'timerMs must be between 10000 and 120000');
+		}
+		timerMs = p.timerMs;
+	}
+
 	try {
-		await startDraftIfReady(db, { roomId: roomRow.id, hostUserId: ctx.user.id });
+		await startDraftWithSettings(db, { roomId: roomRow.id, hostUserId: ctx.user.id, script, timerMs });
 	} catch (e) {
 		const mapped = mapRoomMutationError(e);
 		if (mapped) throw mapped;
 		throw e;
 	}
-	const snap = await loadLobbySnapshot(db, code);
+
+	// Schedule the first turn timer
+	scheduleTimer(roomRow.id, timerMs, () => autoAdvanceTurn(code, 0));
+
+	const snap = await loadDraftSnapshot(db, code);
 	ctx.publish(topicForRoom(code), 'set', snap);
 	return snap;
 });
@@ -191,6 +227,7 @@ export const cancelRoom = live(async (ctx, publicCode) => {
 	if (roomRow.host_user_id !== ctx.user.id) {
 		throw new LiveError('FORBIDDEN', 'Host only');
 	}
+	clearRoomTimer(roomRow.id); // Cancel draft timer if active (prevents stale timer firing after room ends)
 	try {
 		await cancelRoomAsHost(db, { roomId: roomRow.id, hostUserId: ctx.user.id });
 	} catch (e) {
