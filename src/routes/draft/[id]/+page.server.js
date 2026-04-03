@@ -4,7 +4,7 @@ import { db } from '$lib/server/db';
 import { getRoomByPublicCode } from '$lib/server/rooms';
 
 /** @type {import('@sveltejs/kit').ServerLoad} */
-export async function load({ params, locals }) {
+export async function load({ params, locals, url }) {
 	const code = parseRoomCode(params.id ?? '');
 	const row = await getRoomByPublicCode(db, code);
 	if (!row) {
@@ -16,6 +16,7 @@ export async function load({ params, locals }) {
 			phase: row.phase,
 			host_user_id: row.host_user_id
 		},
-		userId: locals.user?.id ?? null
+		userId: locals.user?.id ?? null,
+		appOrigin: url.origin
 	};
 }
