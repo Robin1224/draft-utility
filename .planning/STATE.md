@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-draft-engine-03-PLAN.md
-last_updated: "2026-04-03T15:39:37.005Z"
+stopped_at: Completed 03-draft-engine-04-PLAN.md
+last_updated: "2026-04-03T15:47:02.356Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 15
-  completed_plans: 12
+  completed_plans: 13
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 ## Current Position
 
 Phase: 03 (draft-engine) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 Status: Ready to execute
 Last activity: 2026-04-03
 
@@ -64,6 +64,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-draft-engine P01 | 2min | 3 tasks | 6 files |
 | Phase 03-draft-engine P02 | 3min | 3 tasks | 7 files |
 | Phase 03-draft-engine P03 | 3min | 3 tasks | 4 files |
+| Phase 03-draft-engine P04 | 10min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,8 @@ Recent decisions affecting current work:
 - [Phase 03-draft-engine]: 03-03: draft.js composes loadDraftSnapshot from rooms.js getRoomByPublicCode + loadLobbySnapshot to avoid duplicating lobby query logic
 - [Phase 03-draft-engine]: 03-03: startDraftWithSettings added alongside startDraftIfReady (not replacing) for backward compat; Plan 04 RPCs use new function
 - [Phase 03-draft-engine]: 03-03: advanceTurnIfCurrent uses jsonb_set SQL fragment for atomic field-level JSONB update
+- [Phase 03-draft-engine]: draft-timers.js extracted as shared module to prevent circular import between room.js, draft.js, and rooms.js
+- [Phase 03-draft-engine]: autoAdvanceTurn exported from draft.js; room.js imports it statically (no circular dep since draft.js only imports from $lib/server/*)
 
 ### Pending Todos
 
@@ -110,6 +113,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T15:39:37.003Z
-Stopped at: Completed 03-draft-engine-03-PLAN.md
+Last session: 2026-04-03T15:47:02.353Z
+Stopped at: Completed 03-draft-engine-04-PLAN.md
 Resume file: None

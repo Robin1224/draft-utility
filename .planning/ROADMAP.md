@@ -74,7 +74,7 @@ Plans:
 - [x] 03-01-PLAN.md — Wave 0: all spec stub files (LIST-01, DRAFT-01–06, HOST-01)
 - [x] 03-02-PLAN.md — classes.json catalog + draft-script.js + schema migration (draft_state + draft_action)
 - [x] 03-03-PLAN.md — src/lib/server/draft.js DB layer + startDraftWithSettings in rooms.js
-- [ ] 03-04-PLAN.md — src/live/draft.js pickBan RPC + timer machinery; room.js startDraft/cancelRoom wired
+- [x] 03-04-PLAN.md — src/live/draft.js pickBan RPC + timer machinery; room.js startDraft/cancelRoom wired
 - [ ] 03-05-PLAN.md — ScriptTurnRow.svelte + DraftSettingsPanel.svelte components
 - [ ] 03-06-PLAN.md — LobbyHostBar + +page.svelte wiring; manual checkpoint verification
 **UI hint**: yes
