@@ -444,6 +444,42 @@ export async function startDraftIfReady(db, { roomId, hostUserId }) {
 }
 
 /**
+ * Host starts draft with resolved settings. Sets phase to 'drafting' and bakes
+ * script + timer into room.draft_state JSONB.
+ *
+ * @param {any} db Drizzle database instance
+ * @param {{ roomId: string, hostUserId: string, script: {team: string, action: string}[], timerMs: number }} args
+ */
+export async function startDraftWithSettings(db, { roomId, hostUserId, script, timerMs }) {
+	const [roomRow] = await db.select().from(room).where(eq(room.id, roomId)).limit(1);
+	if (!roomRow) throw new Error('ROOM_NOT_FOUND');
+	assertHost(roomRow, hostUserId);
+	if (roomRow.phase !== 'lobby') throw LOBBY_PHASE_REQUIRED;
+
+	for (const team of /** @type {const} */ (['A', 'B'])) {
+		const members = await db
+			.select()
+			.from(room_member)
+			.where(and(eq(room_member.room_id, roomId), eq(room_member.team, team), isNotNull(room_member.user_id)));
+		if (members.length < 1 || !members.some((m) => m.is_captain)) {
+			throw DRAFT_NOT_READY;
+		}
+	}
+
+	const turnEndsAt = new Date(Date.now() + timerMs);
+	/** @type {import('./db/schema.js').DraftState} */
+	const draftState = { script, turnIndex: 0, turnEndsAt: turnEndsAt.toISOString(), timerMs };
+
+	const [updated] = await db
+		.update(room)
+		.set({ phase: 'drafting', draft_state: draftState, updated_at: new Date() })
+		.where(eq(room.id, roomId))
+		.returning();
+
+	return updated;
+}
+
+/**
  * Host ends the room (lazy purge later). Sets phase ended and ended_at.
  *
  * @param {any} db

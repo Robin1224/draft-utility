@@ -9,7 +9,11 @@ import {
 	getRoomByPublicCode,
 	joinTeamForUser,
 	TEAM_FULL,
-	loadLobbySnapshot
+	loadLobbySnapshot,
+	startDraftWithSettings,
+	NOT_HOST,
+	LOBBY_PHASE_REQUIRED,
+	DRAFT_NOT_READY
 } from './rooms.js';
 import * as rooms from './rooms.js';
 import { room } from './db/schema.js';
@@ -322,6 +326,130 @@ describe('joinTeamForUser (ROOM-04 captain + cap)', () => {
 		await joinTeamForUser(db, { roomId: 'r1', userId: 'u-new', team: 'A' });
 		expect(state.rows).toHaveLength(1);
 		expect(state.rows[0].is_captain).toBe(true);
+	});
+});
+
+// ─── startDraftWithSettings ───────────────────────────────────────────────────
+
+const DEFAULT_SCRIPT = [{ team: 'A', action: 'ban' }, { team: 'B', action: 'ban' }];
+const TIMER_MS = 30000;
+
+/**
+ * Minimal mock db for startDraftWithSettings tests.
+ *
+ * @param {{ roomRow: object, membersA?: object[], membersB?: object[] }} opts
+ * @param {{ updatedRow?: object, capturedSet?: { value?: unknown } }} captures
+ */
+function createStartDraftMockDb(opts, captures = {}) {
+	const { roomRow, membersA = [], membersB = [] } = opts;
+	let selectCall = 0;
+
+	return {
+		select() {
+			return {
+				from() {
+					return {
+						where() {
+							selectCall++;
+							const call = selectCall;
+							return {
+								limit() {
+									// First select: room row
+									return Promise.resolve(roomRow ? [roomRow] : []);
+								},
+								// member selects (no limit, resolves directly)
+								then(onF, onR) {
+									if (call === 2) return Promise.resolve(membersA).then(onF, onR);
+									if (call === 3) return Promise.resolve(membersB).then(onF, onR);
+									return Promise.reject(new Error(`unexpected select at call ${call}`)).then(onF, onR);
+								}
+							};
+						}
+					};
+				}
+			};
+		},
+		update() {
+			return {
+				set(v) {
+					if (captures.capturedSet) captures.capturedSet.value = v;
+					return {
+						where() {
+							return {
+								returning() {
+									const updated = opts.updatedRow ?? { ...roomRow, ...v };
+									return Promise.resolve([updated]);
+								}
+							};
+						}
+					};
+				}
+			};
+		}
+	};
+}
+
+describe('startDraftWithSettings', () => {
+	it('throws NOT_HOST when caller is not host', async () => {
+		const roomRow = { id: 'r1', host_user_id: 'host-1', phase: 'lobby' };
+		const db = createStartDraftMockDb({ roomRow, membersA: [], membersB: [] });
+		await expect(
+			startDraftWithSettings(db, { roomId: 'r1', hostUserId: 'not-host', script: DEFAULT_SCRIPT, timerMs: TIMER_MS })
+		).rejects.toBe(NOT_HOST);
+	});
+
+	it('throws LOBBY_PHASE_REQUIRED when room phase is not lobby', async () => {
+		const roomRow = { id: 'r1', host_user_id: 'host-1', phase: 'drafting' };
+		const db = createStartDraftMockDb({ roomRow, membersA: [], membersB: [] });
+		await expect(
+			startDraftWithSettings(db, { roomId: 'r1', hostUserId: 'host-1', script: DEFAULT_SCRIPT, timerMs: TIMER_MS })
+		).rejects.toBe(LOBBY_PHASE_REQUIRED);
+	});
+
+	it('throws DRAFT_NOT_READY when team A has no captain', async () => {
+		const roomRow = { id: 'r1', host_user_id: 'host-1', phase: 'lobby' };
+		// Team A has members but no captain
+		const membersA = [{ id: 'm1', room_id: 'r1', user_id: 'u1', team: 'A', is_captain: false }];
+		const membersB = [{ id: 'm2', room_id: 'r1', user_id: 'u2', team: 'B', is_captain: true }];
+		const db = createStartDraftMockDb({ roomRow, membersA, membersB });
+		await expect(
+			startDraftWithSettings(db, { roomId: 'r1', hostUserId: 'host-1', script: DEFAULT_SCRIPT, timerMs: TIMER_MS })
+		).rejects.toBe(DRAFT_NOT_READY);
+	});
+
+	it('throws DRAFT_NOT_READY when team B has no members', async () => {
+		const roomRow = { id: 'r1', host_user_id: 'host-1', phase: 'lobby' };
+		const membersA = [{ id: 'm1', room_id: 'r1', user_id: 'u1', team: 'A', is_captain: true }];
+		const membersB = [];
+		const db = createStartDraftMockDb({ roomRow, membersA, membersB });
+		await expect(
+			startDraftWithSettings(db, { roomId: 'r1', hostUserId: 'host-1', script: DEFAULT_SCRIPT, timerMs: TIMER_MS })
+		).rejects.toBe(DRAFT_NOT_READY);
+	});
+
+	it('sets phase=drafting and returns updated row with draft_state on success', async () => {
+		const roomRow = { id: 'r1', host_user_id: 'host-1', phase: 'lobby' };
+		const membersA = [{ id: 'm1', room_id: 'r1', user_id: 'u1', team: 'A', is_captain: true }];
+		const membersB = [{ id: 'm2', room_id: 'r1', user_id: 'u2', team: 'B', is_captain: true }];
+		/** @type {{ value?: unknown }} */
+		const capturedSet = {};
+		const db = createStartDraftMockDb({ roomRow, membersA, membersB }, { capturedSet });
+		const result = await startDraftWithSettings(db, {
+			roomId: 'r1',
+			hostUserId: 'host-1',
+			script: DEFAULT_SCRIPT,
+			timerMs: TIMER_MS
+		});
+		expect(capturedSet.value).toMatchObject({
+			phase: 'drafting',
+			draft_state: expect.objectContaining({
+				script: DEFAULT_SCRIPT,
+				turnIndex: 0,
+				timerMs: TIMER_MS
+			})
+		});
+		expect(capturedSet.value.draft_state).toHaveProperty('turnEndsAt');
+		expect(result).toBeDefined();
 	});
 });
 
