@@ -23,7 +23,7 @@
 - [x] **ROOM-04** — Signed-in user can join a team (max 3 players per side)
 - [x] **ROOM-05** — First signed-in player to join a team automatically becomes that team's captain
 - [x] **ROOM-06** — Host can start the draft at will; both teams must have a captain (minimum 2 players total: one captain per team)
-- [ ] **ROOM-07** — Host can share a copy-to-clipboard room link from the lobby
+- [x] **ROOM-07** — Host can share a copy-to-clipboard room link from the lobby
 - [x] **ROOM-08** — Room cleans up / expires after the draft ends or is cancelled
 
 ### Host Controls (HOST)
@@ -102,7 +102,7 @@
 | ROOM-04 | Phase 2 — Room & Lobby | Complete |
 | ROOM-05 | Phase 2 — Room & Lobby | Complete |
 | ROOM-06 | Phase 2 — Room & Lobby | Complete |
-| ROOM-07 | Phase 2 — Room & Lobby | Pending |
+| ROOM-07 | Phase 2 — Room & Lobby | Complete |
 | ROOM-08 | Phase 2 — Room & Lobby | Complete |
 | HOST-01 | Phase 3 — Draft Engine | Pending |
 | HOST-02 | Phase 2 — Room & Lobby | Complete |

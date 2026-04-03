@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: verifying
-stopped_at: Completed 02-06-PLAN.md
-last_updated: "2026-04-03T13:08:21.525Z"
+stopped_at: Completed 02-05-PLAN.md
+last_updated: "2026-04-03T13:18:41.600Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 6
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
   percent: 0
 ---
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-room-lobby P03 | 18m | 3 tasks | 4 files |
 | Phase 02-room-lobby P04 | 25m | 3 tasks | 5 files |
 | Phase 02-room-lobby P06 | 5min | 3 tasks | 4 files |
+| Phase 02-room-lobby P05 | 25m | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,7 @@ Recent decisions affecting current work:
 - [Phase 02-room-lobby]: 02-04: Host RPC errors mapped via mapRoomMutationError; Neon HTTP keeps sequential multi-write mutations
 - [Phase 02-room-lobby]: 02-06: 24h lazy lobby abandon via getRoomByPublicCode + atomic UPDATE (Neon HTTP pattern)
 - [Phase 02-room-lobby]: 02-06: Phase 3 must set phase/ended_at on draft completion for ROOM-08 join closure (JSDoc on getRoomByPublicCode)
+- [Phase 02-room-lobby]: Lobby page uses fromStore(lobby(code)) for reactive stream; Phases aria-disabled on inner span for a11y
 
 ### Pending Todos
 
@@ -98,6 +100,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T13:08:21.523Z
-Stopped at: Completed 02-06-PLAN.md
+Last session: 2026-04-03T13:18:41.597Z
+Stopped at: Completed 02-05-PLAN.md
 Resume file: None
