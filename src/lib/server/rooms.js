@@ -1,4 +1,4 @@
-import { and, asc, count, eq, sql } from 'drizzle-orm';
+import { and, asc, count, eq, isNotNull, sql } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 import { parseRoomCode } from '$lib/join-parse.js';
 import { room, room_member, user } from './db/schema.js';
@@ -74,6 +74,34 @@ export async function getRoomByPublicCode(db, code) {
 
 /** Error code thrown by {@link joinTeamForUser} when a team already has 3 players. */
 export const TEAM_FULL = 'TEAM_FULL';
+
+/** Caller is not the room host. */
+export const NOT_HOST = 'NOT_HOST';
+
+/** No matching member row for kick target. */
+export const KICK_TARGET_MISSING = 'KICK_TARGET_MISSING';
+
+/** Kick payload must set exactly one of userId or guestId. */
+export const INVALID_KICK_TARGET = 'INVALID_KICK_TARGET';
+
+/** Operation requires room.phase === 'lobby'. */
+export const LOBBY_PHASE_REQUIRED = 'LOBBY_PHASE_REQUIRED';
+
+/** startDraft: each team needs ≥1 signed-in player and ≥1 captain. */
+export const DRAFT_NOT_READY = 'DRAFT_NOT_READY';
+
+/** movePlayer: target must be on team A or B. */
+export const PLAYER_NOT_ON_TEAM = 'PLAYER_NOT_ON_TEAM';
+
+/**
+ * @param {{ host_user_id: string }} roomRow
+ * @param {string} userId
+ */
+export function assertHost(roomRow, userId) {
+	if (roomRow.host_user_id !== userId) {
+		throw NOT_HOST;
+	}
+}
 
 /**
  * @typedef {object} LobbyMember
@@ -268,4 +296,144 @@ export async function joinTeamForUser(db, { roomId, userId, team }) {
 	}
 
 	await recomputeTeamCaptains(db, roomId);
+}
+
+/**
+ * Host removes a signed-in member or guest spectator from the room.
+ * Sequential writes (Neon HTTP — no interactive transaction).
+ *
+ * @param {any} db
+ * @param {{ roomId: string, hostUserId: string, targetUserId?: string | null, targetGuestId?: string | null }} args
+ */
+export async function kickMember(db, { roomId, hostUserId, targetUserId, targetGuestId }) {
+	const [roomRow] = await db.select().from(room).where(eq(room.id, roomId)).limit(1);
+	if (!roomRow) {
+		throw new Error('ROOM_NOT_FOUND');
+	}
+	assertHost(roomRow, hostUserId);
+
+	const hasUser = targetUserId != null && targetUserId !== '';
+	const hasGuest = targetGuestId != null && targetGuestId !== '';
+	if (hasUser === hasGuest) {
+		throw INVALID_KICK_TARGET;
+	}
+
+	const targetCond = hasUser
+		? eq(room_member.user_id, /** @type {string} */ (targetUserId))
+		: eq(room_member.guest_id, /** @type {string} */ (targetGuestId));
+
+	const removed = await db
+		.delete(room_member)
+		.where(and(eq(room_member.room_id, roomId), targetCond))
+		.returning({ id: room_member.id });
+
+	if (!removed.length) {
+		throw KICK_TARGET_MISSING;
+	}
+
+	await recomputeTeamCaptains(db, roomId);
+}
+
+/**
+ * Host moves a signed-in player between teams (lobby only). Recomputes captains (ROOM-05).
+ *
+ * @param {any} db
+ * @param {{ roomId: string, hostUserId: string, userId: string, toTeam: 'A' | 'B' }} args
+ */
+export async function movePlayer(db, { roomId, hostUserId, userId, toTeam }) {
+	const [roomRow] = await db.select().from(room).where(eq(room.id, roomId)).limit(1);
+	if (!roomRow) {
+		throw new Error('ROOM_NOT_FOUND');
+	}
+	assertHost(roomRow, hostUserId);
+	if (roomRow.phase !== 'lobby') {
+		throw LOBBY_PHASE_REQUIRED;
+	}
+
+	const [existing] = await db
+		.select()
+		.from(room_member)
+		.where(and(eq(room_member.room_id, roomId), eq(room_member.user_id, userId)))
+		.limit(1);
+
+	if (!existing?.team || (existing.team !== 'A' && existing.team !== 'B')) {
+		throw PLAYER_NOT_ON_TEAM;
+	}
+
+	if (existing.team === toTeam) {
+		await recomputeTeamCaptains(db, roomId);
+		return;
+	}
+
+	const othersOnTarget = await countTeamMembersExcludingUser(db, roomId, toTeam, userId);
+	if (othersOnTarget >= 3) {
+		throw TEAM_FULL;
+	}
+
+	await db.update(room_member).set({ team: toTeam }).where(eq(room_member.id, existing.id));
+	await recomputeTeamCaptains(db, roomId);
+}
+
+/**
+ * Host starts draft when both teams have at least one signed-in player and one captain each.
+ *
+ * @param {any} db
+ * @param {{ roomId: string, hostUserId: string }} args
+ */
+export async function startDraftIfReady(db, { roomId, hostUserId }) {
+	const [roomRow] = await db.select().from(room).where(eq(room.id, roomId)).limit(1);
+	if (!roomRow) {
+		throw new Error('ROOM_NOT_FOUND');
+	}
+	assertHost(roomRow, hostUserId);
+	if (roomRow.phase !== 'lobby') {
+		throw LOBBY_PHASE_REQUIRED;
+	}
+
+	for (const team of /** @type {const} */ (['A', 'B'])) {
+		const members = await db
+			.select()
+			.from(room_member)
+			.where(
+				and(
+					eq(room_member.room_id, roomId),
+					eq(room_member.team, team),
+					isNotNull(room_member.user_id)
+				)
+			);
+		if (members.length < 1 || !members.some((/** @type {{ is_captain: boolean }} */ m) => m.is_captain)) {
+			throw DRAFT_NOT_READY;
+		}
+	}
+
+	const [updated] = await db
+		.update(room)
+		.set({ phase: 'drafting', updated_at: new Date() })
+		.where(eq(room.id, roomId))
+		.returning();
+
+	return updated;
+}
+
+/**
+ * Host ends the room (lazy purge later). Sets phase ended and ended_at.
+ *
+ * @param {any} db
+ * @param {{ roomId: string, hostUserId: string }} args
+ */
+export async function cancelRoomAsHost(db, { roomId, hostUserId }) {
+	const [roomRow] = await db.select().from(room).where(eq(room.id, roomId)).limit(1);
+	if (!roomRow) {
+		throw new Error('ROOM_NOT_FOUND');
+	}
+	assertHost(roomRow, hostUserId);
+
+	const now = new Date();
+	const [updated] = await db
+		.update(room)
+		.set({ phase: 'ended', ended_at: now, updated_at: now })
+		.where(eq(room.id, roomId))
+		.returning();
+
+	return updated;
 }
