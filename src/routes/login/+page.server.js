@@ -1,4 +1,4 @@
-import { redirect, fail } from '@sveltejs/kit';
+import { redirect, fail, isRedirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/auth';
 
 /** @type {import('@sveltejs/kit').ServerLoad} */
@@ -23,7 +23,8 @@ export const actions = {
 				headers: event.request.headers
 			});
 			if (result?.url) return redirect(302, result.url);
-		} catch {
+		} catch (e) {
+			if (isRedirect(e)) throw e;
 			return fail(500, { error: 'Discord sign-in failed. Please try again.' });
 		}
 		return fail(500, { error: 'Something went wrong. Contact the host.' });
@@ -41,7 +42,8 @@ export const actions = {
 				headers: event.request.headers
 			});
 			if (result?.url) return redirect(302, result.url);
-		} catch {
+		} catch (e) {
+			if (isRedirect(e)) throw e;
 			return fail(500, { error: 'Discord sign-in failed. Please try again.' });
 		}
 		return fail(500, { error: 'Something went wrong. Contact the host.' });
