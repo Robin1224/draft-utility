@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-draft-engine-02-PLAN.md
-last_updated: "2026-04-03T15:34:19.173Z"
+stopped_at: Completed 03-draft-engine-03-PLAN.md
+last_updated: "2026-04-03T15:39:37.005Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 15
-  completed_plans: 11
+  completed_plans: 12
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 ## Current Position
 
 Phase: 03 (draft-engine) — EXECUTING
-Plan: 3 of 6
+Plan: 4 of 6
 Status: Ready to execute
 Last activity: 2026-04-03
 
@@ -63,6 +63,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-room-lobby P05 | 25m | 3 tasks | 9 files |
 | Phase 03-draft-engine P01 | 2min | 3 tasks | 6 files |
 | Phase 03-draft-engine P02 | 3min | 3 tasks | 7 files |
+| Phase 03-draft-engine P03 | 3min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,9 @@ Recent decisions affecting current work:
 - [Phase 03-draft-engine]: vi.mock plain factory (not importOriginal) for non-existent modules in Wave 0 spec stubs
 - [Phase 03-draft-engine]: 03-02: Used db:push:force instead of db:migrate — drizzle-kit migrate hangs with Neon pooler URL containing channel_binding=require (pg driver incompatibility)
 - [Phase 03-draft-engine]: 03-02: draft_action unique(room_id, turn_index) prevents race-condition double-writes at DB level
+- [Phase 03-draft-engine]: 03-03: draft.js composes loadDraftSnapshot from rooms.js getRoomByPublicCode + loadLobbySnapshot to avoid duplicating lobby query logic
+- [Phase 03-draft-engine]: 03-03: startDraftWithSettings added alongside startDraftIfReady (not replacing) for backward compat; Plan 04 RPCs use new function
+- [Phase 03-draft-engine]: 03-03: advanceTurnIfCurrent uses jsonb_set SQL fragment for atomic field-level JSONB update
 
 ### Pending Todos
 
@@ -106,6 +110,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T15:34:19.171Z
-Stopped at: Completed 03-draft-engine-02-PLAN.md
+Last session: 2026-04-03T15:39:37.003Z
+Stopped at: Completed 03-draft-engine-03-PLAN.md
 Resume file: None
