@@ -56,7 +56,7 @@ Plans:
 - [x] 02-03-PLAN.md — svelte-realtime lobby stream + joinTeam + guest/player tests
 - [x] 02-04-PLAN.md — guest cookie + host RPCs (kick, move, startDraft, cancel) + tests
 - [ ] 02-05-PLAN.md — Lobby UI (Phases, teams, spectators, host bar, copy link)
-- [ ] 02-06-PLAN.md — ROOM-08 lifecycle: ended/abandoned lobby expiry in getRoomByPublicCode
+- [x] 02-06-PLAN.md — ROOM-08 lifecycle: ended/abandoned lobby expiry in getRoomByPublicCode
 **UI hint**: yes
 
 ### Phase 3: Draft Engine

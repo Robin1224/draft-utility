@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 02-04-PLAN.md
-last_updated: "2026-04-03T13:00:48.383Z"
+status: verifying
+stopped_at: Completed 02-06-PLAN.md
+last_updated: "2026-04-03T13:08:21.525Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -26,8 +26,8 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 ## Current Position
 
 Phase: 02 (room-lobby) — EXECUTING
-Plan: 5 of 6
-Status: Ready to execute
+Plan: 6 of 6
+Status: Phase complete — ready for verification
 Last activity: 2026-04-03
 
 Progress: [░░░░░░░░░░] 0%
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-room-lobby P02 | 18m | 3 tasks | 6 files |
 | Phase 02-room-lobby P03 | 18m | 3 tasks | 4 files |
 | Phase 02-room-lobby P04 | 25m | 3 tasks | 5 files |
+| Phase 02-room-lobby P06 | 5min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,8 @@ Recent decisions affecting current work:
 - [Phase 02-room-lobby]: 02-03: Neon HTTP has no transactions; joinTeamForUser is sequential until transactional driver or SQL batch
 - [Phase 02-room-lobby]: 02-03: parseRoomCode applied in live room module for topic + publish alignment
 - [Phase 02-room-lobby]: 02-04: Host RPC errors mapped via mapRoomMutationError; Neon HTTP keeps sequential multi-write mutations
+- [Phase 02-room-lobby]: 02-06: 24h lazy lobby abandon via getRoomByPublicCode + atomic UPDATE (Neon HTTP pattern)
+- [Phase 02-room-lobby]: 02-06: Phase 3 must set phase/ended_at on draft completion for ROOM-08 join closure (JSDoc on getRoomByPublicCode)
 
 ### Pending Todos
 
@@ -95,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T13:00:48.380Z
-Stopped at: Completed 02-04-PLAN.md
+Last session: 2026-04-03T13:08:21.523Z
+Stopped at: Completed 02-06-PLAN.md
 Resume file: None
