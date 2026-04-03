@@ -8,6 +8,14 @@ import realtime from 'svelte-realtime/vite';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), uws(), realtime(), devtoolsJson()],
+	server: {
+		watch: {
+			// svelte-realtime writes $types.d.ts into src/live/ on each scan.
+			// Without this, Vite detects the write, triggers a hot-reload,
+			// svelte-realtime rescans and rewrites the file — infinite loop.
+			ignored: ['**/$types.d.ts']
+		}
+	},
 	test: {
 		expect: { requireAssertions: true },
 		projects: [
