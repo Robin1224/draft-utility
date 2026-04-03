@@ -4,6 +4,32 @@ import { auth } from '$lib/server/auth';
 // Required: svelte-realtime built-in message router for RPC dispatch
 export { message };
 
+const DRAFT_GUEST_COOKIE = 'draft_guest';
+
+/**
+ * @param {Headers} headers
+ * @param {string} name
+ * @returns {string | null}
+ */
+function cookieFromHeaders(headers, name) {
+	const raw = headers.get('cookie');
+	if (!raw) return null;
+	for (const part of raw.split(';')) {
+		const idx = part.indexOf('=');
+		if (idx === -1) continue;
+		const key = part.slice(0, idx).trim();
+		if (key !== name) continue;
+		let val = part.slice(idx + 1).trim();
+		try {
+			val = decodeURIComponent(val);
+		} catch {
+			// keep raw
+		}
+		return val || null;
+	}
+	return null;
+}
+
 /**
  * Called at WebSocket upgrade time for every incoming connection.
  * Returns the user context object stored as ws.getUserData() — available as ctx.user in live functions.
@@ -19,7 +45,11 @@ export async function upgrade({ headers }) {
 
 	if (!session) {
 		// D-12: allow unauthenticated connections through as guests
-		return { role: 'guest' };
+		const fromCookie = cookieFromHeaders(headers, DRAFT_GUEST_COOKIE);
+		return {
+			role: 'guest',
+			guestId: fromCookie ?? crypto.randomUUID()
+		};
 	}
 
 	return {
@@ -46,7 +76,7 @@ export const live = {
 		 * Re-reads the Better Auth session and upgrades the connection role in-place.
 		 * Call this from the client immediately after Discord OAuth callback completes.
 		 *
-		 * @param {{ ctx: { user: { role: string, id?: string, name?: string }, platform: { req: { headers: Headers } } } }} _
+		 * @param {{ ctx: { user: { role: string, id?: string, name?: string, guestId?: string }, platform: { req: { headers: Headers } } } }} _
 		 */
 		async refreshSession({ ctx }) {
 			const headers = ctx.platform?.req?.headers ?? new Headers();
@@ -56,6 +86,10 @@ export const live = {
 				ctx.user.role = 'player';
 				ctx.user.id = session.user.id;
 				ctx.user.name = session.user.name;
+				const fromCookie = cookieFromHeaders(headers, DRAFT_GUEST_COOKIE);
+				if (ctx.user.guestId == null && fromCookie) {
+					ctx.user.guestId = fromCookie;
+				}
 			}
 		}
 	}
