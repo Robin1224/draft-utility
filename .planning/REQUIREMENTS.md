@@ -18,7 +18,7 @@
 ### Room Management (ROOM)
 
 - [x] **ROOM-01** — Signed-in user can create a room; they become the non-transferable host
-- [ ] **ROOM-02** — Any user can join a room via room ID or shareable link
+- [x] **ROOM-02** — Any user can join a room via room ID or shareable link
 - [ ] **ROOM-03** — Unauthenticated guests can join a room as spectators (read-only access)
 - [ ] **ROOM-04** — Signed-in user can join a team (max 3 players per side)
 - [ ] **ROOM-05** — First signed-in player to join a team automatically becomes that team's captain
@@ -97,7 +97,7 @@
 | AUTH-03 | Phase 1 — Auth & Realtime Transport | Complete |
 | AUTH-04 | Phase 1 — Auth & Realtime Transport | Complete |
 | ROOM-01 | Phase 2 — Room & Lobby | Complete |
-| ROOM-02 | Phase 2 — Room & Lobby | Pending |
+| ROOM-02 | Phase 2 — Room & Lobby | Complete |
 | ROOM-03 | Phase 2 — Room & Lobby | Pending |
 | ROOM-04 | Phase 2 — Room & Lobby | Pending |
 | ROOM-05 | Phase 2 — Room & Lobby | Pending |

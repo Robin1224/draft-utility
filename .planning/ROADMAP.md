@@ -52,7 +52,7 @@ Plans:
 **Plans**: 6 plans
 Plans:
 - [x] 02-01-PLAN.md — Drizzle room schema, join-parse, rooms.js CRUD + tests (nanoid codes)
-- [ ] 02-02-PLAN.md — Home createRoom action, Create/Join UX, draft/[id] load
+- [x] 02-02-PLAN.md — Home createRoom action, Create/Join UX, draft/[id] load
 - [ ] 02-03-PLAN.md — svelte-realtime lobby stream + joinTeam + guest/player tests
 - [ ] 02-04-PLAN.md — guest cookie + host RPCs (kick, move, startDraft, cancel) + tests
 - [ ] 02-05-PLAN.md — Lobby UI (Phases, teams, spectators, host bar, copy link)
