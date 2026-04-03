@@ -75,7 +75,7 @@ Plans:
 - [x] 03-02-PLAN.md — classes.json catalog + draft-script.js + schema migration (draft_state + draft_action)
 - [x] 03-03-PLAN.md — src/lib/server/draft.js DB layer + startDraftWithSettings in rooms.js
 - [x] 03-04-PLAN.md — src/live/draft.js pickBan RPC + timer machinery; room.js startDraft/cancelRoom wired
-- [ ] 03-05-PLAN.md — ScriptTurnRow.svelte + DraftSettingsPanel.svelte components
+- [x] 03-05-PLAN.md — ScriptTurnRow.svelte + DraftSettingsPanel.svelte components
 - [ ] 03-06-PLAN.md — LobbyHostBar + +page.svelte wiring; manual checkpoint verification
 **UI hint**: yes
 
@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Auth & Realtime Transport | 3/3 | Complete   | 2026-04-03 |
 | 2. Room & Lobby | 4/6 | In Progress|  |
-| 3. Draft Engine | 3/6 | In Progress|  |
+| 3. Draft Engine | 5/6 | In Progress|  |
 | 4. Draft UI & Disconnect Resilience | 0/TBD | Not started | - |
 | 5. Chat & Moderation | 0/TBD | Not started | - |
 | 6. Post-Draft Review | 0/TBD | Not started | - |

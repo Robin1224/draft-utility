@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-draft-engine-04-PLAN.md
-last_updated: "2026-04-03T15:47:02.356Z"
+stopped_at: Completed 03-draft-engine-05-PLAN.md
+last_updated: "2026-04-03T15:51:59.698Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 15
-  completed_plans: 13
+  completed_plans: 14
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 ## Current Position
 
 Phase: 03 (draft-engine) — EXECUTING
-Plan: 5 of 6
+Plan: 6 of 6
 Status: Ready to execute
 Last activity: 2026-04-03
 
@@ -65,6 +65,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-draft-engine P02 | 3min | 3 tasks | 7 files |
 | Phase 03-draft-engine P03 | 3min | 3 tasks | 4 files |
 | Phase 03-draft-engine P04 | 10min | 3 tasks | 5 files |
+| Phase 03-draft-engine P05 | 12min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,8 @@ Recent decisions affecting current work:
 - [Phase 03-draft-engine]: 03-03: advanceTurnIfCurrent uses jsonb_set SQL fragment for atomic field-level JSONB update
 - [Phase 03-draft-engine]: draft-timers.js extracted as shared module to prevent circular import between room.js, draft.js, and rooms.js
 - [Phase 03-draft-engine]: autoAdvanceTurn exported from draft.js; room.js imports it statically (no circular dep since draft.js only imports from $lib/server/*)
+- [Phase 03-draft-engine]: $bindable() used for script and timerSeconds in DraftSettingsPanel so LobbyHostBar can read values for startDraft RPC payload (Plan 06)
+- [Phase 03-draft-engine]: Drag state (dragging, dragOver) kept local in ScriptTurnRow — DraftSettingsPanel owns array mutation via onDragStart/onDrop callbacks
 
 ### Pending Todos
 
@@ -113,6 +116,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T15:47:02.353Z
-Stopped at: Completed 03-draft-engine-04-PLAN.md
+Last session: 2026-04-03T15:51:59.696Z
+Stopped at: Completed 03-draft-engine-05-PLAN.md
 Resume file: None
