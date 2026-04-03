@@ -9,6 +9,11 @@ export const auth = betterAuth({
 	baseURL: env.ORIGIN,
 	secret: env.BETTER_AUTH_SECRET,
 	database: drizzleAdapter(db, { provider: 'pg' }),
-	emailAndPassword: { enabled: true },
-	plugins: [sveltekitCookies(getRequestEvent)] // make sure this is the last plugin in the array
+	socialProviders: {
+		discord: {
+			clientId: env.DISCORD_CLIENT_ID,
+			clientSecret: env.DISCORD_CLIENT_SECRET
+		}
+	},
+	plugins: [sveltekitCookies(getRequestEvent)] // must remain last
 });
