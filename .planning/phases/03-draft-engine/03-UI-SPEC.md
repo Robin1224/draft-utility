@@ -49,16 +49,17 @@ Exceptions: none for Phase 3.
 
 ## Typography
 
-Inherit Phase 1 scale without modification. 3 sizes, 2 weights.
+Inherit Phase 1 scale. 4 sizes, 2 weights. 12px added for section labels (consistent with existing `LobbyHostBar` Kick section label pattern).
 
 | Role | Size | Tailwind | Weight | Weight Class | Line Height |
 |------|------|----------|--------|--------------|-------------|
-| Body | 16px | `text-base` | 400 (regular) | `font-normal` | 1.5 |
+| Section label | 12px | `text-xs` | 600 (semibold) | `font-semibold` | 1.25 |
 | Label | 14px | `text-sm` | 400 (regular) | `font-normal` | 1.25 |
+| Body | 16px | `text-base` | 400 (regular) | `font-normal` | 1.5 |
 | Heading | 20px | `text-xl` | 600 (semibold) | `font-semibold` | 1.2 |
 
 Notes:
-- Settings panel section label (e.g. "Draft settings") uses Label (14px, 400) in `text-text-tertiary` uppercase — consistent with existing Kick section label in `LobbyHostBar`.
+- Settings panel section labels (e.g. "Draft settings", "Pick / Ban order") use Section label (12px, 600) in `text-text-tertiary` uppercase — consistent with existing Kick section label in `LobbyHostBar`.
 - Turn timer input label uses Label (14px, 400) in `text-text-tertiary`.
 - Script editor row text uses Label (14px, 400) in `text-text-primary`.
 
@@ -72,12 +73,13 @@ Inherit Phase 1/2 tokens. No new tokens added in Phase 3.
 |------|-----------|----------------|-------|
 | Dominant (60%) | `bg-bg-primary` | slate-50 (`#f8fafc`) | Page background, settings panel background |
 | Secondary (30%) | `bg-bg-secondary` / `border-bg-secondary` | slate-200 (`#e2e8f0`) | Settings section border, script row border, inputs |
-| Accent (10%) | `bg-amber-500` / `hover:bg-amber-400` | `#f59e0b` | "Start draft" button (inherited); no new accent uses in Phase 3 settings panel |
+| Accent (10%) | `bg-amber-500` / `hover:bg-amber-400` | `#f59e0b` | "Start draft" button (inherited); drag-target row border highlight (`border-amber-400`) |
 | Destructive | `text-red-600` (Tailwind built-in) | `#dc2626` | "Cancel room" text button (inherited); "Remove turn" action within script editor |
 
-Accent (`amber-500`) reserved for (Phase 3 scope):
+Accent (`amber-500` / `amber-400`) reserved for (Phase 3 scope):
 - "Start draft" button background — inherited from Phase 2; no change.
-- No new accent uses are introduced in the settings panel. All settings panel controls use neutral (`border-bg-secondary`, `bg-bg-primary`) styling.
+- Drag-target row border highlight (`border-amber-400`) — applied during DnD hover on a script turn row to indicate the active drop target.
+- No other accent uses are introduced in the settings panel. All other settings panel controls use neutral (`border-bg-secondary`, `bg-bg-primary`) styling.
 
 Destructive (`red-600`) reserved for (Phase 3 scope):
 - "Cancel room" text button — inherited.
@@ -141,7 +143,7 @@ Inside the settings panel, above the script editor.
 | Max | `120` |
 | Step | `5` |
 | Width | `w-24` (fixed; timer is a short number) |
-| Classes | `rounded-md border border-bg-secondary bg-bg-primary px-2 py-1.5 text-sm text-text-primary` — identical to existing select inputs in `LobbyHostBar` |
+| Classes | `rounded-md border border-bg-secondary bg-bg-primary px-2 py-2 text-sm text-text-primary` — identical to existing select inputs in `LobbyHostBar` |
 | Disabled state | `disabled:opacity-50 disabled:cursor-not-allowed` — applied when `room.phase !== 'lobby'` |
 
 Layout: label above input, `flex flex-col gap-1` — matching existing "Move player" / "To team" label-input pairs in `LobbyHostBar`.
@@ -182,7 +184,7 @@ Row layout: `flex items-center gap-2`
 ### "Add turn" button
 
 - Label: **Add turn**
-- Classes: `mt-1 rounded-md border border-bg-secondary px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-bg-secondary` — neutral, not accent. Consistent with Move button in host bar.
+- Classes: `mt-1 rounded-md border border-bg-secondary px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-secondary` — neutral, not accent. Consistent with Move button in host bar.
 - Appends a new `{ team: 'A', action: 'ban' }` turn to the end of the script (default team A, default action ban).
 
 ### Drag-to-reorder implementation note
@@ -310,7 +312,7 @@ No new Svelte code needed in `Phases.svelte` — the existing `phaseToIndex` log
 | Pick option | `Pick` | Domain language (DRAFT-01, D-01) |
 | Ban option | `Ban` | Domain language (DRAFT-01, D-01) |
 | Drag handle aria-label | `Drag to reorder` | Accessibility requirement |
-| Error: RPC failure (start draft) | Inherit Phase 2: `Something went wrong` inline `text-red-600` | Phase 2 `errMsg` pattern |
+| Error: RPC failure (start draft) | `Failed to start the draft — check your connection and try again.` inline `text-red-600` | Phase 3 specific; displayed inline below the "Start draft" button |
 | Phases strip: active drafting | `Drafting` (underlined) | Existing `Phases.svelte` copy — no change |
 
 Destructive actions in Phase 3:
@@ -427,3 +429,4 @@ No external component registries used in Phase 3.
 | `src/lib/components/molecules/LobbyHostBar.svelte` | Existing select + button classes, section label pattern, cancel room styling |
 | `src/lib/components/atoms/Phases.svelte` | Phase transition logic confirmed — no code change needed for `'drafting'` state |
 | User input | 0 — all decisions pre-populated from upstream artifacts and codebase scan |
+| Checker revision | 4 fixes applied: error copy, py-1.5 spacing, amber-400 color contract, text-xs typography declaration |
