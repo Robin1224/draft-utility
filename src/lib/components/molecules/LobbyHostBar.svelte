@@ -1,16 +1,41 @@
 <script>
+	import DraftSettingsPanel from './DraftSettingsPanel.svelte';
+
 	/**
 	 * @typedef {{ userId?: string | null, guestId?: string | null, displayName: string, isCaptain: boolean, isHost: boolean }} LobbyMember
 	 * @typedef {{ phase: string, teams: { A: LobbyMember[], B: LobbyMember[] } }} LobbySnap
+	 * @typedef {{ id: string, team: 'A'|'B', action: 'pick'|'ban' }} ScriptTurn
 	 */
 
-	/** @type {{ isHost: boolean, snapshot: LobbySnap, onKick: (p: { userId?: string, guestId?: string }) => void, onMove: (userId: string, toTeam: 'A' | 'B') => void, onStartDraft: () => void, onCancelRoom: () => void }} */
-	let { isHost, snapshot, onKick, onMove, onStartDraft, onCancelRoom } = $props();
+	/**
+	 * @type {{
+	 *   isHost: boolean,
+	 *   snapshot: LobbySnap,
+	 *   onKick: (p: { userId?: string, guestId?: string }) => void,
+	 *   onMove: (userId: string, toTeam: 'A' | 'B') => void,
+	 *   onStartDraft: () => void,
+	 *   onCancelRoom: () => void,
+	 *   script: ScriptTurn[],
+	 *   timerSeconds: number
+	 * }}
+	 */
+	let {
+		isHost,
+		snapshot,
+		onKick,
+		onMove,
+		onStartDraft,
+		onCancelRoom,
+		script = $bindable([]),
+		timerSeconds = $bindable(30)
+	} = $props();
 
 	let moveUserId = $state('');
 
 	/** @type {'A' | 'B'} */
 	let moveTarget = $state('A');
+
+	let settingsOpen = $state(false);
 
 	const hasCaptainA = $derived(snapshot.teams.A.some((m) => m.isCaptain));
 	const hasCaptainB = $derived(snapshot.teams.B.some((m) => m.isCaptain));
@@ -82,6 +107,18 @@
 				Move
 			</button>
 
+			{#if snapshot.phase === 'lobby'}
+				<button
+					type="button"
+					class="rounded-md border border-bg-secondary px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-bg-secondary"
+					aria-expanded={settingsOpen}
+					aria-controls="draft-settings-panel"
+					onclick={() => (settingsOpen = !settingsOpen)}
+				>
+					Settings
+				</button>
+			{/if}
+
 			<div class="flex flex-wrap items-center gap-2 sm:ml-auto">
 				<div class="flex flex-col items-start gap-1">
 					<button
@@ -106,6 +143,10 @@
 				</button>
 			</div>
 		</div>
+
+		{#if snapshot.phase === 'lobby' && settingsOpen}
+			<DraftSettingsPanel bind:script bind:timerSeconds />
+		{/if}
 
 		{#if snapshot.phase === 'lobby'}
 			<div class="flex flex-col gap-2">
