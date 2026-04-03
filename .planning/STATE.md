@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-04-03T14:58:50.659Z"
+status: executing
+stopped_at: Completed 03-draft-engine 03-01-PLAN.md
+last_updated: "2026-04-03T15:32:55.409Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 6
   completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 15
+  completed_plans: 10
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-03)
 
 **Core value:** A fair, readable, real-time draft where host rules, team privacy, and spectator separation are clear — and the final pick/ban outcome is easy to review.
-**Current focus:** Phase 02 — room-lobby
+**Current focus:** Phase 03 — draft-engine
 
 ## Current Position
 
-Phase: 02 (room-lobby) — EXECUTING
-Plan: 6 of 6
-Status: Phase complete — ready for verification
+Phase: 03 (draft-engine) — EXECUTING
+Plan: 2 of 6
+Status: Ready to execute
 Last activity: 2026-04-03
 
 Progress: [░░░░░░░░░░] 0%
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-room-lobby P04 | 25m | 3 tasks | 5 files |
 | Phase 02-room-lobby P06 | 5min | 3 tasks | 4 files |
 | Phase 02-room-lobby P05 | 25m | 3 tasks | 9 files |
+| Phase 03-draft-engine P01 | 2min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,8 @@ Recent decisions affecting current work:
 - [Phase 02-room-lobby]: 02-06: 24h lazy lobby abandon via getRoomByPublicCode + atomic UPDATE (Neon HTTP pattern)
 - [Phase 02-room-lobby]: 02-06: Phase 3 must set phase/ended_at on draft completion for ROOM-08 join closure (JSDoc on getRoomByPublicCode)
 - [Phase 02-room-lobby]: Lobby page uses fromStore(lobby(code)) for reactive stream; Phases aria-disabled on inner span for a11y
+- [Phase 03-draft-engine]: Wave 0 TDD scaffold: it.todo stubs used (not it.skip) so vitest reports todo counts, not failed counts
+- [Phase 03-draft-engine]: vi.mock plain factory (not importOriginal) for non-existent modules in Wave 0 spec stubs
 
 ### Pending Todos
 
@@ -100,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T14:58:50.657Z
-Stopped at: Phase 3 UI-SPEC approved
-Resume file: .planning/phases/03-draft-engine/03-UI-SPEC.md
+Last session: 2026-04-03T15:32:55.407Z
+Stopped at: Completed 03-draft-engine 03-01-PLAN.md
+Resume file: None
