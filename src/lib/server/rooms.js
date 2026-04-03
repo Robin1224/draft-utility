@@ -1,7 +1,7 @@
-import { eq } from 'drizzle-orm';
+import { and, asc, count, eq, sql } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 import { parseRoomCode } from '$lib/join-parse.js';
-import { room } from './db/schema.js';
+import { room, room_member, user } from './db/schema.js';
 
 export const ROOM_CODE_ALPHABET =
 	'23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz';
@@ -70,4 +70,202 @@ export async function getRoomByPublicCode(db, code) {
 	const normalized = parseRoomCode(code);
 	const rows = await db.select().from(room).where(eq(room.public_code, normalized)).limit(1);
 	return rows[0] ?? null;
+}
+
+/** Error code thrown by {@link joinTeamForUser} when a team already has 3 players. */
+export const TEAM_FULL = 'TEAM_FULL';
+
+/**
+ * @typedef {object} LobbyMember
+ * @property {string | null} userId
+ * @property {string | null} guestId
+ * @property {string} displayName
+ * @property {boolean} isCaptain
+ * @property {boolean} isHost
+ */
+
+/**
+ * @typedef {object} LobbySnapshot
+ * @property {string} publicCode
+ * @property {string} roomId
+ * @property {string} phase
+ * @property {string} hostUserId
+ * @property {{ A: LobbyMember[], B: LobbyMember[] }} teams
+ * @property {LobbyMember[]} spectators
+ */
+
+/**
+ * @param {any} db
+ * @param {string} publicCode
+ * @returns {Promise<LobbySnapshot | null>}
+ */
+export async function loadLobbySnapshot(db, publicCode) {
+	const normalized = parseRoomCode(publicCode);
+	const roomRow = await getRoomByPublicCode(db, normalized);
+	if (!roomRow) return null;
+
+	const rows = await db
+		.select({
+			userId: room_member.user_id,
+			guestId: room_member.guest_id,
+			team: room_member.team,
+			isCaptain: room_member.is_captain,
+			joinedAt: room_member.joined_at,
+			userName: user.name
+		})
+		.from(room_member)
+		.leftJoin(user, eq(room_member.user_id, user.id))
+		.where(eq(room_member.room_id, roomRow.id));
+
+	const sorted = [...rows].sort(
+		(a, b) => new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime()
+	);
+
+	/** @type {LobbyMember[]} */
+	const teamA = [];
+	/** @type {LobbyMember[]} */
+	const teamB = [];
+	/** @type {LobbyMember[]} */
+	const spectators = [];
+
+	for (const r of sorted) {
+		const member = {
+			userId: r.userId,
+			guestId: r.guestId,
+			displayName: r.userName ?? 'Guest',
+			isCaptain: r.isCaptain,
+			isHost: r.userId != null && r.userId === roomRow.host_user_id
+		};
+		if (r.team === 'A') teamA.push(member);
+		else if (r.team === 'B') teamB.push(member);
+		else spectators.push(member);
+	}
+
+	return {
+		publicCode: roomRow.public_code,
+		roomId: roomRow.id,
+		phase: roomRow.phase,
+		hostUserId: roomRow.host_user_id,
+		teams: { A: teamA, B: teamB },
+		spectators
+	};
+}
+
+/**
+ * @param {any} db
+ * @param {string} roomId
+ * @param {string} guestId
+ */
+export async function upsertGuestSpectator(db, roomId, guestId) {
+	await db
+		.insert(room_member)
+		.values({
+			room_id: roomId,
+			guest_id: guestId,
+			user_id: null,
+			team: null,
+			is_captain: false
+		})
+		.onConflictDoNothing({ target: [room_member.room_id, room_member.guest_id] });
+}
+
+/**
+ * @param {any} db
+ * @param {string} roomId
+ * @param {'A' | 'B'} team
+ */
+export async function countTeamMembers(db, roomId, team) {
+	const [row] = await db
+		.select({ n: count() })
+		.from(room_member)
+		.where(and(eq(room_member.room_id, roomId), eq(room_member.team, team)));
+	return Number(row?.n ?? 0);
+}
+
+/**
+ * Count players on `team` excluding a specific user (for cap check before join/move).
+ *
+ * @param {any} db
+ * @param {string} roomId
+ * @param {'A' | 'B'} team
+ * @param {string} userId
+ */
+async function countTeamMembersExcludingUser(db, roomId, team, userId) {
+	const [row] = await db
+		.select({ n: count() })
+		.from(room_member)
+		.where(
+			and(
+				eq(room_member.room_id, roomId),
+				eq(room_member.team, team),
+				sql`${room_member.user_id} IS DISTINCT FROM ${userId}`
+			)
+		);
+	return Number(row?.n ?? 0);
+}
+
+/**
+ * Recompute captain flags: earliest `joined_at` on each team is captain.
+ *
+ * @param {any} db
+ * @param {string} roomId
+ */
+async function recomputeTeamCaptains(db, roomId) {
+	for (const team of /** @type {const} */ (['A', 'B'])) {
+		const ordered = await db
+			.select({ id: room_member.id })
+			.from(room_member)
+			.where(and(eq(room_member.room_id, roomId), eq(room_member.team, team)))
+			.orderBy(asc(room_member.joined_at));
+
+		const captainId = ordered[0]?.id;
+		for (const row of ordered) {
+			await db
+				.update(room_member)
+				.set({ is_captain: row.id === captainId })
+				.where(eq(room_member.id, row.id));
+		}
+	}
+}
+
+/**
+ * Signed-in player joins or moves to a team (max 3 per team). Captain = earliest `joined_at` on that team.
+ * Uses sequential queries (Neon HTTP driver has no interactive transactions — see plan 02-03 deviation).
+ *
+ * @param {any} db
+ * @param {{ roomId: string, userId: string, team: 'A' | 'B' }} args
+ */
+export async function joinTeamForUser(db, { roomId, userId, team }) {
+	const [existing] = await db
+		.select()
+		.from(room_member)
+		.where(and(eq(room_member.room_id, roomId), eq(room_member.user_id, userId)))
+		.limit(1);
+
+	if (existing?.team === team) {
+		await recomputeTeamCaptains(db, roomId);
+		return;
+	}
+
+	const othersOnTarget = await countTeamMembersExcludingUser(db, roomId, team, userId);
+	if (othersOnTarget >= 3) {
+		throw TEAM_FULL;
+	}
+
+	if (existing) {
+		await db
+			.update(room_member)
+			.set({ team })
+			.where(eq(room_member.id, existing.id));
+	} else {
+		await db.insert(room_member).values({
+			room_id: roomId,
+			user_id: userId,
+			team,
+			is_captain: false,
+			guest_id: null
+		});
+	}
+
+	await recomputeTeamCaptains(db, roomId);
 }
