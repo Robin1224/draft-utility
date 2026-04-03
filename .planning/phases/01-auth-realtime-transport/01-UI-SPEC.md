@@ -94,6 +94,8 @@ Text colors (existing tokens, already in use):
 
 The `/login` route is a **full-page centered card**. The existing `Header` component is included at top.
 
+**Primary visual focal point:** The Discord OAuth button (full-width Blurple on a neutral card). It is the only saturated element on the page — all surrounding elements (heading, toggle link, error) recede visually. Executor must not introduce competing saturated elements on this page.
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Header (h-16, existing pattern)                        │
