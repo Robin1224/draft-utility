@@ -49,7 +49,14 @@ Plans:
   4. Host can kick any lobby member and can move signed-in players between teams; moves are locked once the draft starts
   5. Host can start the draft only when both teams have at least one captain; the start button is disabled otherwise
   6. Room state is cleaned up or expired after the draft ends or is cancelled; orphaned rooms do not persist indefinitely
-**Plans**: TBD
+**Plans**: 6 plans
+Plans:
+- [ ] 02-01-PLAN.md — Drizzle room schema, join-parse, rooms.js CRUD + tests (nanoid codes)
+- [ ] 02-02-PLAN.md — Home createRoom action, Create/Join UX, draft/[id] load
+- [ ] 02-03-PLAN.md — svelte-realtime lobby stream + joinTeam + guest/player tests
+- [ ] 02-04-PLAN.md — guest cookie + host RPCs (kick, move, startDraft, cancel) + tests
+- [ ] 02-05-PLAN.md — Lobby UI (Phases, teams, spectators, host bar, copy link)
+- [ ] 02-06-PLAN.md — ROOM-08 lifecycle: ended/abandoned lobby expiry in getRoomByPublicCode
 **UI hint**: yes
 
 ### Phase 3: Draft Engine
@@ -110,7 +117,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Auth & Realtime Transport | 3/3 | Complete   | 2026-04-03 |
-| 2. Room & Lobby | 0/TBD | Not started | - |
+| 2. Room & Lobby | 0/6 | Not started | - |
 | 3. Draft Engine | 0/TBD | Not started | - |
 | 4. Draft UI & Disconnect Resilience | 0/TBD | Not started | - |
 | 5. Chat & Moderation | 0/TBD | Not started | - |
