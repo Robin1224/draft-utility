@@ -1,5 +1,1 @@
-<script>
-	import { resolve } from '$app/paths';
-</script>
-
-<a href={resolve('/demo/better-auth')}>better-auth</a>
+<p>Demo routes have been removed.</p>

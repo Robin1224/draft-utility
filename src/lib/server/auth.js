@@ -2,7 +2,9 @@ import { betterAuth } from 'better-auth/minimal';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { env } from '$env/dynamic/private';
-import { getRequestEvent } from '$app/server';
+// @ts-ignore — @sveltejs/kit/internal/server is a valid runtime export.
+// $app/server fails in the adapter-uws esbuild bundle; this internal path is external to esbuild.
+import { getRequestEvent } from '@sveltejs/kit/internal/server';
 import { db } from '$lib/server/db';
 
 export const auth = betterAuth({
