@@ -71,7 +71,7 @@ Each task was committed atomically:
 2. **Task 2: Create.svelte + Join.svelte + home page wire-up** - `6423327` (feat)
 3. **Task 3: draft/[id]/+page.server.js load** - `4a6af98` (feat)
 
-**Plan metadata:** _(pending — docs commit after state/roadmap tools)_
+**Plan metadata:** `3b9ce18` (docs: complete plan)
 
 ## Files Created/Modified
 
@@ -135,4 +135,9 @@ None — uses existing `DATABASE_URL` and auth session from Phase 1.
 _Phase: 02-room-lobby_
 _Completed: 2026-04-03_
 
-## Self-Check: PENDING
+## Self-Check: PASSED
+
+- `src/routes/+page.server.js` — FOUND
+- `src/routes/draft/[id]/+page.server.js` — FOUND
+- `.planning/phases/02-room-lobby/02-02-SUMMARY.md` — FOUND
+- Commits `6173b6f`, `6423327`, `4a6af98`, `3b9ce18` — FOUND
