@@ -22,15 +22,15 @@
 - [x] **ROOM-03** — Unauthenticated guests can join a room as spectators (read-only access)
 - [x] **ROOM-04** — Signed-in user can join a team (max 3 players per side)
 - [x] **ROOM-05** — First signed-in player to join a team automatically becomes that team's captain
-- [ ] **ROOM-06** — Host can start the draft at will; both teams must have a captain (minimum 2 players total: one captain per team)
+- [x] **ROOM-06** — Host can start the draft at will; both teams must have a captain (minimum 2 players total: one captain per team)
 - [ ] **ROOM-07** — Host can share a copy-to-clipboard room link from the lobby
 - [ ] **ROOM-08** — Room cleans up / expires after the draft ends or is cancelled
 
 ### Host Controls (HOST)
 
 - [ ] **HOST-01** — Host has a room settings panel to configure pick/ban order and turn timer (default: 30 seconds)
-- [ ] **HOST-02** — Host can kick any lobby member (player or spectator) from the room
-- [ ] **HOST-03** — Host can move players between teams before the draft starts (moves locked once draft begins)
+- [x] **HOST-02** — Host can kick any lobby member (player or spectator) from the room
+- [x] **HOST-03** — Host can move players between teams before the draft starts (moves locked once draft begins)
 - [ ] **HOST-04** — Host can mute spectators (spectator chat silenced for that user)
 
 ### Chat (CHAT)
@@ -101,12 +101,12 @@
 | ROOM-03 | Phase 2 — Room & Lobby | Complete |
 | ROOM-04 | Phase 2 — Room & Lobby | Complete |
 | ROOM-05 | Phase 2 — Room & Lobby | Complete |
-| ROOM-06 | Phase 2 — Room & Lobby | Pending |
+| ROOM-06 | Phase 2 — Room & Lobby | Complete |
 | ROOM-07 | Phase 2 — Room & Lobby | Pending |
 | ROOM-08 | Phase 2 — Room & Lobby | Pending |
 | HOST-01 | Phase 3 — Draft Engine | Pending |
-| HOST-02 | Phase 2 — Room & Lobby | Pending |
-| HOST-03 | Phase 2 — Room & Lobby | Pending |
+| HOST-02 | Phase 2 — Room & Lobby | Complete |
+| HOST-03 | Phase 2 — Room & Lobby | Complete |
 | HOST-04 | Phase 5 — Chat & Moderation | Pending |
 | CHAT-01 | Phase 5 — Chat & Moderation | Pending |
 | CHAT-02 | Phase 5 — Chat & Moderation | Pending |
