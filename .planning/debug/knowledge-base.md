@@ -4,6 +4,14 @@ Resolved debug sessions. Used by `gsd-debugger` to surface known-pattern hypothe
 
 ---
 
+## websocket-connection-lost-unauthenticated — WebSocket upgrade crash for unauthenticated users produces "WebSocket connection lost"
+- **Date:** 2026-04-03
+- **Error patterns:** WebSocket connection lost, unauthenticated, upgrade, getSession, getRequestEvent, set-cookie, session refresh, HTTP 500, sveltekitCookies
+- **Root cause:** hooks.ws.js upgrade() called auth.api.getSession() without try/catch. The sveltekitCookies Better Auth plugin's after-hook calls getRequestEvent() (throws outside SvelteKit request context) when a set-cookie header is present during session refresh/rotation. This caused upgrade() to reject, the socket to be destroyed with HTTP 500, the client to retry, and eventually produce "WebSocket connection lost". Secondarily, the page rendered the raw library error with no auth-aware messaging for guests.
+- **Fix:** Wrapped getSession in try/catch inside upgrade(); falls back to guest on any error. Added guest-specific error UI in +page.svelte showing "Sign in to join this draft" instead of the raw error message.
+- **Files changed:** src/hooks.ws.js, src/routes/draft/[id]/+page.svelte
+---
+
 ## create-draft-404-room-not-found — Silent fail(401) on unauthenticated create-room action; button does nothing and draft URLs 404
 - **Date:** 2026-04-03
 - **Error patterns:** 404, room not found, button does nothing, create draft, fail(401), unauthenticated, use:enhance, form action
