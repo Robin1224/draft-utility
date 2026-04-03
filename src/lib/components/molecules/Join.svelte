@@ -5,6 +5,7 @@
 	let draftId = $state('');
 	let disabled = $derived(draftId.length === 0);
 
+	/** @param {MouseEvent} event */
 	async function handleSubmit(event) {
 		event.preventDefault();
 		goto(resolve(`/draft/${draftId}`), { replaceState: true });
