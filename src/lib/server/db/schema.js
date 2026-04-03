@@ -3,6 +3,7 @@ import {
 	boolean,
 	index,
 	integer,
+	jsonb,
 	pgTable,
 	serial,
 	text,
@@ -25,7 +26,8 @@ export const room = pgTable('room', {
 	phase: text('phase').notNull().default('lobby'),
 	created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 	updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-	ended_at: timestamp('ended_at', { withTimezone: true })
+	ended_at: timestamp('ended_at', { withTimezone: true }),
+	draft_state: jsonb('draft_state')
 });
 
 export const room_member = pgTable(
@@ -49,6 +51,33 @@ export const room_member = pgTable(
 		uniqueIndex('room_member_room_guest_unique')
 			.on(t.room_id, t.guest_id)
 			.where(sql`${t.guest_id} IS NOT NULL`)
+	]
+);
+
+/**
+ * @typedef {object} DraftState
+ * @property {{ team: 'A'|'B', action: 'pick'|'ban' }[]} script
+ * @property {number} turnIndex
+ * @property {string} turnEndsAt   - ISO timestamp
+ * @property {number} timerMs
+ */
+
+export const draft_action = pgTable(
+	'draft_action',
+	{
+		id: uuid('id').defaultRandom().primaryKey(),
+		room_id: uuid('room_id')
+			.notNull()
+			.references(() => room.id, { onDelete: 'cascade' }),
+		turn_index: integer('turn_index').notNull(),
+		team: text('team').notNull(),
+		action: text('action').notNull(),
+		champion_id: text('champion_id'),
+		created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull()
+	},
+	(t) => [
+		index('draft_action_room_id_idx').on(t.room_id),
+		uniqueIndex('draft_action_room_turn_unique').on(t.room_id, t.turn_index)
 	]
 );
 
