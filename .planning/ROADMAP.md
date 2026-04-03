@@ -31,7 +31,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can sign out from any page and is returned to an unauthenticated state with protected routes inaccessible
   4. User can authenticate via Google or GitHub OAuth and land back in the app with a valid session
   5. WebSocket connections from signed-in users carry verified identity; guest connections are recognized as unauthenticated at the upgrade boundary
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 01-01-PLAN.md — Auth config (Discord OAuth) + adapter swap to svelte-adapter-uws with Vite plugins
+- [ ] 01-02-PLAN.md — WebSocket identity layer (hooks.ws.js) + auth schema sync
+- [ ] 01-03-PLAN.md — /login route (LoginCard, server actions, unit tests) + demo cleanup
 **UI hint**: yes
 
 ### Phase 2: Room & Lobby
@@ -105,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Auth & Realtime Transport | 0/TBD | Not started | - |
+| 1. Auth & Realtime Transport | 0/3 | Not started | - |
 | 2. Room & Lobby | 0/TBD | Not started | - |
 | 3. Draft Engine | 0/TBD | Not started | - |
 | 4. Draft UI & Disconnect Resilience | 0/TBD | Not started | - |
