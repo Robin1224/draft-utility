@@ -90,15 +90,41 @@
 
 ## Traceability
 
-| Requirement | Phase |
-|-------------|-------|
-| AUTH-01–04  | — |
-| ROOM-01–08  | — |
-| HOST-01–04  | — |
-| CHAT-01–04  | — |
-| DRAFT-01–07 | — |
-| DISC-01–04  | — |
-| POST-01–02  | — |
-| LIST-01     | — |
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| AUTH-01 | Phase 1 — Auth & Realtime Transport | Pending |
+| AUTH-02 | Phase 1 — Auth & Realtime Transport | Pending |
+| AUTH-03 | Phase 1 — Auth & Realtime Transport | Pending |
+| AUTH-04 | Phase 1 — Auth & Realtime Transport | Pending |
+| ROOM-01 | Phase 2 — Room & Lobby | Pending |
+| ROOM-02 | Phase 2 — Room & Lobby | Pending |
+| ROOM-03 | Phase 2 — Room & Lobby | Pending |
+| ROOM-04 | Phase 2 — Room & Lobby | Pending |
+| ROOM-05 | Phase 2 — Room & Lobby | Pending |
+| ROOM-06 | Phase 2 — Room & Lobby | Pending |
+| ROOM-07 | Phase 2 — Room & Lobby | Pending |
+| ROOM-08 | Phase 2 — Room & Lobby | Pending |
+| HOST-01 | Phase 3 — Draft Engine | Pending |
+| HOST-02 | Phase 2 — Room & Lobby | Pending |
+| HOST-03 | Phase 2 — Room & Lobby | Pending |
+| HOST-04 | Phase 5 — Chat & Moderation | Pending |
+| CHAT-01 | Phase 5 — Chat & Moderation | Pending |
+| CHAT-02 | Phase 5 — Chat & Moderation | Pending |
+| CHAT-03 | Phase 5 — Chat & Moderation | Pending |
+| CHAT-04 | Phase 5 — Chat & Moderation | Pending |
+| DRAFT-01 | Phase 3 — Draft Engine | Pending |
+| DRAFT-02 | Phase 3 — Draft Engine | Pending |
+| DRAFT-03 | Phase 3 — Draft Engine | Pending |
+| DRAFT-04 | Phase 3 — Draft Engine | Pending |
+| DRAFT-05 | Phase 3 — Draft Engine | Pending |
+| DRAFT-06 | Phase 3 — Draft Engine | Pending |
+| DRAFT-07 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
+| DISC-01 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
+| DISC-02 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
+| DISC-03 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
+| DISC-04 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
+| POST-01 | Phase 6 — Post-Draft Review | Pending |
+| POST-02 | Phase 6 — Post-Draft Review | Pending |
+| LIST-01 | Phase 3 — Draft Engine | Pending |
 
-*(Filled in by gsd-roadmapper)*
+**Coverage:** 34/34 requirements mapped ✓
