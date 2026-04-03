@@ -3,9 +3,11 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import { sveltekit } from '@sveltejs/kit/vite';
+import uws from 'svelte-adapter-uws/vite';
+import realtime from 'svelte-realtime/vite';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
+	plugins: [tailwindcss(), sveltekit(), uws(), realtime(), devtoolsJson()],
 	test: {
 		expect: { requireAssertions: true },
 		projects: [
