@@ -53,7 +53,7 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md — Drizzle room schema, join-parse, rooms.js CRUD + tests (nanoid codes)
 - [x] 02-02-PLAN.md — Home createRoom action, Create/Join UX, draft/[id] load
-- [ ] 02-03-PLAN.md — svelte-realtime lobby stream + joinTeam + guest/player tests
+- [x] 02-03-PLAN.md — svelte-realtime lobby stream + joinTeam + guest/player tests
 - [ ] 02-04-PLAN.md — guest cookie + host RPCs (kick, move, startDraft, cancel) + tests
 - [ ] 02-05-PLAN.md — Lobby UI (Phases, teams, spectators, host bar, copy link)
 - [ ] 02-06-PLAN.md — ROOM-08 lifecycle: ended/abandoned lobby expiry in getRoomByPublicCode
