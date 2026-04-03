@@ -51,7 +51,7 @@ Plans:
   6. Room state is cleaned up or expired after the draft ends or is cancelled; orphaned rooms do not persist indefinitely
 **Plans**: 6 plans
 Plans:
-- [ ] 02-01-PLAN.md — Drizzle room schema, join-parse, rooms.js CRUD + tests (nanoid codes)
+- [x] 02-01-PLAN.md — Drizzle room schema, join-parse, rooms.js CRUD + tests (nanoid codes)
 - [ ] 02-02-PLAN.md — Home createRoom action, Create/Join UX, draft/[id] load
 - [ ] 02-03-PLAN.md — svelte-realtime lobby stream + joinTeam + guest/player tests
 - [ ] 02-04-PLAN.md — guest cookie + host RPCs (kick, move, startDraft, cancel) + tests
