@@ -52,10 +52,10 @@
 
 ### Disconnect & Resilience (DISC)
 
-- [ ] **DISC-01** — If the active captain disconnects, the draft pauses and a grace period (~30 seconds) begins
-- [ ] **DISC-02** — If the captain does not reconnect within the grace period, another player on that team is promoted to captain and the draft resumes
-- [ ] **DISC-03** — If no other player is available on the team, the draft is cancelled and all participants are notified
-- [ ] **DISC-04** — On reconnect, the client is hydrated from a server-authoritative snapshot (no stale local state)
+- [x] **DISC-01** — If the active captain disconnects, the draft pauses and a grace period (~30 seconds) begins
+- [x] **DISC-02** — If the captain does not reconnect within the grace period, another player on that team is promoted to captain and the draft resumes
+- [x] **DISC-03** — If no other player is available on the team, the draft is cancelled and all participants are notified
+- [x] **DISC-04** — On reconnect, the client is hydrated from a server-authoritative snapshot (no stale local state)
 
 ### Post-Draft Review (POST)
 
@@ -119,10 +119,10 @@
 | DRAFT-05 | Phase 3 — Draft Engine | Pending |
 | DRAFT-06 | Phase 3 — Draft Engine | Pending |
 | DRAFT-07 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
-| DISC-01 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
-| DISC-02 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
-| DISC-03 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
-| DISC-04 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
+| DISC-01 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
+| DISC-02 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
+| DISC-03 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
+| DISC-04 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
 | POST-01 | Phase 6 — Post-Draft Review | Pending |
 | POST-02 | Phase 6 — Post-Draft Review | Pending |
 | LIST-01 | Phase 3 — Draft Engine | Pending |

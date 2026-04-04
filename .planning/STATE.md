@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 04 context gathered
-last_updated: "2026-04-04T00:56:44.746Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-04-04T10:55:36.476Z"
 last_activity: 2026-04-04
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 15
+  total_plans: 20
   completed_plans: 15
   percent: 0
 ---
@@ -66,6 +66,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-draft-engine P03 | 3min | 3 tasks | 4 files |
 | Phase 03-draft-engine P04 | 10min | 3 tasks | 5 files |
 | Phase 03-draft-engine P05 | 12min | 2 tasks | 3 files |
+| Phase 04-draft-ui-disconnect-resilience P02 | 7min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,9 @@ Recent decisions affecting current work:
 - [Phase 03-draft-engine]: autoAdvanceTurn exported from draft.js; room.js imports it statically (no circular dep since draft.js only imports from $lib/server/*)
 - [Phase 03-draft-engine]: $bindable() used for script and timerSeconds in DraftSettingsPanel so LobbyHostBar can read values for startDraft RPC payload (Plan 06)
 - [Phase 03-draft-engine]: Drag state (dragging, dragOver) kept local in ScriptTurnRow — DraftSettingsPanel owns array mutation via onDragStart/onDrop callbacks
+- [Phase 04-draft-ui-disconnect-resilience]: Grace timer keyed roomId + ':grace' to avoid colliding with turn timer (roomId key)
+- [Phase 04-draft-ui-disconnect-resilience]: cancelDraftNoCaption sets phase=cancelled (not ended) to distinguish captain-abandoned drafts from host-cancelled rooms
+- [Phase 04-draft-ui-disconnect-resilience]: autoAdvanceTurn platform=null skips publish block entirely; platform threaded from startDraft ctx.platform
 
 ### Pending Todos
 
@@ -116,6 +120,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-04T00:56:44.743Z
-Stopped at: Phase 04 context gathered
-Resume file: .planning/phases/04-draft-ui-disconnect-resilience/04-CONTEXT.md
+Last session: 2026-04-04T10:55:36.473Z
+Stopped at: Completed 04-02-PLAN.md
+Resume file: None
