@@ -38,9 +38,13 @@ function cookieFromHeaders(headers, name) {
  * D-12: Guests receive role: 'guest' and can only access public/spectator topics (enforced Phase 2+).
  * D-13: Downstream live handlers check ctx.user.role before allowing publish/subscribe.
  *
- * @param {{ headers: Headers }} param
+ * @param {{ headers: Record<string, string> }} param
  */
 export async function upgrade({ headers }) {
+	// svelte-adapter-uws passes headers as a plain object, not a Headers instance.
+	// Better Auth's getSession requires a Headers-like object with .get(), so we wrap it.
+	const headersObj = new Headers(headers);
+
 	// auth.api.getSession is wrapped in try/catch because the sveltekitCookies
 	// Better Auth plugin calls getRequestEvent() in its after-hook when a
 	// set-cookie header is present (e.g. session refresh). getRequestEvent()
@@ -49,7 +53,7 @@ export async function upgrade({ headers }) {
 	// the session lookup is best-effort and the WS upgrade must never throw.
 	let session = null;
 	try {
-		session = await auth.api.getSession({ headers });
+		session = await auth.api.getSession({ headers: headersObj });
 	} catch {
 		// getSession threw (e.g. sveltekitCookies after-hook called
 		// getRequestEvent() outside SK context) — treat as unauthenticated
@@ -57,7 +61,7 @@ export async function upgrade({ headers }) {
 
 	if (!session) {
 		// D-12: allow unauthenticated connections through as guests
-		const fromCookie = cookieFromHeaders(headers, DRAFT_GUEST_COOKIE);
+		const fromCookie = cookieFromHeaders(headersObj, DRAFT_GUEST_COOKIE);
 		return {
 			role: 'guest',
 			guestId: fromCookie ?? crypto.randomUUID()

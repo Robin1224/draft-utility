@@ -450,6 +450,10 @@ export async function startDraftIfReady(db, { roomId, hostUserId }) {
  * @param {any} db Drizzle database instance
  * @param {{ roomId: string, hostUserId: string, script: {team: string, action: string}[], timerMs: number }} args
  */
+/**
+ * @param {any} db Drizzle database instance
+ * @param {{ roomId: string, hostUserId: string, script: { team: 'A'|'B', action: 'pick'|'ban' }[], timerMs: number }} opts
+ */
 export async function startDraftWithSettings(db, { roomId, hostUserId, script, timerMs }) {
 	const [roomRow] = await db.select().from(room).where(eq(room.id, roomId)).limit(1);
 	if (!roomRow) throw new Error('ROOM_NOT_FOUND');
@@ -461,7 +465,7 @@ export async function startDraftWithSettings(db, { roomId, hostUserId, script, t
 			.select()
 			.from(room_member)
 			.where(and(eq(room_member.room_id, roomId), eq(room_member.team, team), isNotNull(room_member.user_id)));
-		if (members.length < 1 || !members.some((m) => m.is_captain)) {
+		if (members.length < 1 || !members.some((/** @type {any} */ m) => m.is_captain)) {
 			throw DRAFT_NOT_READY;
 		}
 	}
