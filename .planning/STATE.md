@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 04 context gathered
-last_updated: "2026-04-04T00:56:44.746Z"
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-04-04T10:48:26.857Z"
 last_activity: 2026-04-04
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 15
-  completed_plans: 15
+  total_plans: 20
+  completed_plans: 16
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-03)
 
 **Core value:** A fair, readable, real-time draft where host rules, team privacy, and spectator separation are clear — and the final pick/ban outcome is easy to review.
-**Current focus:** Phase 03 — draft-engine
+**Current focus:** Phase 04 — draft-ui-disconnect-resilience
 
 ## Current Position
 
-Phase: 4
-Plan: Not started
-Status: Executing Phase 03
+Phase: 04 (draft-ui-disconnect-resilience) — EXECUTING
+Plan: 2 of 5
+Status: Ready to execute
 Last activity: 2026-04-04
 
 Progress: [░░░░░░░░░░] 0%
@@ -66,6 +66,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-draft-engine P03 | 3min | 3 tasks | 4 files |
 | Phase 03-draft-engine P04 | 10min | 3 tasks | 5 files |
 | Phase 03-draft-engine P05 | 12min | 2 tasks | 3 files |
+| Phase 04-draft-ui-disconnect-resilience P01 | 5min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,8 @@ Recent decisions affecting current work:
 - [Phase 03-draft-engine]: autoAdvanceTurn exported from draft.js; room.js imports it statically (no circular dep since draft.js only imports from $lib/server/*)
 - [Phase 03-draft-engine]: $bindable() used for script and timerSeconds in DraftSettingsPanel so LobbyHostBar can read values for startDraft RPC payload (Plan 06)
 - [Phase 03-draft-engine]: Drag state (dragging, dragOver) kept local in ScriptTurnRow — DraftSettingsPanel owns array mutation via onDragStart/onDrop callbacks
+- [Phase 04-draft-ui-disconnect-resilience]: Wave 0 stubs use it.todo (not it.skip) so vitest reports todo counts not failures — consistent with Phase 03 pattern
+- [Phase 04-draft-ui-disconnect-resilience]: No real module imports in Wave 0 stubs — vi.mock wiring deferred to Plan 02 implementation phase
 
 ### Pending Todos
 
@@ -116,6 +119,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-04T00:56:44.743Z
-Stopped at: Phase 04 context gathered
-Resume file: .planning/phases/04-draft-ui-disconnect-resilience/04-CONTEXT.md
+Last session: 2026-04-04T10:48:26.854Z
+Stopped at: Completed 04-01-PLAN.md
+Resume file: None

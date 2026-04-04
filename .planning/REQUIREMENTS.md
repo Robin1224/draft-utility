@@ -28,7 +28,7 @@
 
 ### Host Controls (HOST)
 
-- [ ] **HOST-01** — Host has a room settings panel to configure pick/ban order and turn timer (default: 30 seconds)
+- [x] **HOST-01** — Host has a room settings panel to configure pick/ban order and turn timer (default: 30 seconds)
 - [x] **HOST-02** — Host can kick any lobby member (player or spectator) from the room
 - [x] **HOST-03** — Host can move players between teams before the draft starts (moves locked once draft begins)
 - [ ] **HOST-04** — Host can mute spectators (spectator chat silenced for that user)
@@ -42,20 +42,20 @@
 
 ### Draft Mechanics (DRAFT)
 
-- [ ] **DRAFT-01** — Draft uses a data-driven predefined pick/ban script (sensible default order bundled with the app)
-- [ ] **DRAFT-02** — Server owns authoritative turn order and emits a `turnEndsAt` timestamp; clients render countdown from that value
-- [ ] **DRAFT-03** — Team captains alternate turns banning and picking from a shared class pool; each class may only be picked or banned once
-- [ ] **DRAFT-04** — Turn auto-advances (server-side) when the timer expires without a captain action
-- [ ] **DRAFT-05** — Draft progresses through a fixed number of bans + picks per team as defined by the script
-- [ ] **DRAFT-06** — Host can override the default pick/ban order in the room settings panel before the draft starts
-- [ ] **DRAFT-07** — UI clearly shows: whose turn it is, time remaining (countdown), and a live history of all bans and picks
+- [x] **DRAFT-01** — Draft uses a data-driven predefined pick/ban script (sensible default order bundled with the app)
+- [x] **DRAFT-02** — Server owns authoritative turn order and emits a `turnEndsAt` timestamp; clients render countdown from that value
+- [x] **DRAFT-03** — Team captains alternate turns banning and picking from a shared class pool; each class may only be picked or banned once
+- [x] **DRAFT-04** — Turn auto-advances (server-side) when the timer expires without a captain action
+- [x] **DRAFT-05** — Draft progresses through a fixed number of bans + picks per team as defined by the script
+- [x] **DRAFT-06** — Host can override the default pick/ban order in the room settings panel before the draft starts
+- [x] **DRAFT-07** — UI clearly shows: whose turn it is, time remaining (countdown), and a live history of all bans and picks
 
 ### Disconnect & Resilience (DISC)
 
-- [ ] **DISC-01** — If the active captain disconnects, the draft pauses and a grace period (~30 seconds) begins
-- [ ] **DISC-02** — If the captain does not reconnect within the grace period, another player on that team is promoted to captain and the draft resumes
-- [ ] **DISC-03** — If no other player is available on the team, the draft is cancelled and all participants are notified
-- [ ] **DISC-04** — On reconnect, the client is hydrated from a server-authoritative snapshot (no stale local state)
+- [x] **DISC-01** — If the active captain disconnects, the draft pauses and a grace period (~30 seconds) begins
+- [x] **DISC-02** — If the captain does not reconnect within the grace period, another player on that team is promoted to captain and the draft resumes
+- [x] **DISC-03** — If no other player is available on the team, the draft is cancelled and all participants are notified
+- [x] **DISC-04** — On reconnect, the client is hydrated from a server-authoritative snapshot (no stale local state)
 
 ### Post-Draft Review (POST)
 
@@ -64,7 +64,7 @@
 
 ### Class Lists (LIST)
 
-- [ ] **LIST-01** — App ships with one premade class catalog used as the default draft list
+- [x] **LIST-01** — App ships with one premade class catalog used as the default draft list
 
 ---
 
@@ -104,7 +104,7 @@
 | ROOM-06 | Phase 2 — Room & Lobby | Complete |
 | ROOM-07 | Phase 2 — Room & Lobby | Complete |
 | ROOM-08 | Phase 2 — Room & Lobby | Complete |
-| HOST-01 | Phase 3 — Draft Engine | Pending |
+| HOST-01 | Phase 3 — Draft Engine | Complete |
 | HOST-02 | Phase 2 — Room & Lobby | Complete |
 | HOST-03 | Phase 2 — Room & Lobby | Complete |
 | HOST-04 | Phase 5 — Chat & Moderation | Pending |
@@ -112,19 +112,19 @@
 | CHAT-02 | Phase 5 — Chat & Moderation | Pending |
 | CHAT-03 | Phase 5 — Chat & Moderation | Pending |
 | CHAT-04 | Phase 5 — Chat & Moderation | Pending |
-| DRAFT-01 | Phase 3 — Draft Engine | Pending |
-| DRAFT-02 | Phase 3 — Draft Engine | Pending |
-| DRAFT-03 | Phase 3 — Draft Engine | Pending |
-| DRAFT-04 | Phase 3 — Draft Engine | Pending |
-| DRAFT-05 | Phase 3 — Draft Engine | Pending |
-| DRAFT-06 | Phase 3 — Draft Engine | Pending |
-| DRAFT-07 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
-| DISC-01 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
-| DISC-02 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
-| DISC-03 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
-| DISC-04 | Phase 4 — Draft UI & Disconnect Resilience | Pending |
+| DRAFT-01 | Phase 3 — Draft Engine | Complete |
+| DRAFT-02 | Phase 3 — Draft Engine | Complete |
+| DRAFT-03 | Phase 3 — Draft Engine | Complete |
+| DRAFT-04 | Phase 3 — Draft Engine | Complete |
+| DRAFT-05 | Phase 3 — Draft Engine | Complete |
+| DRAFT-06 | Phase 3 — Draft Engine | Complete |
+| DRAFT-07 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
+| DISC-01 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
+| DISC-02 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
+| DISC-03 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
+| DISC-04 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
 | POST-01 | Phase 6 — Post-Draft Review | Pending |
 | POST-02 | Phase 6 — Post-Draft Review | Pending |
-| LIST-01 | Phase 3 — Draft Engine | Pending |
+| LIST-01 | Phase 3 — Draft Engine | Complete |
 
 **Coverage:** 34/34 requirements mapped ✓

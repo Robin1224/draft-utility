@@ -91,7 +91,7 @@ Plans:
   5. On reconnect, the client receives a full server-authoritative snapshot and displays current draft state without relying on any local cache
 **Plans**: 5 plans
 Plans:
-- [ ] 04-01-PLAN.md — Wave 0: test stubs for DISC-01–04 and DRAFT-07 snapshot shape
+- [x] 04-01-PLAN.md — Wave 0: test stubs for DISC-01–04 and DRAFT-07 snapshot shape
 - [ ] 04-02-PLAN.md — Server disconnect resilience: onUnsubscribe hook, grace timer, promotion, cancelDraftNoCaption, autoAdvanceTurn publish fix, lobby init branching
 - [ ] 04-03-PLAN.md — UI atoms + molecules: ChampionCard, TimerDisplay, DraftSlot, StatusBanner, TurnIndicator, TeamDraftColumn, ChampionGrid
 - [ ] 04-04-PLAN.md — DraftBoard assembly + PauseOverlay + +page.svelte phase-conditional wiring
@@ -132,6 +132,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Auth & Realtime Transport | 3/3 | Complete   | 2026-04-03 |
 | 2. Room & Lobby | 4/6 | In Progress|  |
 | 3. Draft Engine | 5/6 | In Progress|  |
-| 4. Draft UI & Disconnect Resilience | 0/5 | Not started | - |
+| 4. Draft UI & Disconnect Resilience | 1/5 | In Progress|  |
 | 5. Chat & Moderation | 0/TBD | Not started | - |
 | 6. Post-Draft Review | 0/TBD | Not started | - |
