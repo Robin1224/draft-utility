@@ -10,7 +10,7 @@
 	/**
 	 * @typedef {{ id: string, room_id: string, turn_index: number, team: string, action: string, champion_id: string | null, created_at: string }} DraftAction
 	 * @typedef {{ userId?: string | null, guestId?: string | null, displayName: string, isCaptain: boolean, isHost: boolean }} LobbyMember
-	 * @typedef {{ script: Array<{ team: 'A' | 'B', action: 'pick' | 'ban' }>, turnIndex: number, turnEndsAt: string, timerMs: number, paused?: boolean, pausedUserId?: string, graceEndsAt?: string }} DraftState
+	 * @typedef {{ script: Array<{ team: 'A' | 'B', action: 'pick' | 'ban' }>, turnIndex: number, turnEndsAt: string, timerMs: number, paused?: boolean, pausedUserId?: string, graceEndsAt?: string, reconnectCount?: number }} DraftState
 	 * @typedef {{ publicCode: string, roomId: string, phase: string, hostUserId: string, teams: { A: LobbyMember[], B: LobbyMember[] }, spectators: LobbyMember[], draftState: DraftState, actions: DraftAction[] }} Snapshot
 	 */
 
@@ -75,10 +75,11 @@
 
 	const cancelledTeam = $derived((() => {
 		if (snapshot.phase !== 'cancelled') return null;
-		// Find which team had no available captain
-		for (const t of /** @type {Array<'A' | 'B'>} */ (['A', 'B'])) {
-			const hasCaptain = (snapshot.teams[t] ?? []).some((m) => m.isCaptain);
-			if (!hasCaptain) return t;
+		// Use the script turn that was active at cancellation — the team that lost its captain.
+		// Scanning isCaptain is unreliable: the member row remains in the snapshot after cancellation.
+		const ds = snapshot.draftState;
+		if (ds?.script && ds.turnIndex != null) {
+			return ds.script[ds.turnIndex]?.team ?? 'Unknown';
 		}
 		return 'Unknown';
 	})());
@@ -107,7 +108,7 @@
 	<PauseOverlay
 		captainName={pausedCaptainName}
 		graceEndsAt={snapshot.draftState.graceEndsAt ?? ''}
-		timerMs={30000}
+		timerMs={(snapshot.draftState.reconnectCount ?? 0) >= 1 ? 10_000 : 30_000}
 	/>
 {/if}
 
