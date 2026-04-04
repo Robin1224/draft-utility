@@ -55,16 +55,16 @@ Source: existing component audit (TeamColumn, ChampionCard, DraftBoard grid prop
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 14px (text-sm) | 400 (font-normal) | 1.5 |
-| Label | 12px (text-xs) | 500 (font-medium) | 1.4 |
+| Label | 12px (text-xs) | 600 (font-semibold) | 1.4 |
 | Heading | 20px (text-xl) | 600 (font-semibold) | 1.2 |
 | Display | 16px (text-base) | 600 (font-semibold) | 1.4 |
 
 Notes:
-- Chat message author name: 12px, font-medium (text-xs font-medium text-text-primary).
+- Chat message author name: 12px, font-semibold (text-xs font-semibold text-text-primary). Small size (12px) provides sufficient visual differentiation from body text without requiring a third weight.
 - Chat message body: 14px, font-normal (text-sm font-normal text-text-secondary).
-- Tab labels: 14px, font-medium (text-sm font-medium).
+- Tab labels: 14px, font-normal for inactive tabs; font-semibold for active tab (text-sm font-semibold).
 - Section heading "Spectators (N)": 16px, font-semibold — matches existing SpectatorsPanel toggle.
-- "Mute" / "Unmute" button label: 14px, font-medium, red-600 — consistent with existing "Kick" button treatment.
+- "Mute" / "Unmute" button label: 14px, font-normal, red-600 — consistent with existing "Kick" button treatment.
 
 Source: existing component audit (TeamColumn, SpectatorsPanel, LobbyHostBar, ChampionCard).
 
@@ -76,12 +76,12 @@ Source: existing component audit (TeamColumn, SpectatorsPanel, LobbyHostBar, Cha
 |------|-------|-------|
 | Dominant (60%) | slate-50 (--color-bg-primary) | Page background, chat panel background, message row backgrounds |
 | Secondary (30%) | slate-200 (--color-bg-secondary) | Panel borders, tab underline, timestamp text backgrounds, input border, dividers |
-| Accent (10%) | amber-500 | Active tab indicator underline, Send button background, "Send" button hover (amber-400) |
+| Accent (10%) | amber-500 | Active tab indicator underline, Send Message button background, Send Message button hover (amber-400) |
 | Destructive | red-600 | "Mute" button label, "Unmute" button label — inline text buttons only, no filled backgrounds |
 
 Accent reserved for:
 1. Active tab underline indicator in ChatPanel tab bar (2px bottom border on the active tab).
-2. Send button background (bg-amber-500 hover:bg-amber-400) — the only filled accent button in the chat surface.
+2. Send Message button background (bg-amber-500 hover:bg-amber-400) — the only filled accent button in the chat surface.
 3. Focus ring on chat input and send button (focus-visible:outline-amber-500) — consistent with SpectatorsPanel toggle focus pattern.
 
 Text colors follow established token hierarchy:
@@ -93,6 +93,12 @@ Source: layout.css @theme + TeamColumn, LobbyHostBar, StatusBanner audit.
 
 ---
 
+## Primary Visual Anchor
+
+Primary visual anchor: Send Message button (amber-500 filled) — the only filled accent element in the chat surface. All other interactive elements use text-only or outline treatments.
+
+---
+
 ## Component Inventory
 
 New components to create for this phase:
@@ -101,8 +107,8 @@ New components to create for this phase:
 
 | Component | File | Description |
 |-----------|------|-------------|
-| ChatMessage | src/lib/components/atoms/ChatMessage.svelte | Single message row: author (text-xs font-medium), timestamp (text-xs text-text-tertiary), body (text-sm font-normal text-text-secondary). No avatars. |
-| ChatInput | src/lib/components/atoms/ChatInput.svelte | Textarea (max 500 chars) + Send button. Shows character count at right edge when within 50 chars of limit (text-xs text-text-tertiary). Disabled state when no content. |
+| ChatMessage | src/lib/components/atoms/ChatMessage.svelte | Single message row: author (text-xs font-semibold), timestamp (text-xs text-text-tertiary), body (text-sm font-normal text-text-secondary). No avatars. |
+| ChatInput | src/lib/components/atoms/ChatInput.svelte | Textarea (max 500 chars) + Send Message button. Shows character count at right edge when within 50 chars of limit (text-xs text-text-tertiary). Disabled state when no content. |
 | MuteButton | src/lib/components/atoms/MuteButton.svelte | Inline text button: "Mute" (red-600) or "Unmute" (text-text-secondary). Sits alongside existing "Kick" button in spectator row. No icon — text only for v1. |
 
 ### Molecules
@@ -168,8 +174,8 @@ Source: CONTEXT.md D-01, D-02, D-03.
 
 | State | Visual |
 |-------|--------|
-| Empty | Send button disabled (opacity-50, cursor-not-allowed) |
-| Typing | Send button enabled |
+| Empty | Send Message button disabled (opacity-50, cursor-not-allowed) |
+| Typing | Send Message button enabled |
 | At 451–500 chars | Character count shown (text-xs text-text-tertiary) |
 | Submit | Input clears immediately on send; optimistic — no spinner |
 | Rate-limited (message dropped) | No UI feedback — silent drop per D-12 |
@@ -178,16 +184,16 @@ Source: CONTEXT.md D-01, D-02, D-03.
 
 | State | Visual |
 |-------|--------|
-| Own message | Author name: "You" (text-xs font-medium text-text-primary) |
-| Other message | Author name: displayName (text-xs font-medium text-text-primary) |
+| Own message | Author name: "You" (text-xs font-semibold text-text-primary) |
+| Other message | Author name: displayName (text-xs font-semibold text-text-primary) |
 | Slur-filtered | Never reaches client — no visual state needed |
 
 ### MuteButton (host view in SpectatorsPanel)
 
 | State | Visual |
 |-------|--------|
-| Unmuted spectator | "Mute" button (text-sm font-medium text-red-600 hover:underline) |
-| Muted spectator | "Unmute" button (text-sm font-medium text-text-secondary hover:underline) + "(muted)" label suffix on display name |
+| Unmuted spectator | "Mute" button (text-sm font-normal text-red-600 hover:underline) |
+| Muted spectator | "Unmute" button (text-sm font-normal text-text-secondary hover:underline) + "(muted)" label suffix on display name |
 | Non-host view | MuteButton not rendered |
 
 ### ChatPanel — Tab Bar
@@ -195,7 +201,7 @@ Source: CONTEXT.md D-01, D-02, D-03.
 | State | Visual |
 |-------|--------|
 | Active tab | text-text-primary font-semibold, 2px amber-500 underline |
-| Inactive tab | text-text-tertiary font-medium, no underline |
+| Inactive tab | text-text-tertiary font-normal, no underline |
 | Tab hover | text-text-primary (no underline change on hover) |
 
 ---
@@ -204,7 +210,7 @@ Source: CONTEXT.md D-01, D-02, D-03.
 
 | Element | Copy |
 |---------|------|
-| Primary CTA | "Send" — chat input submit button |
+| Primary CTA | "Send Message" — chat input submit button |
 | Empty state heading | "No messages yet" |
 | Empty state body | "Be the first to say something." |
 | Rate-limit error | Silent drop — no copy shown to user (D-12 behavior) |
@@ -230,7 +236,7 @@ Source: CONTEXT.md D-14, D-15, D-16, D-17; REQUIREMENTS.md CHAT-03, CHAT-04.
 
 - ChatPanel message list: `role="log"` with `aria-live="polite"` — new messages announced without interrupting user.
 - ChatInput textarea: `aria-label="Message"` + `aria-describedby` pointing to character count span when visible.
-- Send button: `aria-label="Send message"` when rendered as icon-only; keep text label "Send" for v1 (text button).
+- Send Message button: `aria-label="Send message"` when rendered as icon-only; keep text label "Send Message" for v1 (text button).
 - Tab buttons: `aria-selected={true/false}` + `role="tab"` on each, `role="tablist"` on container.
 - MuteButton: `aria-label="Mute {displayName}"` / `aria-label="Unmute {displayName}"` — uses display name for screen reader clarity.
 - Focus ring: `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500` — consistent with SpectatorsPanel toggle pattern.
