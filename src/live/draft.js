@@ -24,8 +24,9 @@ import { clearRoomTimer, scheduleTimer } from './draft-timers.js';
  *
  * @param {string} publicCode
  * @param {number} expectedTurnIndex
+ * @param {any} [platform]  - svelte-realtime platform for reactive publish; null when called from grace timer
  */
-export async function autoAdvanceTurn(publicCode, expectedTurnIndex) {
+export async function autoAdvanceTurn(publicCode, expectedTurnIndex, platform = null) {
 	const code = parseRoomCode(publicCode);
 	const roomRow = await getRoomByPublicCode(db, code);
 	if (!roomRow || roomRow.phase !== 'drafting') return;
@@ -66,12 +67,19 @@ export async function autoAdvanceTurn(publicCode, expectedTurnIndex) {
 	if (isLast) {
 		await completeDraft(db, roomRow.id);
 	} else {
-		scheduleTimer(roomRow.id, draftState.timerMs, () => autoAdvanceTurn(code, nextIndex));
+		scheduleTimer(roomRow.id, draftState.timerMs, () => autoAdvanceTurn(code, nextIndex, platform));
 	}
 
-	// Note: no ctx available outside RPC — clients will see the update on next snapshot request
-	// or via Phase 4 reconnect hydration. A future enhancement could use a standalone publish
-	// if svelte-realtime exports one.
+	// DISC-pitfall-2: publish snapshot reactively when platform context is available,
+	// so timer-driven advances reach all subscribers without waiting for next interaction.
+	if (platform) {
+		try {
+			const snap = await loadDraftSnapshot(db, code);
+			if (snap) platform.publish(topicForRoom(code), 'set', snap);
+		} catch {
+			// publish failure is non-fatal — clients hydrate on reconnect
+		}
+	}
 }
 
 export const pickBan = live(async (ctx, publicCode, payload) => {

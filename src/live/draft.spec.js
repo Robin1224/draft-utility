@@ -239,6 +239,41 @@ describe('draft live RPCs (DRAFT-02 through DRAFT-06)', () => {
 		});
 	});
 
+	describe('autoAdvanceTurn platform.publish (DISC-pitfall-2)', () => {
+		it('calls platform.publish with draft snapshot when platform is provided and turn advanced', async () => {
+			vi.mocked(draftDb.advanceTurnIfCurrent).mockResolvedValue(true);
+			vi.mocked(draftDb.writeDraftAction).mockResolvedValue(undefined);
+			vi.mocked(draftDb.loadDraftSnapshot).mockResolvedValue(baseSnap);
+			vi.mocked(rooms.getRoomByPublicCode).mockResolvedValue(baseRoom);
+
+			const mockPublish = vi.fn();
+			const mockPlatform = { publish: mockPublish };
+
+			const { autoAdvanceTurn } = await import('./draft.js');
+			await autoAdvanceTurn('abc1234', 0, mockPlatform);
+
+			expect(mockPublish).toHaveBeenCalledWith(
+				expect.stringContaining('abc1234'),
+				'set',
+				baseSnap
+			);
+		});
+
+		it('does not call platform.publish when platform is null', async () => {
+			vi.mocked(draftDb.advanceTurnIfCurrent).mockResolvedValue(true);
+			vi.mocked(draftDb.writeDraftAction).mockResolvedValue(undefined);
+			vi.mocked(draftDb.loadDraftSnapshot).mockResolvedValue(baseSnap);
+			vi.mocked(rooms.getRoomByPublicCode).mockResolvedValue(baseRoom);
+
+			const { autoAdvanceTurn } = await import('./draft.js');
+			// Should not throw when platform is null, and should not call loadDraftSnapshot
+			// (since platform is null, the publish block is skipped entirely)
+			await expect(autoAdvanceTurn('abc1234', 0, null)).resolves.toBeUndefined();
+			// loadDraftSnapshot is not called when platform is null
+			expect(draftDb.loadDraftSnapshot).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('pickBan — draft completion (DRAFT-05)', () => {
 		it('pickBan on last turn calls completeDraft and sets phase to ended', async () => {
 			const lastTurnRoom = {
