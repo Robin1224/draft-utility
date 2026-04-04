@@ -108,7 +108,13 @@ Plans:
   3. Sending messages too rapidly triggers a server-side rate limit keyed by user, connection, and room; excess messages are dropped before broadcast
   4. Messages containing slurs are blocked server-side after Unicode normalization and length capping; the filtered content is never broadcast to any client
   5. Host can mute a spectator; muted spectator's messages stop appearing in spectator chat immediately
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 05-01-PLAN.md — Wave 0: test stubs (chat.spec.js + chat-filter.spec.js) with it.todo for all CHAT/HOST-04 behaviors
+- [ ] 05-02-PLAN.md — Server layer: slur-list.json + chat-filter.js + chat.js (4 channel streams, sendMessage, muteMember, unmuteMember)
+- [ ] 05-03-PLAN.md — UI atoms + molecule: ChatMessage, ChatInput, MuteButton atoms + ChatPanel molecule
+- [ ] 05-04-PLAN.md — UI wiring: SpectatorsPanel extended with Mute controls + +page.svelte wired with live streams and flex layout
+- [ ] 05-05-PLAN.md — Manual checkpoint: full chat and mute verification across browser sessions
 **UI hint**: yes
 
 ### Phase 6: Post-Draft Review
@@ -133,5 +139,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Room & Lobby | 4/6 | In Progress|  |
 | 3. Draft Engine | 5/6 | In Progress|  |
 | 4. Draft UI & Disconnect Resilience | 4/5 | In Progress|  |
-| 5. Chat & Moderation | 0/TBD | Not started | - |
+| 5. Chat & Moderation | 0/5 | Not started | - |
 | 6. Post-Draft Review | 0/TBD | Not started | - |
