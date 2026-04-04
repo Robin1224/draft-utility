@@ -5,7 +5,7 @@ milestone_name: milestone
 status: executing
 stopped_at: Completed 04-04-PLAN.md
 last_updated: "2026-04-04T11:02:10.167Z"
-last_activity: 2026-04-04
+last_activity: 2026-04-04 - Completed quick task 260404-lk6: Fix second-disconnect grace timer and cancelledTeam display bug
 progress:
   total_phases: 6
   completed_phases: 3
@@ -121,6 +121,12 @@ Recent decisions affecting current work:
 ### Pending Todos
 
 None yet.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260404-lk6 | Fix second-disconnect grace timer and cancelledTeam display bug | 2026-04-04 | b07f102 | [260404-lk6-fix-second-disconnect-grace-timer-and-ca](./quick/260404-lk6-fix-second-disconnect-grace-timer-and-ca/) |
 
 ### Blockers/Concerns
 
