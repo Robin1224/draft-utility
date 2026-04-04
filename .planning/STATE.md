@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-04-04T10:55:36.476Z"
+stopped_at: Completed 04-04-PLAN.md
+last_updated: "2026-04-04T11:02:10.167Z"
 last_activity: 2026-04-04
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 20
-  completed_plans: 18
+  completed_plans: 19
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 ## Current Position
 
 Phase: 04 (draft-ui-disconnect-resilience) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Ready to execute
 Last activity: 2026-04-04
 
@@ -69,6 +69,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04-draft-ui-disconnect-resilience P01 | 5min | 2 tasks | 2 files |
 | Phase 04-draft-ui-disconnect-resilience P02 | 7min | 2 tasks | 8 files |
 | Phase 04-draft-ui-disconnect-resilience P03 | 2min | 2 tasks | 7 files |
+| Phase 04-draft-ui-disconnect-resilience P04 | 12min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -114,6 +115,8 @@ Recent decisions affecting current work:
 - [Phase 04-draft-ui-disconnect-resilience]: autoAdvanceTurn platform=null skips publish block entirely; platform threaded from startDraft ctx.platform
 - [Phase 04-draft-ui-disconnect-resilience]: 04-03: TeamDraftColumn passes champion_id as championName — Plan 04 (DraftBoard) resolves ids to display names via classes.json catalog
 - [Phase 04-draft-ui-disconnect-resilience]: 04-03: ChampionGrid single-select toggles on re-click (deselect same champion); no double-click shortcut per D-03
+- [Phase 04-draft-ui-disconnect-resilience]: DraftBoard uses IIFE pattern inside $derived for multi-line derived computations (isActiveCaptain, pausedCaptainName, cancelledTeam)
+- [Phase 04-draft-ui-disconnect-resilience]: justReconnected prop pattern chosen over window.online listener for DraftBoard reconnect banner in v1
 
 ### Pending Todos
 
@@ -126,6 +129,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-04T10:55:36.473Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-04-04T11:02:10.164Z
+Stopped at: Completed 04-04-PLAN.md
 Resume file: None
