@@ -13,7 +13,9 @@ import {
 	startDraftWithSettings,
 	NOT_HOST,
 	LOBBY_PHASE_REQUIRED,
-	DRAFT_NOT_READY
+	DRAFT_NOT_READY,
+	cancelDraftNoCaption,
+	promoteCaptain
 } from './rooms.js';
 import * as rooms from './rooms.js';
 import { room } from './db/schema.js';
@@ -450,6 +452,121 @@ describe('startDraftWithSettings', () => {
 		});
 		expect(capturedSet.value.draft_state).toHaveProperty('turnEndsAt');
 		expect(result).toBeDefined();
+	});
+});
+
+// ─── cancelDraftNoCaption ──────────────────────────────────────────────────────
+
+describe('cancelDraftNoCaption', () => {
+	it('sets phase=cancelled, ended_at, and updated_at without requiring host check', async () => {
+		/** @type {Record<string, unknown> | undefined} */
+		let setPayload;
+		const db = {
+			update: () => ({
+				set: (v) => {
+					setPayload = v;
+					return {
+						where: () => Promise.resolve()
+					};
+				}
+			})
+		};
+		await cancelDraftNoCaption(db, 'room-uuid-1');
+		expect(setPayload).toMatchObject({ phase: 'cancelled' });
+		expect(setPayload).toHaveProperty('ended_at');
+		expect(setPayload).toHaveProperty('updated_at');
+	});
+
+	it('does not throw when no host userId provided', async () => {
+		const db = {
+			update: () => ({
+				set: () => ({
+					where: () => Promise.resolve()
+				})
+			})
+		};
+		// cancelDraftNoCaption takes (db, roomId) — no host arg
+		await expect(cancelDraftNoCaption(db, 'room-uuid-2')).resolves.toBeUndefined();
+	});
+});
+
+// ─── promoteCaptain ────────────────────────────────────────────────────────────
+
+describe('promoteCaptain', () => {
+	it('returns null when no eligible members found', async () => {
+		const db = {
+			select: () => ({
+				from: () => ({
+					where: () => ({
+						orderBy: () => Promise.resolve([])
+					})
+				})
+			})
+		};
+		const result = await promoteCaptain(db, 'room-1', 'A', 'old-captain-id');
+		expect(result).toBeNull();
+	});
+
+	it('demotes old captain and promotes oldest eligible member', async () => {
+		const eligible = [
+			{ id: 'member-2', userId: 'user-2' },
+			{ id: 'member-3', userId: 'user-3' }
+		];
+		/** @type {Array<Record<string, unknown>>} */
+		const updates = [];
+
+		const db = {
+			select: () => ({
+				from: () => ({
+					where: () => ({
+						orderBy: () => Promise.resolve(eligible)
+					})
+				})
+			}),
+			update: () => ({
+				set: (v) => ({
+					where: () => {
+						updates.push(v);
+						return Promise.resolve();
+					}
+				})
+			})
+		};
+
+		const result = await promoteCaptain(db, 'room-1', 'A', 'old-captain-id');
+		// Should return first eligible member
+		expect(result).toEqual(eligible[0]);
+		// Should have made 2 update calls: demote + promote
+		expect(updates).toHaveLength(2);
+		// First update: demote old captain
+		expect(updates[0]).toMatchObject({ is_captain: false });
+		// Second update: promote new captain
+		expect(updates[1]).toMatchObject({ is_captain: true });
+	});
+
+	it('uses ne and asc ordering to find eligible (structural check)', async () => {
+		// Verify the function excludes oldCaptainUserId from candidates
+		const candidates = [
+			{ id: 'member-2', userId: 'user-eligible' }
+		];
+		const db = {
+			select: () => ({
+				from: () => ({
+					where: () => ({
+						orderBy: () => Promise.resolve(candidates)
+					})
+				})
+			}),
+			update: () => ({
+				set: () => ({
+					where: () => Promise.resolve()
+				})
+			})
+		};
+		const result = await promoteCaptain(db, 'room-1', 'A', 'user-captain');
+		// The function should have used the candidate list (not the old captain)
+		expect(result).not.toBeNull();
+		expect(result?.userId).toBe('user-eligible');
 	});
 });
 

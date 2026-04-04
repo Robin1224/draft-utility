@@ -58,8 +58,11 @@ export const room_member = pgTable(
  * @typedef {object} DraftState
  * @property {{ team: 'A'|'B', action: 'pick'|'ban' }[]} script
  * @property {number} turnIndex
- * @property {string} turnEndsAt   - ISO timestamp
+ * @property {string} turnEndsAt        - ISO timestamp for current turn expiry
  * @property {number} timerMs
+ * @property {boolean} [paused]         - true when captain disconnect grace is active
+ * @property {string} [pausedUserId]    - userId of disconnected captain
+ * @property {string} [graceEndsAt]     - ISO timestamp when grace period expires
  */
 
 export const draft_action = pgTable(
