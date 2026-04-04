@@ -3,7 +3,7 @@
 
 	/**
 	 * @typedef {{ team: 'A' | 'B', action: 'pick' | 'ban' }} ScriptEntry
-	 * @typedef {{ turn_index: number, team: string, action: string, champion_id: string, created_at: string }} DraftAction
+	 * @typedef {{ turn_index: number, team: string, action: string, champion_id: string | null, created_at: string }} DraftAction
 	 * @typedef {{ userId?: string | null, guestId?: string | null, displayName: string, isCaptain: boolean, isHost: boolean }} LobbyMember
 	 */
 

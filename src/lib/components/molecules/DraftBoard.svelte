@@ -138,7 +138,6 @@
 				script={snapshot.draftState?.script ?? []}
 				actions={snapshot.actions}
 				members={snapshot.teams.A}
-				champions={classes}
 			/>
 			<ChampionGrid
 				champions={classes}
@@ -153,7 +152,6 @@
 				script={snapshot.draftState?.script ?? []}
 				actions={snapshot.actions}
 				members={snapshot.teams.B}
-				champions={classes}
 			/>
 		</div>
 	</div>
