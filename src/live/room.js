@@ -137,7 +137,7 @@ export const lobby = live.stream(
 					graceEndsAt: undefined,
 					turnEndsAt: newTurnEndsAt
 				});
-				scheduleTimer(roomRow.id, ds.timerMs, () => autoAdvanceTurn(code, ds.turnIndex));
+				scheduleTimer(roomRow.id, ds.timerMs, () => autoAdvanceTurn(code, ds.turnIndex, ctx.platform));
 				const resumed = await loadDraftSnapshot(db, code);
 				if (resumed) ctx.publish(topicForRoom(code), 'set', resumed);
 				return resumed ?? snap;

@@ -103,7 +103,7 @@
 	/>
 {/if}
 
-{#if snapshot.draftState?.paused}
+{#if snapshot.draftState?.paused && snapshot.phase !== 'cancelled'}
 	<PauseOverlay
 		captainName={pausedCaptainName}
 		graceEndsAt={snapshot.draftState.graceEndsAt ?? ''}
