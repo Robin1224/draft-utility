@@ -27,13 +27,13 @@ A **real-time drafting application** for competitive-style sessions: **two teams
 - [ ] **Realtime lobby** — presence, room by id; **host** = room creator (**not transferable**)
 - [ ] **Teams** — up to 3 players per side; **only signed-in users** on teams; **guests = spectators only**
 - [ ] **Captains** — default **first player to join each team**; host-adjustable where product allows
-- [ ] **Start draft** — **host starts** when ready; teams need **not** be full; **both teams must have a captain** (minimum **2 players**, one per team)
+- ✓ **Start draft** — host starts when ready; both teams must have a captain; settings (script + timer) configured in lobby panel. Validated in Phase 03: draft-engine
+- ✓ **Draft mechanics** — pick/ban from 28-champion catalog; default 10-turn script; host-configurable order and timer in room settings panel. Validated in Phase 03: draft-engine
+- ✓ **Turn timer** — default 30s; host-configurable in room settings (10s min); server-side auto-advance on expiry. Validated in Phase 03: draft-engine
 - [ ] **Pre-draft only** — host may **move players between teams**; **no team moves after draft starts**
 - [ ] **Host moderation** — **kick** any member; **kick/mute spectators**; **no spectator cap**
 - [ ] **Chats** — **team chat** (visible only to that team); **spectator chat** (spectators only)
 - [ ] **Chat safety (v1)** — **rate limiting** + **slur filtering**; no heavier moderation yet
-- [ ] **Draft mechanics** — pick/ban from list; **sensible default order**; host overrides in **room settings** (same panel as **turn timer**)
-- [ ] **Turn timer** — default **30s**; host configurable in room settings
 - [ ] **Captain disconnect** — **pause**; wait **~30s**; if no return, **promote another player** on that team to captain; if **no other player**, **cancel draft**
 - [ ] **Post-draft** — clear **overview** of all bans and picks
 - [ ] **Class lists (v1)** — **one premade catalog** only; **custom lists + interactive draft editor** deferred until security and UX are addressed
@@ -90,4 +90,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-03 after initialization*
+*Last updated: 2026-04-04 after Phase 03 (draft-engine) completion*
