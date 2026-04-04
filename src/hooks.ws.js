@@ -1,8 +1,9 @@
-import { message } from 'svelte-realtime/server';
+import { message, close } from 'svelte-realtime/server';
 import { auth } from '$lib/server/auth';
 
 // Required: svelte-realtime built-in message router for RPC dispatch
-export { message };
+// close is required for onUnsubscribe hooks to fire on WebSocket close (DISC-01)
+export { message, close };
 
 const DRAFT_GUEST_COOKIE = 'draft_guest';
 

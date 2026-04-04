@@ -1,4 +1,4 @@
-import { and, asc, count, eq, isNotNull, sql } from 'drizzle-orm';
+import { and, asc, count, eq, isNotNull, ne, sql } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 import { parseRoomCode } from '$lib/join-parse.js';
 import {
@@ -506,4 +506,68 @@ export async function cancelRoomAsHost(db, { roomId, hostUserId }) {
 		.returning();
 
 	return updated;
+}
+
+/**
+ * Cancel a draft room without requiring a host check.
+ * Used by the disconnect grace handler when no captain is available (DISC-03).
+ *
+ * @param {any} db
+ * @param {string} roomId
+ */
+export async function cancelDraftNoCaption(db, roomId) {
+	const now = new Date();
+	await db
+		.update(room)
+		.set({ phase: 'cancelled', ended_at: now, updated_at: now })
+		.where(eq(room.id, roomId));
+}
+
+/**
+ * Promote the oldest eligible member of a team to captain.
+ * Demotes the previous captain first. Returns the promoted member or null if none available.
+ *
+ * @param {any} db
+ * @param {string} roomId
+ * @param {'A'|'B'} team
+ * @param {string} oldCaptainUserId
+ * @returns {Promise<{ userId: string, id: string } | null>}
+ */
+export async function promoteCaptain(db, roomId, team, oldCaptainUserId) {
+	// Find eligible members: same team, has user_id, not the old captain, ordered oldest first
+	const eligible = await db
+		.select({ id: room_member.id, userId: room_member.user_id })
+		.from(room_member)
+		.where(
+			and(
+				eq(room_member.room_id, roomId),
+				eq(room_member.team, team),
+				isNotNull(room_member.user_id),
+				ne(room_member.user_id, oldCaptainUserId)
+			)
+		)
+		.orderBy(asc(room_member.joined_at));
+
+	if (eligible.length === 0) return null;
+
+	const promoted = eligible[0];
+
+	// Demote old captain
+	await db
+		.update(room_member)
+		.set({ is_captain: false })
+		.where(
+			and(
+				eq(room_member.room_id, roomId),
+				eq(room_member.user_id, oldCaptainUserId)
+			)
+		);
+
+	// Promote new captain
+	await db
+		.update(room_member)
+		.set({ is_captain: true })
+		.where(eq(room_member.id, promoted.id));
+
+	return promoted;
 }

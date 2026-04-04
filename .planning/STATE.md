@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-04-04T10:49:33.590Z"
+last_updated: "2026-04-04T10:55:36.476Z"
 last_activity: 2026-04-04
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 20
-  completed_plans: 17
+  completed_plans: 18
   percent: 0
 ---
 
@@ -67,6 +67,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-draft-engine P04 | 10min | 3 tasks | 5 files |
 | Phase 03-draft-engine P05 | 12min | 2 tasks | 3 files |
 | Phase 04-draft-ui-disconnect-resilience P01 | 5min | 2 tasks | 2 files |
+| Phase 04-draft-ui-disconnect-resilience P02 | 7min | 2 tasks | 8 files |
 | Phase 04-draft-ui-disconnect-resilience P03 | 2min | 2 tasks | 7 files |
 
 ## Accumulated Context
@@ -108,6 +109,9 @@ Recent decisions affecting current work:
 - [Phase 03-draft-engine]: Drag state (dragging, dragOver) kept local in ScriptTurnRow — DraftSettingsPanel owns array mutation via onDragStart/onDrop callbacks
 - [Phase 04-draft-ui-disconnect-resilience]: Wave 0 stubs use it.todo (not it.skip) so vitest reports todo counts not failures — consistent with Phase 03 pattern
 - [Phase 04-draft-ui-disconnect-resilience]: No real module imports in Wave 0 stubs — vi.mock wiring deferred to Plan 02 implementation phase
+- [Phase 04-draft-ui-disconnect-resilience]: Grace timer keyed roomId + ':grace' to avoid colliding with turn timer (roomId key)
+- [Phase 04-draft-ui-disconnect-resilience]: cancelDraftNoCaption sets phase=cancelled (not ended) to distinguish captain-abandoned drafts from host-cancelled rooms
+- [Phase 04-draft-ui-disconnect-resilience]: autoAdvanceTurn platform=null skips publish block entirely; platform threaded from startDraft ctx.platform
 - [Phase 04-draft-ui-disconnect-resilience]: 04-03: TeamDraftColumn passes champion_id as championName — Plan 04 (DraftBoard) resolves ids to display names via classes.json catalog
 - [Phase 04-draft-ui-disconnect-resilience]: 04-03: ChampionGrid single-select toggles on re-click (deselect same champion); no double-click shortcut per D-03
 
@@ -122,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-04T10:49:33.587Z
+Last session: 2026-04-04T10:55:36.473Z
 Stopped at: Completed 04-03-PLAN.md
 Resume file: None
