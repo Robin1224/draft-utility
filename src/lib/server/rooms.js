@@ -222,7 +222,9 @@ export async function upsertGuestSpectator(db, roomId, guestId) {
 			team: null,
 			is_captain: false
 		})
-		.onConflictDoNothing({ target: [room_member.room_id, room_member.guest_id] });
+		// Partial index (WHERE guest_id IS NOT NULL) can't be used for column-based
+		// ON CONFLICT inference in PostgreSQL — omit target to get ON CONFLICT DO NOTHING.
+		.onConflictDoNothing();
 }
 
 /**
