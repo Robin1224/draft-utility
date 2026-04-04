@@ -160,7 +160,7 @@ export const pickBan = live(async (ctx, publicCode, payload) => {
 	} else {
 		const turnEndsAt = new Date(Date.now() + draftState.timerMs).toISOString();
 		await updateDraftState(db, roomRow.id, { ...draftState, turnIndex: nextIndex, turnEndsAt });
-		scheduleTimer(roomRow.id, draftState.timerMs, () => autoAdvanceTurn(code, nextIndex));
+		scheduleTimer(roomRow.id, draftState.timerMs, () => autoAdvanceTurn(code, nextIndex, ctx.platform));
 	}
 
 	const snap = await loadDraftSnapshot(db, code);

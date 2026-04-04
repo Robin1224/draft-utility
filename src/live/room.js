@@ -101,10 +101,11 @@ async function disconnectGraceExpired(publicCode, disconnectedUserId, publish) {
 		if (snap) publish(topicForRoom(code), 'set', snap);
 	} else {
 		// DISC-03: no eligible member — cancel draft
+		// Load snapshot BEFORE cancellation: getRoomByPublicCode hides rooms once ended_at is set
 		clearRoomTimer(roomRow.id);
+		const snapBeforeCancel = await loadDraftSnapshot(db, code);
 		await cancelDraftNoCaption(db, roomRow.id);
-		const snap = await loadDraftSnapshot(db, code);
-		if (snap) publish(topicForRoom(code), 'set', snap);
+		if (snapBeforeCancel) publish(topicForRoom(code), 'set', { ...snapBeforeCancel, phase: 'cancelled' });
 	}
 }
 

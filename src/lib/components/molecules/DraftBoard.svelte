@@ -128,7 +128,7 @@
 	</div>
 {:else}
 	<div class="flex flex-col gap-4">
-		{#if currentTurn && snapshot.draftState}
+		{#if currentTurn && snapshot.draftState && !snapshot.draftState.paused}
 			<TurnIndicator draftState={snapshot.draftState} teams={snapshot.teams} />
 		{/if}
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-[280px_1fr_280px]">
