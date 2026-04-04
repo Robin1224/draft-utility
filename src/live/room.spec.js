@@ -247,9 +247,10 @@ describe('lobby stream init DISC-04', () => {
 		vi.mocked(draftMod.loadDraftSnapshot).mockResolvedValue(/** @type {any} */ (draftSnap));
 
 		env.register('room', roomModule);
-		// Stream subscribe triggers init
+		// Stream subscribe triggers init — must waitFor initial value before asserting
 		const client = env.connect({ role: 'player', id: 'u-1', name: 'Player1' });
-		const result = await client.subscribe('room/lobby', 'abc1234');
+		const stream = client.subscribe('room/lobby', 'abc1234');
+		await stream.waitFor((v) => v !== undefined);
 		// Init should have returned the draft snapshot, not the lobby snapshot
 		expect(draftMod.loadDraftSnapshot).toHaveBeenCalledWith(expect.anything(), 'abc1234');
 		expect(rooms.loadLobbySnapshot).not.toHaveBeenCalled();
@@ -262,7 +263,8 @@ describe('lobby stream init DISC-04', () => {
 
 		env.register('room', roomModule);
 		const client = env.connect({ role: 'player', id: 'u-1', name: 'Player1' });
-		await client.subscribe('room/lobby', 'abc1234');
+		const stream = client.subscribe('room/lobby', 'abc1234');
+		await stream.waitFor((v) => v !== undefined);
 		// Init should use loadLobbySnapshot for non-drafting rooms
 		expect(rooms.loadLobbySnapshot).toHaveBeenCalled();
 		expect(draftMod.loadDraftSnapshot).not.toHaveBeenCalled();
