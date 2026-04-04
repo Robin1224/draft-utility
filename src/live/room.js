@@ -109,6 +109,27 @@ async function disconnectGraceExpired(publicCode, disconnectedUserId, publish) {
 	}
 }
 
+/**
+ * Called when the 10-second cancel-only grace timer expires on a second disconnect.
+ * Skips promoteCaptain entirely — cancels the draft immediately (DISC-03 cancel path).
+ *
+ * @param {string} publicCode
+ * @param {Function} publish - ctx.publish from onUnsubscribe context
+ */
+async function disconnectGraceExpiredCancelOnly(publicCode, publish) {
+	const code = normalizePublicCode(publicCode);
+	const roomRow = await getRoomByPublicCode(db, code);
+	if (!roomRow || roomRow.phase !== 'drafting') return;
+	const ds = typeof roomRow.draft_state === 'string'
+		? JSON.parse(roomRow.draft_state)
+		: roomRow.draft_state;
+	if (!ds || !ds.paused) return;
+	clearRoomTimer(roomRow.id);
+	const snapBeforeCancel = await loadDraftSnapshot(db, code);
+	await cancelDraftNoCaption(db, roomRow.id);
+	if (snapBeforeCancel) publish(topicForRoom(code), 'set', { ...snapBeforeCancel, phase: 'cancelled' });
+}
+
 export const lobby = live.stream(
 	(ctx, publicCode) => topicForRoom(normalizePublicCode(publicCode)),
 	async (ctx, publicCode) => {
@@ -135,7 +156,8 @@ export const lobby = live.stream(
 					paused: false,
 					pausedUserId: undefined,
 					graceEndsAt: undefined,
-					turnEndsAt: newTurnEndsAt
+					turnEndsAt: newTurnEndsAt,
+					reconnectCount: (ds.reconnectCount ?? 0) + 1
 				});
 				scheduleTimer(roomRow.id, ds.timerMs, () => autoAdvanceTurn(code, ds.turnIndex, ctx.platform));
 				const resumed = await loadDraftSnapshot(db, code);
@@ -178,8 +200,9 @@ export const lobby = live.stream(
 				);
 			const isCaptain = captains.some((c) => c.userId === ctx.user.id);
 			if (!isCaptain) return;
-			// DISC-01: pause draft, start grace timer
-			const graceMs = 30_000;
+			// DISC-01 / second-disconnect path
+			const isSecondDisconnect = (ds.reconnectCount ?? 0) >= 1;
+			const graceMs = isSecondDisconnect ? 10_000 : 30_000;
 			const graceEndsAt = new Date(Date.now() + graceMs).toISOString();
 			clearRoomTimer(roomRow.id); // cancel current turn timer
 			await updateDraftState(db, roomRow.id, {
@@ -194,7 +217,9 @@ export const lobby = live.stream(
 			scheduleTimer(
 				roomRow.id + ':grace',
 				graceMs,
-				() => disconnectGraceExpired(code, ctx.user.id, ctx.publish)
+				isSecondDisconnect
+					? () => disconnectGraceExpiredCancelOnly(code, ctx.publish)
+					: () => disconnectGraceExpired(code, ctx.user.id, ctx.publish)
 			);
 		}
 	}
