@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 5 context gathered (discuss mode)
-last_updated: "2026-04-04T18:00:49.358Z"
-last_activity: 2026-04-04
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-04-05T16:54:32.171Z"
+last_activity: 2026-04-05
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 20
-  completed_plans: 19
+  total_plans: 25
+  completed_plans: 20
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-03)
 
 **Core value:** A fair, readable, real-time draft where host rules, team privacy, and spectator separation are clear — and the final pick/ban outcome is easy to review.
-**Current focus:** Phase 04 — draft-ui-disconnect-resilience
+**Current focus:** Phase 05 — chat-moderation
 
 ## Current Position
 
-Phase: 04 (draft-ui-disconnect-resilience) — EXECUTING
-Plan: 4 of 5
+Phase: 05 (chat-moderation) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-04-04
+Last activity: 2026-04-05
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -70,6 +70,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04-draft-ui-disconnect-resilience P02 | 7min | 2 tasks | 8 files |
 | Phase 04-draft-ui-disconnect-resilience P03 | 2min | 2 tasks | 7 files |
 | Phase 04-draft-ui-disconnect-resilience P04 | 12min | 2 tasks | 3 files |
+| Phase 05-chat-moderation P01 | 1min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -117,6 +118,8 @@ Recent decisions affecting current work:
 - [Phase 04-draft-ui-disconnect-resilience]: 04-03: ChampionGrid single-select toggles on re-click (deselect same champion); no double-click shortcut per D-03
 - [Phase 04-draft-ui-disconnect-resilience]: DraftBoard uses IIFE pattern inside $derived for multi-line derived computations (isActiveCaptain, pausedCaptainName, cancelledTeam)
 - [Phase 04-draft-ui-disconnect-resilience]: justReconnected prop pattern chosen over window.online listener for DraftBoard reconnect banner in v1
+- [Phase 05-chat-moderation]: Wave 0 for Phase 5 follows identical pattern to Phases 3-4: it.todo stubs, plain vi.mock factory, no + prefix
+- [Phase 05-chat-moderation]: chat-filter.spec.js needs no vi.mock because chat-filter.js will be a pure function module with no external dependencies
 
 ### Pending Todos
 
@@ -135,6 +138,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-04T18:00:49.356Z
-Stopped at: Phase 5 context gathered (discuss mode)
-Resume file: .planning/phases/05-chat-moderation/05-CONTEXT.md
+Last session: 2026-04-05T16:54:32.168Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: None

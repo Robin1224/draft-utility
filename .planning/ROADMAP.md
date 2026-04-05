@@ -110,7 +110,7 @@ Plans:
   5. Host can mute a spectator; muted spectator's messages stop appearing in spectator chat immediately
 **Plans**: 5 plans
 Plans:
-- [ ] 05-01-PLAN.md — Wave 0: test stubs (chat.spec.js + chat-filter.spec.js) with it.todo for all CHAT/HOST-04 behaviors
+- [x] 05-01-PLAN.md — Wave 0: test stubs (chat.spec.js + chat-filter.spec.js) with it.todo for all CHAT/HOST-04 behaviors
 - [ ] 05-02-PLAN.md — Server layer: slur-list.json + chat-filter.js + chat.js (4 channel streams, sendMessage, muteMember, unmuteMember)
 - [ ] 05-03-PLAN.md — UI atoms + molecule: ChatMessage, ChatInput, MuteButton atoms + ChatPanel molecule
 - [ ] 05-04-PLAN.md — UI wiring: SpectatorsPanel extended with Mute controls + +page.svelte wired with live streams and flex layout
