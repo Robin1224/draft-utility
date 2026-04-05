@@ -6,8 +6,10 @@
 	 * @typedef {{ displayName: string, userId?: string | null, guestId?: string | null }} SpectatorRow
 	 */
 
-	/** @type {{ spectators?: SpectatorRow[] }} */
-	let { spectators = [] } = $props();
+	import MuteButton from '$lib/components/atoms/MuteButton.svelte';
+
+	/** @type {{ spectators?: SpectatorRow[], isHost?: boolean, mutedIds?: string[], onMute?: (p: { userId?: string, guestId?: string }) => void, onUnmute?: (p: { userId?: string, guestId?: string }) => void }} */
+	let { spectators = [], isHost = false, mutedIds = [], onMute = () => {}, onUnmute = () => {} } = $props();
 
 	let open = $state(false);
 </script>
@@ -42,7 +44,23 @@
 			<li class="text-sm text-text-tertiary">No spectators yet.</li>
 		{:else}
 			{#each spectators as row, i (`${row.userId ?? ''}-${row.guestId ?? ''}-${i}`)}
-				<li class="text-sm text-text-primary">{row.displayName}</li>
+				{@const isMuted = mutedIds.includes(row.userId ?? '') || mutedIds.includes(row.guestId ?? '')}
+				<li class="flex min-h-11 items-center justify-between gap-2 text-sm text-text-primary">
+					<span>
+						{row.displayName}
+						{#if isMuted}
+							<span class="text-xs italic text-text-tertiary"> (muted)</span>
+						{/if}
+					</span>
+					{#if isHost}
+						<MuteButton
+							{isMuted}
+							displayName={row.displayName}
+							onMute={() => onMute({ userId: row.userId ?? undefined, guestId: row.guestId ?? undefined })}
+							onUnmute={() => onUnmute({ userId: row.userId ?? undefined, guestId: row.guestId ?? undefined })}
+						/>
+					{/if}
+				</li>
 			{/each}
 		{/if}
 	</ul>
