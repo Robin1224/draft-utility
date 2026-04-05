@@ -6,9 +6,19 @@
 	import SpectatorsPanel from '$lib/components/molecules/SpectatorsPanel.svelte';
 	import TeamColumn from '$lib/components/molecules/TeamColumn.svelte';
 	import DraftBoard from '$lib/components/molecules/DraftBoard.svelte';
+	import ChatPanel from '$lib/components/molecules/ChatPanel.svelte';
 	import { fromStore } from 'svelte/store';
 	import { lobby, joinTeam, kickMember, movePlayer, startDraft, cancelRoom } from '$live/room';
 	import { pickBan } from '$live/draft';
+	import {
+		chatAll,
+		chatTeamA,
+		chatTeamB,
+		chatSpectators,
+		sendMessage,
+		muteMember,
+		unmuteMember
+	} from '$live/chat';
 	import { nanoid } from 'nanoid';
 	import { DEFAULT_SCRIPT, DEFAULT_TIMER_MS } from '$lib/draft-script.js';
 
@@ -156,11 +166,88 @@
 		}
 	}
 
-	const mainClass = $derived(
-		snapshot?.phase === 'drafting' || snapshot?.phase === 'cancelled'
-			? 'px-4 py-6 text-text-primary'
-			: 'mx-auto max-w-4xl px-4 py-6 text-text-primary'
+	// ── Chat state ──
+
+	// Tab state — controls which live stream is active (D-02, D-03)
+	let activeTab = $state('all'); // 'all' | 'team' | 'spectator'
+
+	// Derive user's role for chat channel selection
+	const chatRole = $derived(isGuest ? 'guest' : 'player');
+
+	// Determine the user's team from snapshot
+	const userTeam = $derived(
+		snapshot && data.userId
+			? snapshot.teams.A.some((/** @type {any} */ m) => m.userId === data.userId)
+				? 'A'
+				: snapshot.teams.B.some((/** @type {any} */ m) => m.userId === data.userId)
+					? 'B'
+					: null
+			: null
 	);
+
+	// Active chat stream based on tab selection
+	const activeChatStream = $derived.by(() => {
+		if (activeTab === 'all') return chatAll;
+		if (activeTab === 'team') return userTeam === 'A' ? chatTeamA : chatTeamB;
+		return chatSpectators; // 'spectator'
+	});
+
+	const chatStreamVal = $derived.by(() => fromStore(activeChatStream(code)).current);
+
+	const chatMessages = $derived(
+		chatStreamVal && typeof chatStreamVal === 'object' && 'messages' in chatStreamVal
+			? chatStreamVal.messages ?? []
+			: []
+	);
+
+	// mutedIds from lobby snapshot patch (published by muteMember/unmuteMember RPCs)
+	const mutedIds = $derived(snapshot?.mutedIds ?? []);
+
+	// Derive current user's display name from snapshot members
+	const currentUserName = $derived(
+		snapshot && data.userId
+			? (snapshot.teams.A.concat(snapshot.teams.B ?? []).find((/** @type {any} */ m) => m.userId === data.userId)
+					?.displayName ?? null)
+			: null
+	);
+
+	const mainClass = $derived('flex flex-row items-start gap-4 px-4 py-6 text-text-primary');
+
+	async function handleSendMessage(/** @type {{ body: string }} */ payload) {
+		const channel =
+			activeTab === 'all'
+				? 'all'
+				: activeTab === 'team'
+					? userTeam === 'A'
+						? 'teamA'
+						: 'teamB'
+					: 'spectators';
+		try {
+			await sendMessage(code, { body: payload.body, channel });
+		} catch (e) {
+			// Only surface VALIDATION errors (e.g. message too long) to the user
+			if (e && typeof e === 'object' && 'code' in e && e.code === 'VALIDATION') {
+				actionError = errMsg(e);
+			}
+			// Rate limit and slur drops are silent (no error shown)
+		}
+	}
+
+	async function handleMute(/** @type {{ userId?: string, guestId?: string }} */ payload) {
+		try {
+			await muteMember(code, payload);
+		} catch (e) {
+			actionError = errMsg(e);
+		}
+	}
+
+	async function handleUnmute(/** @type {{ userId?: string, guestId?: string }} */ payload) {
+		try {
+			await unmuteMember(code, payload);
+		} catch (e) {
+			actionError = errMsg(e);
+		}
+	}
 </script>
 
 <Header>
@@ -186,59 +273,85 @@
 		{/if}
 	{:else if snapshot}
 		{#if snapshot.phase === 'drafting' || snapshot.phase === 'cancelled'}
-			<!-- Draft board replaces lobby layout entirely (D-01) -->
-			<div class="mx-auto max-w-6xl">
-				<DraftBoard {snapshot} userId={data.userId} onPickBan={handlePickBan} />
+			<!-- Draft board: flex-1 content area + ChatPanel sidebar -->
+			<div class="flex-1 min-w-0">
+				<div class="mx-auto max-w-6xl">
+					<DraftBoard {snapshot} userId={data.userId} onPickBan={handlePickBan} />
+				</div>
 			</div>
-		{:else}
-			<!-- Existing lobby layout — unchanged -->
-			<LobbyHostBar
-				isHost={isHost}
-				{snapshot}
-				onKick={handleKick}
-				onMove={handleMove}
-				onStartDraft={handleStart}
-				onCancelRoom={handleCancel}
-				bind:script={draftScript}
-				bind:timerSeconds={timerSeconds}
+			<ChatPanel
+				phase={snapshot.phase}
+				role={chatRole}
+				messages={chatMessages}
+				{currentUserName}
+				onSend={handleSendMessage}
+				bind:activeTab
 			/>
-
-			<div class="mb-6 flex flex-wrap items-center gap-3">
-				<button
-					type="button"
-					class="rounded-md border border-bg-secondary px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-secondary"
-					onclick={copyLink}
-					aria-label="Copy room link"
-				>
-					Copy link
-				</button>
-				{#if copied}
-					<span class="text-sm text-green-600">Copied</span>
-				{/if}
-			</div>
-
-			<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-				<TeamColumn
-					label="Team A"
-					members={snapshot.teams.A}
-					teamKey="A"
-					{isGuest}
-					{canJoin}
-					full={fullA}
-					onJoin={handleJoinA}
+		{:else}
+			<!-- Lobby phase: flex-1 content area + ChatPanel sidebar -->
+			<div class="flex-1 min-w-0 mx-auto w-full max-w-3xl">
+				<LobbyHostBar
+					isHost={isHost}
+					{snapshot}
+					onKick={handleKick}
+					onMove={handleMove}
+					onStartDraft={handleStart}
+					onCancelRoom={handleCancel}
+					bind:script={draftScript}
+					bind:timerSeconds={timerSeconds}
 				/>
-				<TeamColumn
-					label="Team B"
-					members={snapshot.teams.B}
-					teamKey="B"
-					{isGuest}
-					{canJoin}
-					full={fullB}
-					onJoin={handleJoinB}
+
+				<div class="mb-6 flex flex-wrap items-center gap-3">
+					<button
+						type="button"
+						class="rounded-md border border-bg-secondary px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-secondary"
+						onclick={copyLink}
+						aria-label="Copy room link"
+					>
+						Copy link
+					</button>
+					{#if copied}
+						<span class="text-sm text-green-600">Copied</span>
+					{/if}
+				</div>
+
+				<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+					<TeamColumn
+						label="Team A"
+						members={snapshot.teams.A}
+						teamKey="A"
+						{isGuest}
+						{canJoin}
+						full={fullA}
+						onJoin={handleJoinA}
+					/>
+					<TeamColumn
+						label="Team B"
+						members={snapshot.teams.B}
+						teamKey="B"
+						{isGuest}
+						{canJoin}
+						full={fullB}
+						onJoin={handleJoinB}
+					/>
+				</div>
+
+				<SpectatorsPanel
+					spectators={snapshot.spectators}
+					{isHost}
+					{mutedIds}
+					onMute={handleMute}
+					onUnmute={handleUnmute}
 				/>
 			</div>
-
-			<SpectatorsPanel spectators={snapshot.spectators} />
+			<ChatPanel
+				phase={snapshot.phase}
+				role={chatRole}
+				messages={chatMessages}
+				{currentUserName}
+				onSend={handleSendMessage}
+				bind:activeTab
+			/>
 		{/if}
 	{/if}
 </main>
