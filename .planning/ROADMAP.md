@@ -112,7 +112,7 @@ Plans:
 Plans:
 - [x] 05-01-PLAN.md — Wave 0: test stubs (chat.spec.js + chat-filter.spec.js) with it.todo for all CHAT/HOST-04 behaviors
 - [x] 05-02-PLAN.md — Server layer: slur-list.json + chat-filter.js + chat.js (4 channel streams, sendMessage, muteMember, unmuteMember)
-- [ ] 05-03-PLAN.md — UI atoms + molecule: ChatMessage, ChatInput, MuteButton atoms + ChatPanel molecule
+- [x] 05-03-PLAN.md — UI atoms + molecule: ChatMessage, ChatInput, MuteButton atoms + ChatPanel molecule
 - [ ] 05-04-PLAN.md — UI wiring: SpectatorsPanel extended with Mute controls + +page.svelte wired with live streams and flex layout
 - [ ] 05-05-PLAN.md — Manual checkpoint: full chat and mute verification across browser sessions
 **UI hint**: yes
@@ -139,5 +139,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Room & Lobby | 4/6 | In Progress|  |
 | 3. Draft Engine | 5/6 | In Progress|  |
 | 4. Draft UI & Disconnect Resilience | 4/5 | In Progress|  |
-| 5. Chat & Moderation | 2/5 | In Progress|  |
+| 5. Chat & Moderation | 3/5 | In Progress|  |
 | 6. Post-Draft Review | 0/TBD | Not started | - |
