@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-04-05T16:54:32.171Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-04-05T17:02:19.307Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 25
-  completed_plans: 20
+  completed_plans: 21
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 ## Current Position
 
 Phase: 05 (chat-moderation) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-04-05
 
@@ -71,6 +71,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04-draft-ui-disconnect-resilience P03 | 2min | 2 tasks | 7 files |
 | Phase 04-draft-ui-disconnect-resilience P04 | 12min | 2 tasks | 3 files |
 | Phase 05-chat-moderation P01 | 1min | 2 tasks | 2 files |
+| Phase 05-chat-moderation P02 | 5min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -120,6 +121,9 @@ Recent decisions affecting current work:
 - [Phase 04-draft-ui-disconnect-resilience]: justReconnected prop pattern chosen over window.online listener for DraftBoard reconnect banner in v1
 - [Phase 05-chat-moderation]: Wave 0 for Phase 5 follows identical pattern to Phases 3-4: it.todo stubs, plain vi.mock factory, no + prefix
 - [Phase 05-chat-moderation]: chat-filter.spec.js needs no vi.mock because chat-filter.js will be a pure function module with no external dependencies
+- [Phase 05-chat-moderation]: slur-list.json uses word-boundary regex built at module load time — avoids Scunthorpe false positives
+- [Phase 05-chat-moderation]: chat.js: muteMap published as 'patch' event to lobby topic (topicForRoom) for host UI sync — not to chat topic (Pattern 5 Option A)
+- [Phase 05-chat-moderation]: chat.spec.js: vi.resetModules() then vi.clearAllMocks() ordering in loadFreshChat() helper is mandatory for correct mock call record capture
 
 ### Pending Todos
 
@@ -138,6 +142,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05T16:54:32.168Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-04-05T17:02:19.304Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None
