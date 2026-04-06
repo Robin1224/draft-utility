@@ -131,6 +131,17 @@ Plans:
 - [x] 06-03-PLAN.md — Manual checkpoint: full review flow and shareable link verification
 **UI hint**: yes
 
+### Phase 7: Tech Debt Cleanup
+**Goal**: Close the two medium-severity tech debt items from the v1.0 audit: fix the grace-timer auto-advance publish gap so all connected clients receive the review-phase transition, and fill Nyquist VALIDATION.md browser-project specs for all 6 phases
+**Depends on**: Phase 6
+**Requirements**: DRAFT-04, POST-01 (edge-case hardening — already satisfied, reinforcing correctness)
+**Gap Closure:** Closes tech debt from v1.0 audit
+**Success Criteria** (what must be TRUE):
+  1. `disconnectGraceExpired` → `autoAdvanceTurn` path calls `completeDraft` AND publishes the review snapshot to live clients unconditionally (not gated on `platform`)
+  2. All 6 phases have filled VALIDATION.md files with `nyquist_compliant: true` and wave-0 browser-project specs passing
+**Plans**: TBD
+**UI hint**: no
+
 ## Progress
 
 **Execution Order:**
@@ -145,3 +156,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Draft UI & Disconnect Resilience | 4/5 | In Progress|  |
 | 5. Chat & Moderation | 5/5 | Complete   | 2026-04-06 |
 | 6. Post-Draft Review | 4/4 | Complete   | 2026-04-06 |
+| 7. Tech Debt Cleanup | 0/0 | Pending    |            |
