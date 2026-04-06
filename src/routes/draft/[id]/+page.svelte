@@ -192,7 +192,12 @@
 		return chatSpectators; // 'spectator'
 	});
 
-	const chatStreamVal = $derived.by(() => fromStore(activeChatStream(code)).current);
+	let chatStreamVal = $state(/** @type {any} */ (undefined));
+	$effect(() => {
+		const store = activeChatStream(code);
+		const unsub = store.subscribe(/** @param {any} val */ (val) => { chatStreamVal = val; });
+		return unsub;
+	});
 
 	const chatMessages = $derived(
 		chatStreamVal && typeof chatStreamVal === 'object' && 'messages' in chatStreamVal
