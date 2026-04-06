@@ -7,6 +7,7 @@
 	import TeamColumn from '$lib/components/molecules/TeamColumn.svelte';
 	import DraftBoard from '$lib/components/molecules/DraftBoard.svelte';
 	import ChatPanel from '$lib/components/molecules/ChatPanel.svelte';
+	import DraftReview from '$lib/components/molecules/DraftReview.svelte';
 	import { fromStore } from 'svelte/store';
 	import { lobby, joinTeam, kickMember, movePlayer, startDraft, cancelRoom } from '$live/room';
 	import { pickBan } from '$live/draft';
@@ -292,7 +293,35 @@
 				onSend={handleSendMessage}
 				bind:activeTab
 			/>
-		{:else}
+	{:else if snapshot.phase === 'review'}
+		<!-- Review branch: full-width, no ChatPanel (D-09) -->
+		<!-- Uses data.actions (SSR-loaded) as primary source; falls back to snapshot.actions -->
+		<!-- for participants transitioning from live draft (Pitfall 2 / Open Question 3) -->
+		<div class="flex w-full flex-col items-center gap-8 px-4 py-8 text-text-primary">
+			<h2 class="text-2xl font-semibold text-text-primary">Draft complete</h2>
+			<div class="flex items-center gap-3">
+				<a
+					href="/"
+					class="rounded-md border border-bg-secondary px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-secondary"
+				>Back to home</a>
+				<button
+					type="button"
+					class="rounded-md border border-bg-secondary px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-secondary"
+					onclick={copyLink}
+				>Copy link</button>
+				{#if copied}
+					<span class="text-sm text-green-600" role="status">Copied</span>
+				{/if}
+				{#if actionError}
+					<span class="text-sm text-red-600">{actionError}</span>
+				{/if}
+			</div>
+			<DraftReview
+				actions={data.actions?.length ? data.actions : (snapshot.actions ?? [])}
+				teams={data.teams ?? snapshot.teams}
+			/>
+		</div>
+	{:else}
 			<!-- Lobby phase: flex-1 content area + ChatPanel sidebar -->
 			<div class="flex-1 min-w-0 mx-auto w-full max-w-3xl">
 				<LobbyHostBar
