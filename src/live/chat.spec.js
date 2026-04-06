@@ -184,8 +184,10 @@ describe('chat — channel authorization (CHAT-01, CHAT-02)', () => {
 
 		expect(publishMock).toHaveBeenCalledWith(
 			'room:abc1234:chat:teamA',
-			'message',
-			expect.objectContaining({ sender: 'Player 1', body: 'Go team!' })
+			'set',
+			expect.objectContaining({
+				messages: expect.arrayContaining([expect.objectContaining({ sender: 'Player 1', body: 'Go team!' })])
+			})
 		);
 		// Must NOT publish to any other topic
 		const publishedTopics = publishMock.mock.calls.map((c) => c[0]);
@@ -209,8 +211,10 @@ describe('chat — channel authorization (CHAT-01, CHAT-02)', () => {
 
 		expect(publishMock).toHaveBeenCalledWith(
 			'room:abc1234:chat:spectators',
-			'message',
-			expect.objectContaining({ body: 'Hello!' })
+			'set',
+			expect.objectContaining({
+				messages: expect.arrayContaining([expect.objectContaining({ body: 'Hello!' })])
+			})
 		);
 	});
 });
@@ -398,8 +402,10 @@ describe('chat — filter pipeline (CHAT-04 integration)', () => {
 
 		expect(publishMock).toHaveBeenCalledWith(
 			'room:abc1234:chat:spectators',
-			'message',
-			expect.objectContaining({ body: 'helloworld' })
+			'set',
+			expect.objectContaining({
+				messages: expect.arrayContaining([expect.objectContaining({ body: 'helloworld' })])
+			})
 		);
 	});
 });
