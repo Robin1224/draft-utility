@@ -4,7 +4,7 @@ import { parseRoomCode } from '$lib/join-parse.js';
 import { db } from '$lib/server/db';
 import { eq, and } from 'drizzle-orm';
 import { room_member } from '$lib/server/db/schema.js';
-import { getRoomByPublicCode, topicForRoom } from '$lib/server/rooms.js';
+import { getRoomByPublicCode, topicForRoom, loadLobbySnapshot } from '$lib/server/rooms.js';
 import { filterMessage } from '$lib/chat-filter.js';
 
 // ── Module-scope in-memory state (Pattern 1, mirrors draft-timers.js Map approach) ──
@@ -264,9 +264,10 @@ export const muteMember = live(async (ctx, publicCode, payload) => {
 	if (!muteMap.has(roomRow.id)) muteMap.set(roomRow.id, new Set());
 	muteMap.get(roomRow.id).add(targetId);
 
-	// Publish muteUpdated to the lobby topic so host's spectator panel reflects new mute state (D-17)
-	// Only publish the mutedIds set — the client merges into local state (Pattern 5 Option A)
-	ctx.publish(topicForRoom(code), 'patch', { mutedIds: [...muteMap.get(roomRow.id)] });
+	// Publish full lobby snapshot with updated mutedIds — lobby uses merge:'set' which only
+	// processes 'set' events; 'patch' is silently ignored (D-17)
+	const snap = await loadLobbySnapshot(db, code);
+	if (snap) ctx.publish(topicForRoom(code), 'set', { ...snap, mutedIds: [...muteMap.get(roomRow.id)] });
 });
 
 export const unmuteMember = live(async (ctx, publicCode, payload) => {
@@ -288,5 +289,6 @@ export const unmuteMember = live(async (ctx, publicCode, payload) => {
 
 	muteMap.get(roomRow.id)?.delete(targetId);
 
-	ctx.publish(topicForRoom(code), 'patch', { mutedIds: [...(muteMap.get(roomRow.id) ?? [])] });
+	const snap = await loadLobbySnapshot(db, code);
+	if (snap) ctx.publish(topicForRoom(code), 'set', { ...snap, mutedIds: [...(muteMap.get(roomRow.id) ?? [])] });
 });
