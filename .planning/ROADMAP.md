@@ -126,7 +126,7 @@ Plans:
   2. The post-draft summary is accessible via a shareable link that anyone can open without signing in
 **Plans**: 3 plans
 Plans:
-- [ ] 06-01-PLAN.md — Server layer: completeDraft phase='review' fix + +page.server.js review load + draft.spec.js update
+- [x] 06-01-PLAN.md — Server layer: completeDraft phase='review' fix + +page.server.js review load + draft.spec.js update
 - [ ] 06-02-PLAN.md — UI layer: DraftReview.svelte molecule + +page.svelte review branch
 - [ ] 06-03-PLAN.md — Manual checkpoint: full review flow and shareable link verification
 **UI hint**: yes
@@ -144,4 +144,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Draft Engine | 5/6 | In Progress|  |
 | 4. Draft UI & Disconnect Resilience | 4/5 | In Progress|  |
 | 5. Chat & Moderation | 5/5 | Complete   | 2026-04-06 |
-| 6. Post-Draft Review | 1/4 | In Progress|  |
+| 6. Post-Draft Review | 2/4 | In Progress|  |

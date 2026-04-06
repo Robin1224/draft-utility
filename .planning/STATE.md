@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-00-PLAN.md
-last_updated: "2026-04-06T20:06:51.162Z"
+stopped_at: Completed 06-post-draft-review-01-PLAN.md
+last_updated: "2026-04-06T20:08:46.343Z"
 last_activity: 2026-04-06
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 29
-  completed_plans: 25
+  completed_plans: 26
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 ## Current Position
 
 Phase: 06 (post-draft-review) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-04-06
 
@@ -76,6 +76,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05-chat-moderation P04 | 3min | 2 tasks | 2 files |
 | Phase 05-chat-moderation P05 | 30min | 1 tasks | 1 files |
 | Phase 06-post-draft-review P00 | 1min | 1 tasks | 1 files |
+| Phase 06-post-draft-review P01 | 2min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -136,6 +137,9 @@ Recent decisions affecting current work:
 - [Phase 05-chat-moderation]: chatStreamVal subscription moved to $effect with explicit cleanup to prevent subscription leak after mute state changes
 - [Phase 05-chat-moderation]: muteMember/unmuteMember publish full lobby snapshot with 'set' to topicForRoom — 'patch' on merge:'set' topic is a no-op
 - [Phase 06-post-draft-review]: Wave 0 it.todo stubs (not it.skip) for DraftReview.svelte spec — vitest reports todo counts, not failures; consistent with Phases 03-05 pattern
+- [Phase 06-post-draft-review]: 06-01: completeDraft sets phase='review' (not 'ended') and omits ended_at so shouldHideRoomFromPublic returns false — review rooms remain visible
+- [Phase 06-post-draft-review]: 06-01: +page.server.js load branches on row.phase === 'review' to attach loadDraftSnapshot actions and teams to SSR payload
+- [Phase 06-post-draft-review]: 06-01: Unauthenticated visitors (userId=null) allowed on review-phase rooms — no auth guard in load()
 
 ### Pending Todos
 
@@ -154,6 +158,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-06T20:06:51.159Z
-Stopped at: Completed 06-00-PLAN.md
+Last session: 2026-04-06T20:08:46.341Z
+Stopped at: Completed 06-post-draft-review-01-PLAN.md
 Resume file: None

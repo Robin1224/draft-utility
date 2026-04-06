@@ -60,7 +60,7 @@
 ### Post-Draft Review (POST)
 
 - [x] **POST-01** — After the draft completes, a summary view shows all bans and picks per team in pick order; visible to all participants and spectators
-- [ ] **POST-02** — Post-draft summary has a shareable link that anyone can open (no auth required to view)
+- [x] **POST-02** — Post-draft summary has a shareable link that anyone can open (no auth required to view)
 
 ### Class Lists (LIST)
 
@@ -124,7 +124,7 @@
 | DISC-03 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
 | DISC-04 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
 | POST-01 | Phase 6 — Post-Draft Review | Complete |
-| POST-02 | Phase 6 — Post-Draft Review | Pending |
+| POST-02 | Phase 6 — Post-Draft Review | Complete |
 | LIST-01 | Phase 3 — Draft Engine | Complete |
 
 **Coverage:** 34/34 requirements mapped ✓
