@@ -24,6 +24,13 @@ const rateLimitMap = new Map();
  */
 export const muteMap = new Map();
 
+/**
+ * In-memory message history per chat topic (capped at 200 messages).
+ * Key: topic string → message array
+ * @type {Map<string, Array<{sender: string, body: string, ts: number}>>}
+ */
+const messageStore = new Map();
+
 // ── Rate limiter helpers (Pattern 4) ──
 
 const RATE_WINDOW_MS = 5_000; // 5 second sliding window (D-13)
@@ -121,7 +128,8 @@ export const chatAll = live.stream(
 		const roomRow = await getRoomByPublicCode(db, code);
 		if (!roomRow) throw new LiveError('NOT_FOUND', 'Room not found');
 		await cachePlayerTeam(ctx, roomRow.id);
-		return { messages: [] }; // no history (D-07)
+		const topic = chatTopic(code, 'all');
+		return { messages: messageStore.get(topic) ?? [] };
 	},
 	{ merge: 'set', access: () => true }
 );
@@ -135,7 +143,8 @@ export const chatTeamA = live.stream(
 		if (!roomRow) throw new LiveError('NOT_FOUND', 'Room not found');
 		await cachePlayerTeam(ctx, roomRow.id);
 		if (ctx.user.chatTeam !== 'A') throw new LiveError('FORBIDDEN', 'Team A players only');
-		return { messages: [] };
+		const topic = chatTopic(code, 'teamA');
+		return { messages: messageStore.get(topic) ?? [] };
 	},
 	{ merge: 'set', access: () => true }
 );
@@ -149,7 +158,8 @@ export const chatTeamB = live.stream(
 		if (!roomRow) throw new LiveError('NOT_FOUND', 'Room not found');
 		await cachePlayerTeam(ctx, roomRow.id);
 		if (ctx.user.chatTeam !== 'B') throw new LiveError('FORBIDDEN', 'Team B players only');
-		return { messages: [] };
+		const topic = chatTopic(code, 'teamB');
+		return { messages: messageStore.get(topic) ?? [] };
 	},
 	{ merge: 'set', access: () => true }
 );
@@ -165,7 +175,8 @@ export const chatSpectators = live.stream(
 		if (ctx.user?.chatTeam === 'A' || ctx.user?.chatTeam === 'B') {
 			throw new LiveError('FORBIDDEN', 'Spectators only');
 		}
-		return { messages: [] };
+		const topic = chatTopic(code, 'spectators');
+		return { messages: messageStore.get(topic) ?? [] };
 	},
 	{ merge: 'set', access: () => true }
 );
@@ -218,11 +229,16 @@ export const sendMessage = live(async (ctx, publicCode, payload) => {
 	const senderName =
 		ctx.user?.name ??
 		(ctx.user?.guestId ? `Guest ${ctx.user.guestId.slice(0, 6)}` : 'Unknown');
-	ctx.publish(topic, 'message', {
-		sender: senderName,
-		body: filtered.body,
-		ts: Date.now()
-	});
+	const msg = { sender: senderName, body: filtered.body, ts: Date.now() };
+
+	// Append to server-side store (capped at 200 messages)
+	const stored = messageStore.get(topic) ?? [];
+	stored.push(msg);
+	if (stored.length > 200) stored.shift();
+	messageStore.set(topic, stored);
+
+	// Publish full messages array — 'set' merge replaces stream value on all subscribers
+	ctx.publish(topic, 'set', { messages: stored });
 });
 
 // ── muteMember RPC (HOST-04) ──
