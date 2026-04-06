@@ -32,7 +32,7 @@ A **real-time drafting application** for competitive-style sessions: **two teams
 - ✓ **Turn timer** — default 30s; host-configurable in room settings (10s min); server-side auto-advance on expiry. Validated in Phase 03: draft-engine
 - [ ] **Pre-draft only** — host may **move players between teams**; **no team moves after draft starts**
 - [ ] **Host moderation** — **kick** any member; **kick/mute spectators**; **no spectator cap**
-- [ ] **Chats** — **team chat** (visible only to that team); **spectator chat** (spectators only)
+- ✓ **Chats** — team chat (team-isolated), spectator chat (spectators only), slur filter, rate limiting, host mute controls. Validated in Phase 05: chat-moderation
 - [ ] **Chat safety (v1)** — **rate limiting** + **slur filtering**; no heavier moderation yet
 - [ ] **Captain disconnect** — **pause**; wait **~30s**; if no return, **promote another player** on that team to captain; if **no other player**, **cancel draft**
 - [ ] **Post-draft** — clear **overview** of all bans and picks
@@ -90,4 +90,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-04 after Phase 03 (draft-engine) completion*
+*Last updated: 2026-04-06 after Phase 05 (chat-moderation) completion*
