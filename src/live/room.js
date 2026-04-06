@@ -118,6 +118,8 @@ export const lobby = live.stream(
 		if (!roomRow) throw new LiveError('NOT_FOUND', 'Room not found');
 		if (ctx.user?.role === 'guest' && ctx.user?.guestId) {
 			await upsertGuestSpectator(db, roomRow.id, ctx.user.guestId);
+			const guestSnap = await loadLobbySnapshot(db, code);
+			if (guestSnap) ctx.publish(topicForRoom(code), 'set', guestSnap);
 		}
 		// DISC-04: return full draft snapshot when drafting, lobby snapshot otherwise
 		if (roomRow.phase === 'drafting') {
