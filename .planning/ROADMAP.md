@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Room & Lobby** - Players create and join rooms, form teams, captains auto-assign, host manages the lobby before the draft starts
 - [ ] **Phase 3: Draft Engine** - Server-authoritative pick/ban FSM runs to completion with configurable settings and a bundled class catalog
 - [ ] **Phase 4: Draft UI & Disconnect Resilience** - Draft state is visible in real time; captain disconnects pause, grace, and resolve without losing the draft
-- [ ] **Phase 5: Chat & Moderation** - Team and spectator chat channels are private, rate-limited, and slur-filtered; host can mute spectators
+- [x] **Phase 5: Chat & Moderation** - Team and spectator chat channels are private, rate-limited, and slur-filtered; host can mute spectators (completed 2026-04-06)
 - [ ] **Phase 6: Post-Draft Review** - Final pick/ban outcome is summarized clearly and shareable by anyone without authentication
 
 ## Phase Details
@@ -114,7 +114,7 @@ Plans:
 - [x] 05-02-PLAN.md — Server layer: slur-list.json + chat-filter.js + chat.js (4 channel streams, sendMessage, muteMember, unmuteMember)
 - [x] 05-03-PLAN.md — UI atoms + molecule: ChatMessage, ChatInput, MuteButton atoms + ChatPanel molecule
 - [x] 05-04-PLAN.md — UI wiring: SpectatorsPanel extended with Mute controls + +page.svelte wired with live streams and flex layout
-- [ ] 05-05-PLAN.md — Manual checkpoint: full chat and mute verification across browser sessions
+- [x] 05-05-PLAN.md — Manual checkpoint: full chat and mute verification across browser sessions
 **UI hint**: yes
 
 ### Phase 6: Post-Draft Review
@@ -139,5 +139,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Room & Lobby | 4/6 | In Progress|  |
 | 3. Draft Engine | 5/6 | In Progress|  |
 | 4. Draft UI & Disconnect Resilience | 4/5 | In Progress|  |
-| 5. Chat & Moderation | 4/5 | In Progress|  |
+| 5. Chat & Moderation | 5/5 | Complete   | 2026-04-06 |
 | 6. Post-Draft Review | 0/TBD | Not started | - |

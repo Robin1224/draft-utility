@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 05-04-PLAN.md
-last_updated: "2026-04-05T17:11:03.529Z"
-last_activity: 2026-04-05
+status: verifying
+stopped_at: Completed 05-05-PLAN.md
+last_updated: "2026-04-06T13:53:36.766Z"
+last_activity: 2026-04-06
 progress:
   total_phases: 6
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 25
-  completed_plans: 23
+  completed_plans: 24
   percent: 0
 ---
 
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 
 Phase: 05 (chat-moderation) — EXECUTING
 Plan: 5 of 5
-Status: Ready to execute
-Last activity: 2026-04-05
+Status: Phase complete — ready for verification
+Last activity: 2026-04-06
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -74,6 +74,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05-chat-moderation P02 | 5min | 2 tasks | 5 files |
 | Phase 05-chat-moderation P03 | 2min | 2 tasks | 4 files |
 | Phase 05-chat-moderation P04 | 3min | 2 tasks | 2 files |
+| Phase 05-chat-moderation P05 | 30min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -130,6 +131,9 @@ Recent decisions affecting current work:
 - [Phase 05-chat-moderation]: $bindable activeTab on ChatPanel — parent page wires tab changes to live stream subscriptions (Plan 04)
 - [Phase 05-chat-moderation]: 05-04: currentUserName derived from snapshot.teams members since +page.server.js load does not expose data.userName
 - [Phase 05-chat-moderation]: 05-04: mainClass always flex flex-row items-start — conditional max-w removed from outer main; per-branch flex-1 wrappers handle max-width
+- [Phase 05-chat-moderation]: sendMessage must publish 'set' event type (not 'message') — svelte-realtime protocol constraint for stream subscribers
+- [Phase 05-chat-moderation]: chatStreamVal subscription moved to $effect with explicit cleanup to prevent subscription leak after mute state changes
+- [Phase 05-chat-moderation]: muteMember/unmuteMember publish full lobby snapshot with 'set' to topicForRoom — 'patch' on merge:'set' topic is a no-op
 
 ### Pending Todos
 
@@ -148,6 +152,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05T17:11:03.527Z
-Stopped at: Completed 05-04-PLAN.md
+Last session: 2026-04-06T13:53:36.763Z
+Stopped at: Completed 05-05-PLAN.md
 Resume file: None
