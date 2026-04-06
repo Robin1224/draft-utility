@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: Draft Engine** - Server-authoritative pick/ban FSM runs to completion with configurable settings and a bundled class catalog
 - [ ] **Phase 4: Draft UI & Disconnect Resilience** - Draft state is visible in real time; captain disconnects pause, grace, and resolve without losing the draft
 - [x] **Phase 5: Chat & Moderation** - Team and spectator chat channels are private, rate-limited, and slur-filtered; host can mute spectators (completed 2026-04-06)
-- [ ] **Phase 6: Post-Draft Review** - Final pick/ban outcome is summarized clearly and shareable by anyone without authentication
+- [x] **Phase 6: Post-Draft Review** - Final pick/ban outcome is summarized clearly and shareable by anyone without authentication (completed 2026-04-06)
 
 ## Phase Details
 
@@ -128,7 +128,7 @@ Plans:
 Plans:
 - [x] 06-01-PLAN.md — Server layer: completeDraft phase='review' fix + +page.server.js review load + draft.spec.js update
 - [x] 06-02-PLAN.md — UI layer: DraftReview.svelte molecule + +page.svelte review branch
-- [ ] 06-03-PLAN.md — Manual checkpoint: full review flow and shareable link verification
+- [x] 06-03-PLAN.md — Manual checkpoint: full review flow and shareable link verification
 **UI hint**: yes
 
 ## Progress
@@ -144,4 +144,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Draft Engine | 5/6 | In Progress|  |
 | 4. Draft UI & Disconnect Resilience | 4/5 | In Progress|  |
 | 5. Chat & Moderation | 5/5 | Complete   | 2026-04-06 |
-| 6. Post-Draft Review | 3/4 | In Progress|  |
+| 6. Post-Draft Review | 4/4 | Complete   | 2026-04-06 |

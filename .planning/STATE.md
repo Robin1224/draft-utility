@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 06-post-draft-review-02-PLAN.md
-last_updated: "2026-04-06T20:13:05.978Z"
+status: verifying
+stopped_at: Completed 06-03-PLAN.md
+last_updated: "2026-04-06T20:48:53.224Z"
 last_activity: 2026-04-06
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 29
-  completed_plans: 27
+  completed_plans: 28
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 
 Phase: 06 (post-draft-review) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-06
 
 Progress: [░░░░░░░░░░] 0%
@@ -78,6 +78,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 06-post-draft-review P00 | 1min | 1 tasks | 1 files |
 | Phase 06-post-draft-review P01 | 2min | 2 tasks | 4 files |
 | Phase 06-post-draft-review P02 | 2min | 2 tasks | 2 files |
+| Phase 06-post-draft-review P03 | 30min | 2 tasks | 0 files |
 
 ## Accumulated Context
 
@@ -143,6 +144,7 @@ Recent decisions affecting current work:
 - [Phase 06-post-draft-review]: 06-01: Unauthenticated visitors (userId=null) allowed on review-phase rooms — no auth guard in load()
 - [Phase 06-post-draft-review]: 06-02: Review branch uses w-full flex-col child div to override flex-row mainClass for full-width centered layout (Pitfall 3 resolution)
 - [Phase 06-post-draft-review]: 06-02: DraftReview actions prop uses data.actions with snapshot.actions fallback for live-transition participants (Pitfall 2 / Open Question 3 resolution)
+- [Phase 06-post-draft-review]: 06-03: Human verification plan — no code changes; all three scenarios (participant transition, shareable link, CTAs) approved by human in real browser
 
 ### Pending Todos
 
@@ -161,6 +163,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-06T20:13:05.975Z
-Stopped at: Completed 06-post-draft-review-02-PLAN.md
+Last session: 2026-04-06T20:48:53.221Z
+Stopped at: Completed 06-03-PLAN.md
 Resume file: None
