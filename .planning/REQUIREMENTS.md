@@ -31,14 +31,14 @@
 - [x] **HOST-01** — Host has a room settings panel to configure pick/ban order and turn timer (default: 30 seconds)
 - [x] **HOST-02** — Host can kick any lobby member (player or spectator) from the room
 - [x] **HOST-03** — Host can move players between teams before the draft starts (moves locked once draft begins)
-- [ ] **HOST-04** — Host can mute spectators (spectator chat silenced for that user)
+- [x] **HOST-04** — Host can mute spectators (spectator chat silenced for that user)
 
 ### Chat (CHAT)
 
-- [ ] **CHAT-01** — Team members can send messages visible only to their own team during the lobby and draft phases
-- [ ] **CHAT-02** — Spectators can send messages visible only to other spectators
-- [ ] **CHAT-03** — Chat messages are rate-limited per user, connection, and room (server-enforced)
-- [ ] **CHAT-04** — Chat messages are filtered server-side for slurs (Unicode-normalized, length-capped before filter)
+- [x] **CHAT-01** — Team members can send messages visible only to their own team during the lobby and draft phases
+- [x] **CHAT-02** — Spectators can send messages visible only to other spectators
+- [x] **CHAT-03** — Chat messages are rate-limited per user, connection, and room (server-enforced)
+- [x] **CHAT-04** — Chat messages are filtered server-side for slurs (Unicode-normalized, length-capped before filter)
 
 ### Draft Mechanics (DRAFT)
 
@@ -59,7 +59,7 @@
 
 ### Post-Draft Review (POST)
 
-- [ ] **POST-01** — After the draft completes, a summary view shows all bans and picks per team in pick order; visible to all participants and spectators
+- [x] **POST-01** — After the draft completes, a summary view shows all bans and picks per team in pick order; visible to all participants and spectators
 - [ ] **POST-02** — Post-draft summary has a shareable link that anyone can open (no auth required to view)
 
 ### Class Lists (LIST)
@@ -107,11 +107,11 @@
 | HOST-01 | Phase 3 — Draft Engine | Complete |
 | HOST-02 | Phase 2 — Room & Lobby | Complete |
 | HOST-03 | Phase 2 — Room & Lobby | Complete |
-| HOST-04 | Phase 5 — Chat & Moderation | Pending |
-| CHAT-01 | Phase 5 — Chat & Moderation | Pending |
-| CHAT-02 | Phase 5 — Chat & Moderation | Pending |
-| CHAT-03 | Phase 5 — Chat & Moderation | Pending |
-| CHAT-04 | Phase 5 — Chat & Moderation | Pending |
+| HOST-04 | Phase 5 — Chat & Moderation | Complete |
+| CHAT-01 | Phase 5 — Chat & Moderation | Complete |
+| CHAT-02 | Phase 5 — Chat & Moderation | Complete |
+| CHAT-03 | Phase 5 — Chat & Moderation | Complete |
+| CHAT-04 | Phase 5 — Chat & Moderation | Complete |
 | DRAFT-01 | Phase 3 — Draft Engine | Complete |
 | DRAFT-02 | Phase 3 — Draft Engine | Complete |
 | DRAFT-03 | Phase 3 — Draft Engine | Complete |
@@ -123,7 +123,7 @@
 | DISC-02 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
 | DISC-03 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
 | DISC-04 | Phase 4 — Draft UI & Disconnect Resilience | Complete |
-| POST-01 | Phase 6 — Post-Draft Review | Pending |
+| POST-01 | Phase 6 — Post-Draft Review | Complete |
 | POST-02 | Phase 6 — Post-Draft Review | Pending |
 | LIST-01 | Phase 3 — Draft Engine | Complete |
 

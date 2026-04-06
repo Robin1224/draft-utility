@@ -144,4 +144,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Draft Engine | 5/6 | In Progress|  |
 | 4. Draft UI & Disconnect Resilience | 4/5 | In Progress|  |
 | 5. Chat & Moderation | 5/5 | Complete   | 2026-04-06 |
-| 6. Post-Draft Review | 0/3 | Not started | - |
+| 6. Post-Draft Review | 1/4 | In Progress|  |
