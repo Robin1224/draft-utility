@@ -56,15 +56,15 @@ Source: Inferred from existing codebase spacing (DraftSlot, LobbyHostBar, +page.
 | Body | 14px (text-sm) | 400 (regular) | 1.5 |
 | Label | 12px (text-xs, uppercase) | 600 (semibold) | 1.2 |
 | Heading | 20px (text-xl) | 600 (semibold) | 1.2 |
-| Display | 28px (text-2xl or text-3xl) | 700 (bold) | 1.1 |
+| Display | 28px (text-2xl or text-3xl) | 600 (semibold) | 1.1 |
 
 Notes:
 - Body: class names used in the draft review item list (`text-sm text-text-primary`). Source: DraftSlot.svelte.
 - Label: section group labels ("BANS", "PICKS") follow `text-xs font-semibold uppercase text-text-secondary`. Source: TeamDraftColumn.svelte.
 - Heading: team column headings ("Team A", "Team B") follow `text-xl font-semibold text-text-primary`. Source: TeamDraftColumn.svelte.
-- Display: the "Draft complete" or review page headline uses `text-2xl font-bold` — no prior usage at this size; default applied as the review page's single primary heading.
+- Display: the "Draft complete" review page headline uses `text-2xl font-semibold` — weight collapsed from 700 to 600 to satisfy the two-weight rule (regular 400 + semibold 600).
 
-Only 2 weights used across all roles: regular (400) for body text and semibold/bold (600/700) for labels, headings, and the display title.
+Two weights only: 400 (regular) for body text and 600 (semibold) for all non-body text (labels, headings, display title).
 
 ---
 
@@ -118,7 +118,7 @@ Phase 6 review layout (full-width, no sidebar):
 <main class="flex flex-col items-center gap-8 px-4 py-8 text-text-primary">
 
   <!-- Page heading -->
-  <h2 class="text-2xl font-bold text-text-primary">Draft complete</h2>
+  <h2 class="text-2xl font-semibold text-text-primary">Draft complete</h2>
 
   <!-- CTA row -->
   <div class="flex items-center gap-3">
@@ -219,10 +219,10 @@ Source: CONTEXT.md "Claude's Discretion" section (empty-team edge case handling)
 | Empty review state | "Draft ended without picks or bans." |
 | Copy success feedback | "Copied" |
 | Copy error | "Could not copy link" |
-| Page load error | "Something went wrong" (existing `errMsg()` pattern) |
+| Page load error | "Could not load the draft review. [Back to home](/) to start a new one." — rendered as inline text with a `<a href="/">Back to home</a>` link. The error surface always includes this navigational fallback alongside the `errMsg()` message. |
 | Destructive confirmation | None — no destructive actions in this phase |
 
-Source: CONTEXT.md D-07 (CTA labels). Team headings from existing TeamDraftColumn.svelte pattern. No destructive actions confirmed by D-08 (terminal state, no new-draft action).
+Source: CONTEXT.md D-07 (CTA labels). Team headings from existing TeamDraftColumn.svelte pattern. No destructive actions confirmed by D-08 (terminal state, no new-draft action). Page load error copy updated to include a solution path (navigational fallback to `/`).
 
 ---
 
