@@ -35,7 +35,7 @@ A **real-time drafting application** for competitive-style sessions: **two teams
 - ✓ **Chats** — team chat (team-isolated), spectator chat (spectators only), slur filter, rate limiting, host mute controls. Validated in Phase 05: chat-moderation
 - [ ] **Chat safety (v1)** — **rate limiting** + **slur filtering**; no heavier moderation yet
 - [ ] **Captain disconnect** — **pause**; wait **~30s**; if no return, **promote another player** on that team to captain; if **no other player**, **cancel draft**
-- [ ] **Post-draft** — clear **overview** of all bans and picks
+- ✓ **Post-draft** — clear **overview** of all bans and picks; auto-transition on draft end; shareable link for unauthenticated visitors. Validated in Phase 06: post-draft-review
 - [ ] **Class lists (v1)** — **one premade catalog** only; **custom lists + interactive draft editor** deferred until security and UX are addressed
 
 ### Out of Scope
@@ -90,4 +90,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-06 after Phase 05 (chat-moderation) completion*
+*Last updated: 2026-04-06 after Phase 06 (post-draft-review) completion*
