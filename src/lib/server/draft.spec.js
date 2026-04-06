@@ -160,22 +160,20 @@ describe('draft DB layer', () => {
 	});
 
 	describe('completeDraft', () => {
-		it('sets room phase to ended and ended_at to now', async () => {
+		it('sets room phase to review without setting ended_at', async () => {
 			/** @type {Record<string, unknown> | undefined} */
 			let setPayload;
 			const db = {
 				update: () => ({
 					set: (v) => {
 						setPayload = v;
-						return {
-							where: () => Promise.resolve()
-						};
+						return { where: () => Promise.resolve() };
 					}
 				})
 			};
 			await completeDraft(db, 'room-1');
-			expect(setPayload).toMatchObject({ phase: 'ended' });
-			expect(setPayload).toHaveProperty('ended_at');
+			expect(setPayload).toMatchObject({ phase: 'review' });
+			expect(setPayload).not.toHaveProperty('ended_at');
 			expect(setPayload).toHaveProperty('updated_at');
 		});
 	});

@@ -59,16 +59,17 @@ export async function loadDraftSnapshot(db, publicCode) {
 }
 
 /**
- * Mark a draft as ended. Sets phase='ended', ended_at=now, updated_at=now.
+ * Mark a draft as complete, transitioning to review phase.
+ * Does NOT set ended_at — review rooms must remain visible to getRoomByPublicCode.
+ * (shouldHideRoomFromPublic hides rooms where ended_at != null)
  *
  * @param {any} db
  * @param {string} roomId
  */
 export async function completeDraft(db, roomId) {
-	const now = new Date();
 	await db
 		.update(room)
-		.set({ phase: 'ended', ended_at: now, updated_at: now })
+		.set({ phase: 'review', updated_at: new Date() })
 		.where(eq(room.id, roomId));
 }
 
