@@ -43,8 +43,6 @@ Declared values (must be multiples of 4):
 | 2xl | 48px | Top margin below the Phases strip before summary content |
 | 3xl | 64px | Not used in this phase |
 
-Exceptions: Touch target minimum 44px maintained on all interactive buttons (Back to home, Copy link) — consistent with existing DraftSlot `min-h-[44px]` pattern.
-
 Source: Inferred from existing codebase spacing (DraftSlot, LobbyHostBar, +page.svelte `px-4 py-6` patterns). Default 8-point scale confirmed.
 
 ---
@@ -234,6 +232,7 @@ Source: CONTEXT.md D-07 (CTA labels). Team headings from existing TeamDraftColum
 - "Copied" confirmation uses `role="status"` or `aria-live="polite"` region to announce to screen readers
 - DraftSlot `aria-label` already encodes action and team: "{championName} — {action} for Team {team}" — reuse unchanged
 - Empty sections are hidden via `{#if}` rather than `aria-hidden` to avoid orphaned headings in the DOM
+- Touch target minimum 44px maintained on all interactive buttons (Back to home, Copy link) — consistent with existing DraftSlot `min-h-[44px]` pattern
 
 ---
 
