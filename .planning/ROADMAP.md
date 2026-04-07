@@ -142,7 +142,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 07-01-PLAN.md — Fix grace-timer auto-advance publish gap in src/live/draft.js
-- [ ] 07-02-PLAN.md — Fill Nyquist VALIDATION.md for all 6 phases
+- [x] 07-02-PLAN.md — Fill Nyquist VALIDATION.md for all 6 phases
 **UI hint**: no
 
 ## Progress
@@ -159,4 +159,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Draft UI & Disconnect Resilience | 4/5 | In Progress|  |
 | 5. Chat & Moderation | 5/5 | Complete   | 2026-04-06 |
 | 6. Post-Draft Review | 4/4 | Complete   | 2026-04-06 |
-| 7. Tech Debt Cleanup | 1/2 | In Progress|  |
+| 7. Tech Debt Cleanup | 2/2 | Complete   | 2026-04-07 |
