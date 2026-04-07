@@ -96,7 +96,7 @@ async function disconnectGraceExpired(publicCode, disconnectedUserId, publish) {
 			graceEndsAt: undefined,
 			turnEndsAt: newTurnEndsAt
 		});
-		scheduleTimer(roomRow.id, ds.timerMs, () => autoAdvanceTurn(code, ds.turnIndex));
+		scheduleTimer(roomRow.id, ds.timerMs, () => autoAdvanceTurn(code, ds.turnIndex, null, publish));
 		const snap = await loadDraftSnapshot(db, code);
 		if (snap) publish(topicForRoom(code), 'set', snap);
 	} else {

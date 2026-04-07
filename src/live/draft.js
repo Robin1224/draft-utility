@@ -25,8 +25,9 @@ import { clearRoomTimer, scheduleTimer } from './draft-timers.js';
  * @param {string} publicCode
  * @param {number} expectedTurnIndex
  * @param {any} [platform]  - svelte-realtime platform for reactive publish; null when called from grace timer
+ * @param {Function|null} [publishFn]  - raw publish callable threaded from disconnectGraceExpired (ctx.publish); used when platform is null
  */
-export async function autoAdvanceTurn(publicCode, expectedTurnIndex, platform = null) {
+export async function autoAdvanceTurn(publicCode, expectedTurnIndex, platform = null, publishFn = null) {
 	const code = parseRoomCode(publicCode);
 	const roomRow = await getRoomByPublicCode(db, code);
 	if (!roomRow || roomRow.phase !== 'drafting') return;
@@ -66,18 +67,28 @@ export async function autoAdvanceTurn(publicCode, expectedTurnIndex, platform = 
 
 	if (isLast) {
 		await completeDraft(db, roomRow.id);
+		// Publish review snapshot unconditionally — platform may be null (grace-timer path).
+		// publishFn is threaded from disconnectGraceExpired which holds ctx.publish.
+		const pub = platform ? platform.publish.bind(platform) : publishFn;
+		if (pub) {
+			try {
+				const snap = await loadDraftSnapshot(db, code);
+				if (snap) pub(topicForRoom(code), 'set', snap);
+			} catch {
+				// publish failure is non-fatal — clients hydrate on reconnect
+			}
+		}
 	} else {
 		scheduleTimer(roomRow.id, draftState.timerMs, () => autoAdvanceTurn(code, nextIndex, platform));
-	}
-
-	// DISC-pitfall-2: publish snapshot reactively when platform context is available,
-	// so timer-driven advances reach all subscribers without waiting for next interaction.
-	if (platform) {
-		try {
-			const snap = await loadDraftSnapshot(db, code);
-			if (snap) platform.publish(topicForRoom(code), 'set', snap);
-		} catch {
-			// publish failure is non-fatal — clients hydrate on reconnect
+		// DISC-pitfall-2: publish snapshot reactively when platform context is available,
+		// so timer-driven advances reach all subscribers without waiting for next interaction.
+		if (platform) {
+			try {
+				const snap = await loadDraftSnapshot(db, code);
+				if (snap) platform.publish(topicForRoom(code), 'set', snap);
+			} catch {
+				// publish failure is non-fatal — clients hydrate on reconnect
+			}
 		}
 	}
 }
