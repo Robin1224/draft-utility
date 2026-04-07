@@ -139,7 +139,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. `disconnectGraceExpired` → `autoAdvanceTurn` path calls `completeDraft` AND publishes the review snapshot to live clients unconditionally (not gated on `platform`)
   2. All 6 phases have filled VALIDATION.md files with `nyquist_compliant: true` and wave-0 browser-project specs passing
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 07-01-PLAN.md — Fix grace-timer auto-advance publish gap in src/live/draft.js
+- [ ] 07-02-PLAN.md — Fill Nyquist VALIDATION.md for all 6 phases
 **UI hint**: no
 
 ## Progress
@@ -156,4 +159,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Draft UI & Disconnect Resilience | 4/5 | In Progress|  |
 | 5. Chat & Moderation | 5/5 | Complete   | 2026-04-06 |
 | 6. Post-Draft Review | 4/4 | Complete   | 2026-04-06 |
-| 7. Tech Debt Cleanup | 0/0 | Pending    |            |
+| 7. Tech Debt Cleanup | 0/2 | Pending    |            |
