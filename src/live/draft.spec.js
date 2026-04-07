@@ -259,6 +259,8 @@ describe('draft live RPCs (DRAFT-02 through DRAFT-06)', () => {
 			);
 		});
 
+		// Non-last-turn: platform=null still skips loadDraftSnapshot (mid-draft guard preserved).
+		// The final-turn (isLast) case with publishFn is covered by the grace-timer test below.
 		it('does not call platform.publish when platform is null', async () => {
 			vi.mocked(draftDb.advanceTurnIfCurrent).mockResolvedValue(true);
 			vi.mocked(draftDb.writeDraftAction).mockResolvedValue(undefined);
@@ -271,6 +273,41 @@ describe('draft live RPCs (DRAFT-02 through DRAFT-06)', () => {
 			await expect(autoAdvanceTurn('abc1234', 0, null)).resolves.toBeUndefined();
 			// loadDraftSnapshot is not called when platform is null
 			expect(draftDb.loadDraftSnapshot).not.toHaveBeenCalled();
+		});
+
+		it('publishes review snapshot when platform is null but publishFn provided (grace-timer path)', async () => {
+			// Set up a room where the current turn IS the last turn:
+			// THREE_TURN_SCRIPT has 3 entries; calling autoAdvanceTurn with expectedTurnIndex=2
+			// means nextIndex=3, isLast = (3 >= 3) = true.
+			const lastTurnRoom = {
+				...baseRoom,
+				draft_state: {
+					...baseRoom.draft_state,
+					turnIndex: 2  // last turn index in THREE_TURN_SCRIPT
+				}
+			};
+			vi.mocked(draftDb.advanceTurnIfCurrent).mockResolvedValue(true);
+			vi.mocked(draftDb.writeDraftAction).mockResolvedValue(undefined);
+			vi.mocked(draftDb.completeDraft).mockResolvedValue(undefined);
+			vi.mocked(draftDb.loadDraftSnapshot).mockResolvedValue(baseSnap);
+			vi.mocked(rooms.getRoomByPublicCode).mockResolvedValue(lastTurnRoom);
+
+			const { autoAdvanceTurn } = await import('./draft.js');
+			const mockPublishFn = vi.fn();
+
+			// Call with platform=null but a publishFn (the grace-timer path from disconnectGraceExpired)
+			await expect(autoAdvanceTurn('abc1234', 2, null, mockPublishFn)).resolves.toBeUndefined();
+
+			// completeDraft must fire (DB updated)
+			expect(draftDb.completeDraft).toHaveBeenCalled();
+			// loadDraftSnapshot must be called to build the review snapshot
+			expect(draftDb.loadDraftSnapshot).toHaveBeenCalled();
+			// The snapshot must be published via publishFn
+			expect(mockPublishFn).toHaveBeenCalledWith(
+				expect.stringContaining('abc1234'),
+				'set',
+				baseSnap
+			);
 		});
 	});
 
