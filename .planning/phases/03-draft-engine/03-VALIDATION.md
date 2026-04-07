@@ -1,10 +1,11 @@
 ---
 phase: 3
 slug: draft-engine
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: complete
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-04-03
+completed: 2026-04-07
 ---
 
 # Phase 3 — Validation Strategy
@@ -19,16 +20,16 @@ created: 2026-04-03
 |----------|-------|
 | **Framework** | Vitest 4.1.2 |
 | **Config file** | `vite.config.js` (two projects: `client` + `server`) |
-| **Quick run command** | `npm run test -- --project=server --reporter=dot` |
-| **Full suite command** | `npm run test` |
+| **Quick run command** | `npx vitest run src/lib/server/draft.spec.js` |
+| **Full suite command** | `npx vitest run` |
 | **Estimated runtime** | ~15 seconds |
 
 ---
 
 ## Sampling Rate
 
-- **After every task commit:** Run `npm run test -- --project=server --reporter=dot`
-- **After every plan wave:** Run `npm run test`
+- **After every task commit:** Run `npx vitest run src/lib/server/draft.spec.js`
+- **After every plan wave:** Run `npx vitest run`
 - **Before `/gsd:verify-work`:** Full suite must be green
 - **Max feedback latency:** ~15 seconds
 
@@ -36,52 +37,47 @@ created: 2026-04-03
 
 ## Per-Task Verification Map
 
-| Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
-|---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 3-xx-01 | TBD | 0 | LIST-01 | unit | `npm run test -- --project=server src/lib/catalog/classes.spec.js` | ❌ Wave 0 | ⬜ pending |
-| 3-xx-02 | TBD | 0 | DRAFT-01 | unit | `npm run test -- --project=server src/lib/draft-script.spec.js -t "default script"` | ❌ Wave 0 | ⬜ pending |
-| 3-xx-03 | TBD | 0 | DRAFT-01 | unit | `npm run test -- --project=server src/lib/server/draft.spec.js -t "unique constraint"` | ❌ Wave 0 | ⬜ pending |
-| 3-xx-04 | TBD | 1 | DRAFT-02 | unit (mock DB) | `npm run test -- --project=server src/live/draft.spec.js -t "startDraft"` | ❌ Wave 0 | ⬜ pending |
-| 3-xx-05 | TBD | 1 | DRAFT-03 | unit (mock DB) | `npm run test -- --project=server src/live/draft.spec.js -t "non-captain"` | ❌ Wave 0 | ⬜ pending |
-| 3-xx-06 | TBD | 1 | DRAFT-03 | unit (mock DB) | `npm run test -- --project=server src/live/draft.spec.js -t "duplicate champion"` | ❌ Wave 0 | ⬜ pending |
-| 3-xx-07 | TBD | 1 | DRAFT-04 | unit (mock DB + fake timers) | `npm run test -- --project=server src/live/draft.spec.js -t "timer no-op"` | ❌ Wave 0 | ⬜ pending |
-| 3-xx-08 | TBD | 1 | DRAFT-04 | unit (mock DB + fake timers) | `npm run test -- --project=server src/live/draft.spec.js -t "timer advances"` | ❌ Wave 0 | ⬜ pending |
-| 3-xx-09 | TBD | 1 | DRAFT-05 | unit (mock DB) | `npm run test -- --project=server src/live/draft.spec.js -t "draft completion"` | ❌ Wave 0 | ⬜ pending |
-| 3-xx-10 | TBD | 1 | DRAFT-06 | unit | `npm run test -- --project=server src/live/draft.spec.js -t "custom script"` | ❌ Wave 0 | ⬜ pending |
-| 3-xx-11 | TBD | 2 | HOST-01 | unit (browser) | `npm run test -- --project=client src/lib/components/molecules/DraftSettingsPanel.svelte.spec.js` | ❌ Wave 0 | ⬜ pending |
-
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+| Task ID | Requirement | Test Type | Automated Command | File Exists | Status |
+|---------|-------------|-----------|-------------------|-------------|--------|
+| LIST-01 | Catalog content (28 champions) | unit | `npx vitest run src/lib/catalog/classes.spec.js` | ✅ exists | ✅ green |
+| DRAFT-01 | Default script shape | unit | `npx vitest run src/lib/draft-script.spec.js` | ✅ exists | ✅ green |
+| DRAFT-02 | Start draft / server turn ownership | unit | `npx vitest run src/lib/server/draft.spec.js src/live/draft.spec.js` | ✅ exists | ✅ green |
+| DRAFT-03 | Pick/ban captain auth + no-duplicate | unit | `npx vitest run src/live/draft.spec.js` | ✅ exists | ✅ green |
+| DRAFT-04 | Timer auto-advance (server-side) | unit | `npx vitest run src/live/draft.spec.js` | ✅ exists | ✅ green |
+| DRAFT-05 | Draft completion on last turn | unit | `npx vitest run src/lib/server/draft.spec.js` | ✅ exists | ✅ green |
+| DRAFT-06 | Custom script from host | unit | `npx vitest run src/lib/draft-script.spec.js` | ✅ exists | ✅ green |
+| HOST-01 | Settings panel visibility + wiring | browser | `npx vitest run src/lib/components/molecules/DraftSettingsPanel.svelte.spec.js` | ✅ exists | ✅ green |
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] `src/lib/catalog/classes.spec.js` — stubs for LIST-01 (28 entries, correct fields)
-- [ ] `src/lib/draft-script.spec.js` — stubs for DRAFT-01 (default script shape/length)
-- [ ] `src/lib/server/draft.spec.js` — stubs for DB layer and unique constraint (DRAFT-01)
-- [ ] `src/live/draft.spec.js` — stubs for DRAFT-02 through DRAFT-06, timer behavior
-- [ ] `src/lib/components/molecules/DraftSettingsPanel.svelte.spec.js` — stubs for HOST-01 settings panel visibility
+- [x] `src/lib/catalog/classes.spec.js` — LIST-01 (28 entries, correct fields)
+- [x] `src/lib/draft-script.spec.js` — DRAFT-01, DRAFT-06 (default script shape/length, custom script)
+- [x] `src/lib/server/draft.spec.js` — DRAFT-01 through DRAFT-05 (DB layer, unique constraint)
+- [x] `src/live/draft.spec.js` — DRAFT-02 through DRAFT-05 (timer behavior, captain auth, completion)
+- [x] `src/lib/components/molecules/DraftSettingsPanel.svelte.spec.js` — HOST-01 (settings panel visibility and binding)
 
 ---
 
 ## Manual-Only Verifications
 
-| Behavior | Requirement | Why Manual | Test Instructions |
-|----------|-------------|------------|-------------------|
-| Settings panel appears before draft, hidden during draft | HOST-01 | Requires live UI inspection | Open room as host; verify panel visible in lobby phase; start draft; verify panel hidden |
-| Pick/ban UI updates pool in real-time for all participants | DRAFT-03 | Requires two browser sessions | Open room in two tabs as different captains; make a pick; verify the class disappears from both |
-| Timer auto-advances turn when expired | DRAFT-04 | Requires real elapsed time | Start draft with 10s timer; let timer expire; verify turn advances without interaction |
-| Draft transitions to Review after final pick | DRAFT-05 | Requires completing full script | Run full draft script; verify Review phase renders |
+| Behavior | Requirement | Why Manual | Status |
+|----------|-------------|------------|--------|
+| Settings panel appears before draft, hidden during draft | HOST-01 | Requires live UI inspection | ✅ green (human UAT in 03-VERIFICATION.md) |
+| Pick/ban UI updates pool in real-time for all participants | DRAFT-03 | Requires two browser sessions | ✅ green (human UAT in 03-VERIFICATION.md) |
+| Timer auto-advances turn when expired | DRAFT-04 | Requires real elapsed time | ✅ green (human UAT in 03-VERIFICATION.md) |
+| Draft transitions to Review after final pick | DRAFT-05 | Requires completing full script | ✅ green (human UAT in 03-VERIFICATION.md) |
 
 ---
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 15s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have automated verify or documented manual-only reason
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all requirements
+- [x] No watch-mode flags
+- [x] Feedback latency < 15s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** complete 2026-04-07
