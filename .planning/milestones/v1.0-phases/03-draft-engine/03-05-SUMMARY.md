@@ -132,3 +132,12 @@ None - no external service configuration required.
 ---
 *Phase: 03-draft-engine*
 *Completed: 2026-04-03*
+
+## Self-Check: PASSED
+
+- FOUND: src/lib/components/atoms/ScriptTurnRow.svelte
+- FOUND: src/lib/components/molecules/DraftSettingsPanel.svelte
+- FOUND: .planning/phases/03-draft-engine/03-05-SUMMARY.md
+- FOUND: commit 593e656 (ScriptTurnRow)
+- FOUND: commit 16d43ef (DraftSettingsPanel + spec)
+- FOUND: commit 114282e (plan metadata)

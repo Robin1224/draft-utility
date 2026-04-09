@@ -97,3 +97,12 @@ None - no external service configuration required.
 ---
 *Phase: 07-tech-debt-cleanup*
 *Completed: 2026-04-07*
+
+## Self-Check: PASSED
+
+- FOUND: src/live/draft.js
+- FOUND: src/live/room.js
+- FOUND: src/live/draft.spec.js
+- FOUND: 07-01-SUMMARY.md
+- FOUND commit: d217380 (feat: thread publishFn)
+- FOUND commit: 438605d (test: grace-timer completion test)

@@ -105,3 +105,12 @@ None - no external service configuration required.
 ---
 *Phase: 06-post-draft-review*
 *Completed: 2026-04-06*
+
+## Self-Check: PASSED
+
+- FOUND: src/lib/components/molecules/DraftReview.svelte
+- FOUND: src/routes/draft/[id]/+page.svelte
+- FOUND: .planning/phases/06-post-draft-review/06-02-SUMMARY.md
+- FOUND: commit 5f95f4a (feat(06-02): create DraftReview.svelte molecule)
+- FOUND: commit 1b39b64 (feat(06-02): wire review branch in +page.svelte)
+- FOUND: commit 8f0128c (docs(06-02): complete DraftReview component and review branch plan)

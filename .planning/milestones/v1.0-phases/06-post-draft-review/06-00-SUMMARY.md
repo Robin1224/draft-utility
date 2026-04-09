@@ -93,3 +93,9 @@ None - no external service configuration required.
 ---
 *Phase: 06-post-draft-review*
 *Completed: 2026-04-06*
+
+## Self-Check: PASSED
+
+- `src/lib/components/molecules/DraftReview.svelte.spec.js` — FOUND
+- `.planning/phases/06-post-draft-review/06-00-SUMMARY.md` — FOUND
+- Commit `03b8af4` — FOUND (`test(06-00): add Wave 0 it.todo stubs for DraftReview.svelte`)

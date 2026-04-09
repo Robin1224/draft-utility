@@ -76,7 +76,7 @@ Each task was committed atomically:
 2. **Task 2: Add startDraftWithSettings to rooms.js** - `2e5b6cc` (feat)
 3. **Task 3: Full server test suite green** - no code changes (verification only)
 
-**Plan metadata:** (docs commit — see below)
+**Plan metadata:** `48418a7` (docs)
 
 _Note: TDD tasks followed RED -> GREEN flow; no REFACTOR pass needed._
 

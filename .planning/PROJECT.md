@@ -10,46 +10,48 @@ A **real-time drafting application** for competitive-style sessions: **two teams
 
 **A fair, readable, real-time draft** where host rules, team privacy, and spectator separation are clear — and the final pick/ban outcome is easy to review.
 
+## Current State (v1.0 — shipped 2026-04-09)
+
+v1.0 is complete. All 34 requirements shipped across 7 phases (31 plans, ~6,800 lines JS/Svelte). The full pick/ban draft flow works end-to-end: Discord OAuth → lobby → configurable draft → real-time pick/ban → post-draft review shareable link. All Nyquist VALIDATION.md files filled. Grace-timer edge case fixed.
+
+**Stack:** SvelteKit + Better Auth + Drizzle + Neon (PostgreSQL) + svelte-realtime (UWS)
+**Auth:** Discord OAuth only (requirements described email/pw + Google/GitHub — implementation used Discord throughout)
+**Testing:** 130 passing vitest unit tests, 34 todo stubs (Phase 4 DISC specs), manual UAT for browser flows
+
 ## Requirements
 
-### Validated
+### Validated (v1.0)
 
-- ✓ **SvelteKit full-stack shell** — file-based routes, SSR, Node adapter (`svelte.config.js`, `vite.config.js`)
-- ✓ **Svelte 5 + Tailwind v4 UI** — runes, layout and global styles (`src/routes/+layout.svelte`, `src/routes/layout.css`)
-- ✓ **Authentication stack** — Better Auth with session in `event.locals` (`src/hooks.server.js`, `src/lib/server/auth.js`, `src/app.d.ts`)
-- ✓ **PostgreSQL via Neon + Drizzle** — `db` client and schemas (`src/lib/server/db/`, `drizzle.config.js`)
-- ✓ **Home entry: create / join draft** — `Header`, `Create`, `Join` on `/` (`src/routes/+page.svelte`, `src/lib/components/molecules/Create.svelte`, `Join.svelte`)
-- ✓ **Draft route placeholder** — `/draft/[id]` with `Header` and phase strip **Lobby / Drafting / Review** (`src/routes/draft/[id]/+page.svelte`, `src/lib/components/atoms/Phases.svelte`)
-- ✓ **Demo auth pages** — email sign-in/up flows under `src/routes/demo/better-auth/`
+- ✓ **SvelteKit full-stack shell** — file-based routes, SSR, Node adapter — v1.0
+- ✓ **Svelte 5 + Tailwind v4 UI** — runes, layout, global styles — v1.0
+- ✓ **Authentication** — Discord OAuth via Better Auth; session in `event.locals`; sign-in/out — v1.0
+- ✓ **PostgreSQL via Neon + Drizzle** — room, room_member, draft_state, draft_action schemas — v1.0
+- ✓ **Room lifecycle** — create, join by code/link, 24h abandon expiry — v1.0
+- ✓ **Teams & captains** — up to 3 players/side; first-join captain; guests = spectators only — v1.0
+- ✓ **Host controls** — kick, move players (pre-draft), start draft (both captains required), cancel — v1.0
+- ✓ **Draft mechanics** — 28-champion catalog; 10-turn default script; host-configurable order/timer — v1.0
+- ✓ **Turn timer** — default 30s; server-side auto-advance; race-safe with DB compare-and-swap — v1.0
+- ✓ **Captain disconnect resilience** — pause, 30s grace, promote or cancel; snapshot hydration on reconnect — v1.0
+- ✓ **Chat** — team-isolated, spectator-only channels; slur filter; rate limiting; host mute — v1.0
+- ✓ **Post-draft review** — pick/ban summary; shareable link; no auth required to view — v1.0
+- ✓ **Grace-timer publish** — final-turn grace expiry unconditionally pushes review snapshot to clients — v1.0
 
-### Active
+### Active (v1.1 candidates)
 
-- [ ] **Realtime lobby** — presence, room by id; **host** = room creator (**not transferable**)
-- [ ] **Teams** — up to 3 players per side; **only signed-in users** on teams; **guests = spectators only**
-- [ ] **Captains** — default **first player to join each team**; host-adjustable where product allows
-- ✓ **Start draft** — host starts when ready; both teams must have a captain; settings (script + timer) configured in lobby panel. Validated in Phase 03: draft-engine
-- ✓ **Draft mechanics** — pick/ban from 28-champion catalog; default 10-turn script; host-configurable order and timer in room settings panel. Validated in Phase 03: draft-engine
-- ✓ **Turn timer** — default 30s; host-configurable in room settings (10s min); server-side auto-advance on expiry. Validated in Phase 03: draft-engine
-- [ ] **Pre-draft only** — host may **move players between teams**; **no team moves after draft starts**
-- [ ] **Host moderation** — **kick** any member; **kick/mute spectators**; **no spectator cap**
-- ✓ **Chats** — team chat (team-isolated), spectator chat (spectators only), slur filter, rate limiting, host mute controls. Validated in Phase 05: chat-moderation
-- [ ] **Chat safety (v1)** — **rate limiting** + **slur filtering**; no heavier moderation yet
-- [ ] **Captain disconnect** — **pause**; wait **~30s**; if no return, **promote another player** on that team to captain; if **no other player**, **cancel draft**
-- ✓ **Post-draft** — clear **overview** of all bans and picks; auto-transition on draft end; shareable link for unauthenticated visitors. Validated in Phase 06: post-draft-review
-- [ ] **Class lists (v1)** — **one premade catalog** only; **custom lists + interactive draft editor** deferred until security and UX are addressed
+- [ ] **Auth requirements text accuracy** — AUTH-01/02/04 describe email/pw + Google/GitHub; update to reflect Discord-only
+- [ ] **Stale chat tests** — 3 assertions in chat.spec.js use `message` event; implementation emits `set`
+- [ ] **Dead code** — `startDraftIfReady` exported but never called; superseded by `startDraftWithSettings`
+- [ ] **Stale JSDoc** — rooms.js:76 describes pre-Phase-6 `completeDraft` behaviour
+- [ ] **Guest spectator accumulation** — `upsertGuestSpectator` fires for review-phase rooms; benign at v1 scale
+- [ ] **Phase 4 VERIFICATION.md** — missing; UAT 10/10 passed, code verified via SUMMARY; documentation gap
 
 ### Out of Scope
 
 - **Custom / user-upload list creation** (before a vetted editor and security model) — explicit deferral
-- **Transferable host**
+- **Transferable host** — creator is always host; no transfer mechanism
 - **Moving players between teams after the draft has started**
 - **Heavy moderation** (beyond rate limits and slur filter) for v1
-
-## Context
-
-- **Brownfield:** See `.planning/codebase/` (`STACK.md`, `ARCHITECTURE.md`, `INTEGRATIONS.md`, etc.) for dependencies and layout.
-- **Realtime:** Not yet integrated in app code; `package.json` includes realtime-related packages **without** current `src/` usage — implementation choices belong to upcoming phases.
-- **Create flow:** `Create.svelte` navigates to `/draft/create`, which is handled by the dynamic segment `src/routes/draft/[id]/+page.svelte` with `id = "create"` until a dedicated creation flow exists.
+- **Email/password + Google/GitHub OAuth** — Discord only in v1; requirements text mismatch documented
 
 ## Constraints
 
@@ -60,38 +62,26 @@ A **real-time drafting application** for competitive-style sessions: **two teams
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Guests = spectators only; team play requires auth | Clear trust boundary; reduces anonymous griefing on teams | — Pending |
-| Host fixed to creator | Simple authority model | — Pending |
-| Host starts draft; min 2 players with one captain per team | Flexible lobby fill | — Pending |
-| Team moves only before draft | Avoid mid-draft unfair shuffles | — Pending |
-| Default 30s turn timer + host-configurable order/timer | Matches esports-style expectations | — Pending |
-| Captain disconnect → pause, grace, reassign or cancel | Keeps draft finishable when possible | — Pending |
-| v1 = premade list only | Security before custom content | — Pending |
-| Chat: rate limit + slur list | Basic hygiene without full moderation product | — Pending |
+| Guests = spectators only; team play requires auth | Clear trust boundary; reduces anonymous griefing on teams | ✓ Good — enforced server-side cleanly |
+| Host fixed to creator | Simple authority model | ✓ Good — no edge cases around transfer |
+| Host starts draft; min 2 players with one captain per team | Flexible lobby fill | ✓ Good — works in practice |
+| Team moves only before draft | Avoid mid-draft unfair shuffles | ✓ Good — RPCs locked by phase check |
+| Default 30s turn timer + host-configurable order/timer | Matches esports-style expectations | ✓ Good — drag-to-reorder DraftSettingsPanel |
+| Captain disconnect → pause, grace, reassign or cancel | Keeps draft finishable when possible | ✓ Good — all paths tested via UAT |
+| v1 = premade list only | Security before custom content | ✓ Good — deferred cleanly |
+| Chat: rate limit + slur list | Basic hygiene without full moderation product | ✓ Good — filterMessage is pure, testable |
+| Discord OAuth only (not email/pw + Google/GitHub) | Better Auth Discord provider was simplest working integration | ⚠️ Revisit — requirements text still describes email/pw + Google/GitHub |
+| autoAdvanceTurn publishFn parameter | Grace-timer path had no platform; threading publish avoids module-level side effects | ✓ Good — clean, testable |
+| Nyquist VALIDATION.md filled retroactively | All 6 phases filled in Phase 7 to reach nyquist_compliant:true | ✓ Good — wave-0 coverage documented |
 
-## Evolution
+## Context
 
-This document evolves at phase transitions and milestone boundaries.
-
-**After each phase transition** (via `/gsd-transition`):
-
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd-complete-milestone`):
-
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+- **Stack:** SvelteKit + Better Auth + Drizzle + Neon + svelte-realtime (UWS WebSocket layer)
+- **Source:** ~6,800 lines JS/Svelte across `src/`
+- **Tests:** 130 passing vitest unit tests; 34 todo stubs (Phase 4 DISC browser specs pending)
+- **Phase artifacts:** Archived to `.planning/milestones/v1.0-phases/`
+- **Next milestone:** Run `/gsd:new-milestone` to define v1.1 scope
 
 ---
 
-*Last updated: 2026-04-09 after Phase 07 (tech-debt-cleanup) completion*
-
-### Phase 07 changes
-- Grace-timer publish gap fixed: `autoAdvanceTurn` now unconditionally publishes the review snapshot on the final turn, regardless of whether `platform` is present (closes DRAFT-04/POST-01 edge case from v1.0 audit)
-- All 6 phase VALIDATION.md files promoted to `nyquist_compliant: true` / `wave_0_complete: true` / `status: complete`
+*Last updated: 2026-04-09 after v1.0 milestone completion*
