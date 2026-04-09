@@ -90,4 +90,8 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-06 after Phase 06 (post-draft-review) completion*
+*Last updated: 2026-04-09 after Phase 07 (tech-debt-cleanup) completion*
+
+### Phase 07 changes
+- Grace-timer publish gap fixed: `autoAdvanceTurn` now unconditionally publishes the review snapshot on the final turn, regardless of whether `platform` is present (closes DRAFT-04/POST-01 edge case from v1.0 audit)
+- All 6 phase VALIDATION.md files promoted to `nyquist_compliant: true` / `wave_0_complete: true` / `status: complete`
