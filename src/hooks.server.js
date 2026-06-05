@@ -1,4 +1,4 @@
-import { building } from '$app/environment';
+import { building, dev } from '$app/environment';
 import { sequence } from '@sveltejs/kit/hooks';
 import { auth } from '$lib/server/auth';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
@@ -38,3 +38,17 @@ export /** @type {import('@sveltejs/kit').Handle} */ const handle = sequence(
 	guestCookieHandle,
 	handleBetterAuth
 );
+
+/** Logs wrapped DB errors (e.g. DrizzleQueryError → NeonDbError) — the outer message often omits PG code/detail. */
+/** @type {import('@sveltejs/kit').HandleServerError} */
+export const handleError = ({ error }) => {
+	if (!dev) return;
+	let c = /** @type {any} */ (error)?.cause;
+	let depth = 0;
+	while (c != null && depth < 6) {
+		const { message, code, detail, hint, severity } = c;
+		console.error('[dev] error.cause:', { message, code, detail, hint, severity });
+		c = c.cause;
+		depth += 1;
+	}
+};
