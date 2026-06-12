@@ -22,7 +22,7 @@
 - [x] **FX-01**: An ASCII plasma shader canvas renders behind content on a violet→lime brightness ramp, with ambient and "hot" intensities.
 - [x] **FX-02**: The shader pauses when off-screen (IntersectionObserver) and is disabled under `prefers-reduced-motion`.
 - [x] **FX-03**: Terminal logs (home boot sequence, connect log) type out character-by-character and jump to full text under `prefers-reduced-motion`.
-- [ ] **FX-04**: The home hero renders the shaded-ASCII `DRAFT` wordmark with its line-by-line reveal.
+- [x] **FX-04**: The home hero renders the shaded-ASCII `DRAFT` wordmark with its line-by-line reveal.
 - [x] **FX-05**: Blinking block cursors render where specified (header brand, chat input), 1s step-end, disabled under reduced motion.
 
 ### Screen Reskins
@@ -91,7 +91,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | FX-01 | Phase 9 | Complete |
 | FX-02 | Phase 9 | Complete |
 | FX-03 | Phase 9 | Complete |
-| FX-04 | Phase 9 | Pending |
+| FX-04 | Phase 9 | Complete |
 | FX-05 | Phase 8 | Complete |
 | UI-01 | Phase 10 | Pending |
 | UI-02 | Phase 10 | Pending |

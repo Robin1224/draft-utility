@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Cyber Redesign
-status: executing
-stopped_at: Completed 09-02-PLAN.md
-last_updated: "2026-06-12T14:41:12.279Z"
+status: verifying
+stopped_at: Completed 09-03-PLAN.md
+last_updated: "2026-06-12T14:47:48.953Z"
 last_activity: 2026-06-12
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-06-12)
 
 Phase: 09 (signature-effects-infrastructure) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-06-12
 
 Progress: [░░░░░░░░░░] 0%
@@ -57,6 +57,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P02 | 9min | 2 tasks | 3 files |
 | Phase 09 P01 | 9min | 2 tasks | 4 files |
 | Phase 09 P02 | 3min | 2 tasks | 3 files |
+| Phase 09 P03 | 3min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,7 @@ Recent decisions affecting current work:
 - [Phase 09]: CyShader mounted app-wide in CyShell at the ambient default (hot=false, intensity=1); Home wires hot in Phase 10 (D-02)
 - [Phase 09]: Shader draws one static frame and never schedules rAF under prefers-reduced-motion (D-04 / FX-02 hard rule)
 - [Phase 09]: Typed log shipped as a .svelte.js rune factory (createTypedLog) using $effect.root + dispose() — composable by Home boot log (default) and Phase 12 connect log (speed 7, lineGap 120); reduced-motion jumps n to full.length with no timer (FX-03).
+- [Phase 09]: CyLogo reveal is pure CSS (is-rendered + cy-logo-in stagger) animating transform+brightness only; base .cy-logo carries no opacity:0 so the wordmark is always visible (fidelity guardrail). Reduced-motion suppression asserted via app.css?raw CSS contract since this vitest-browser provider lacks page.emulateMedia.
 
 ### Pending Todos
 
@@ -97,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-12T14:41:05.873Z
-Stopped at: Completed 09-02-PLAN.md
+Last session: 2026-06-12T14:47:43.418Z
+Stopped at: Completed 09-03-PLAN.md
 Resume file: None
