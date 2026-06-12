@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Cyber Redesign
-status: "Roadmap ready — awaiting `/gsd:plan-phase 8`"
-stopped_at: Phase 8 planned (3 plans, verified)
-last_updated: "2026-06-12T11:54:09.102Z"
-last_activity: 2026-06-12 — Roadmap created for v2.0 (Phases 8–12, 24 requirements mapped)
+status: executing
+stopped_at: Completed 08-00-PLAN.md
+last_updated: "2026-06-12T12:00:02.728Z"
+last_activity: 2026-06-12
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 3
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-12)
 
 **Core value:** A fair, readable, real-time draft where host rules, team privacy, and spectator separation are clear — and the final pick/ban outcome is easy to review.
-**Current focus:** v2.0 Cyber Redesign — Phase 8 (Cyber Foundation & App Shell), ready to plan.
+**Current focus:** Phase 08 — cyber-foundation-app-shell
 
 ## Current Position
 
-Phase: 8 — Cyber Foundation & App Shell (not started)
-Plan: —
-Status: Roadmap ready — awaiting `/gsd:plan-phase 8`
-Last activity: 2026-06-12 — Roadmap created for v2.0 (Phases 8–12, 24 requirements mapped)
+Phase: 08 (cyber-foundation-app-shell) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
+Last activity: 2026-06-12
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -52,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 08 P00 | 2 | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -66,6 +67,8 @@ Recent decisions affecting current work:
 - v2.0: Access-control backend (`room.isPublic`) and the screens that consume it (Guest Gate, Connecting, Room Cancelled) grouped into Phase 12 so backend wiring lands with the screens that gate on it.
 - Init: Guests = spectators only; team play requires auth (carried from v1.0).
 - Init: Host fixed to room creator; non-transferable (carried from v1.0).
+- [Phase 08]: Vendored JetBrains Mono woff2 (400/500/600/700, OFL-1.1 latin subset) from Fontsource — fonts cannot be npm-installed into the vendored path
+- [Phase 08]: Wave 0 specs written red first (node string-grep + browser DOM) encoding DS-01/02/03/04/05 + FX-05; Manrope.ttf retained until Plan 01 removes it
 
 ### Pending Todos
 
@@ -84,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-12T11:54:09.100Z
-Stopped at: Phase 8 planned (3 plans, verified)
-Resume file: .planning/phases/08-cyber-foundation-app-shell/08-01-PLAN.md
+Last session: 2026-06-12T11:59:56.813Z
+Stopped at: Completed 08-00-PLAN.md
+Resume file: None

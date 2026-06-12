@@ -11,11 +11,11 @@
 
 ### Design System
 
-- [ ] **DS-01**: All UI renders in JetBrains Mono (weights 400/500/600/700) loaded by the app; no other UI font remains.
-- [ ] **DS-02**: The Cyber color tokens and glow shadows from `cyber.css` are available app-wide as CSS custom properties scoped under `.cy-app`.
-- [ ] **DS-03**: Tailwind is fully removed (dependency, config, and `@import 'tailwindcss'`); no component renders via Tailwind utility classes.
-- [ ] **DS-04**: All surfaces use squared corners (zero border-radius) and 1px borders per the Cyber spec.
-- [ ] **DS-05**: A persistent app shell renders the fixed header — bracketed wordmark + blinking cursor, centered phase tracker (active phase lime-glowed), and room-code meta with a working copy-to-clipboard button — plus the scanline overlay over a scrolling body.
+- [x] **DS-01**: All UI renders in JetBrains Mono (weights 400/500/600/700) loaded by the app; no other UI font remains.
+- [x] **DS-02**: The Cyber color tokens and glow shadows from `cyber.css` are available app-wide as CSS custom properties scoped under `.cy-app`.
+- [x] **DS-03**: Tailwind is fully removed (dependency, config, and `@import 'tailwindcss'`); no component renders via Tailwind utility classes.
+- [x] **DS-04**: All surfaces use squared corners (zero border-radius) and 1px borders per the Cyber spec.
+- [x] **DS-05**: A persistent app shell renders the fixed header — bracketed wordmark + blinking cursor, centered phase tracker (active phase lime-glowed), and room-code meta with a working copy-to-clipboard button — plus the scanline overlay over a scrolling body.
 
 ### Signature Effects
 
@@ -23,7 +23,7 @@
 - [ ] **FX-02**: The shader pauses when off-screen (IntersectionObserver) and is disabled under `prefers-reduced-motion`.
 - [ ] **FX-03**: Terminal logs (home boot sequence, connect log) type out character-by-character and jump to full text under `prefers-reduced-motion`.
 - [ ] **FX-04**: The home hero renders the shaded-ASCII `DRAFT` wordmark with its line-by-line reveal.
-- [ ] **FX-05**: Blinking block cursors render where specified (header brand, chat input), 1s step-end, disabled under reduced motion.
+- [x] **FX-05**: Blinking block cursors render where specified (header brand, chat input), 1s step-end, disabled under reduced motion.
 
 ### Screen Reskins
 
@@ -83,16 +83,16 @@ Which phases cover which requirements. Populated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DS-01 | Phase 8 | Pending |
-| DS-02 | Phase 8 | Pending |
-| DS-03 | Phase 8 | Pending |
-| DS-04 | Phase 8 | Pending |
-| DS-05 | Phase 8 | Pending |
+| DS-01 | Phase 8 | Complete |
+| DS-02 | Phase 8 | Complete |
+| DS-03 | Phase 8 | Complete |
+| DS-04 | Phase 8 | Complete |
+| DS-05 | Phase 8 | Complete |
 | FX-01 | Phase 9 | Pending |
 | FX-02 | Phase 9 | Pending |
 | FX-03 | Phase 9 | Pending |
 | FX-04 | Phase 9 | Pending |
-| FX-05 | Phase 8 | Pending |
+| FX-05 | Phase 8 | Complete |
 | UI-01 | Phase 10 | Pending |
 | UI-02 | Phase 10 | Pending |
 | UI-03 | Phase 10 | Pending |
