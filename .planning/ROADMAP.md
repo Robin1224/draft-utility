@@ -59,7 +59,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   4. The shaded-ASCII `DRAFT` wordmark renders with its line-by-line reveal.
 **Plans**: 3 plans
   - [x] 09-01-PLAN.md — Wave 1: CyShader plasma shader component + mount into CyShell (ambient, D-02) + browser tests (FX-01, FX-02)
-  - [ ] 09-02-PLAN.md — Wave 1: createTypedLog rune factory + .cy-boot CSS + browser tests (FX-03)
+  - [x] 09-02-PLAN.md — Wave 1: createTypedLog rune factory + .cy-boot CSS + browser tests (FX-03)
   - [ ] 09-03-PLAN.md — Wave 2: CyLogo DRAFT wordmark component + .cy-logo* CSS/keyframes + browser tests (FX-04)
 **UI hint**: yes
 

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Cyber Redesign
 status: executing
-stopped_at: Completed 09-01-PLAN.md
-last_updated: "2026-06-12T14:36:08.754Z"
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-06-12T14:41:12.279Z"
 last_activity: 2026-06-12
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 6
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-06-12)
 ## Current Position
 
 Phase: 09 (signature-effects-infrastructure) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-06-12
 
@@ -56,6 +56,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P01 | 7min | 2 tasks | 6 files |
 | Phase 08 P02 | 9min | 2 tasks | 3 files |
 | Phase 09 P01 | 9min | 2 tasks | 4 files |
+| Phase 09 P02 | 3min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,7 @@ Recent decisions affecting current work:
 - [Phase 08]: [Phase 08]: Persistent CyShell chrome wired in +layout.svelte; phase/code derived read-only from page.params + frozen lobby snapshot (.phase), snapshot shape untouched
 - [Phase 09]: CyShader mounted app-wide in CyShell at the ambient default (hot=false, intensity=1); Home wires hot in Phase 10 (D-02)
 - [Phase 09]: Shader draws one static frame and never schedules rAF under prefers-reduced-motion (D-04 / FX-02 hard rule)
+- [Phase 09]: Typed log shipped as a .svelte.js rune factory (createTypedLog) using $effect.root + dispose() — composable by Home boot log (default) and Phase 12 connect log (speed 7, lineGap 120); reduced-motion jumps n to full.length with no timer (FX-03).
 
 ### Pending Todos
 
@@ -95,6 +97,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-12T14:36:03.174Z
-Stopped at: Completed 09-01-PLAN.md
+Last session: 2026-06-12T14:41:05.873Z
+Stopped at: Completed 09-02-PLAN.md
 Resume file: None
