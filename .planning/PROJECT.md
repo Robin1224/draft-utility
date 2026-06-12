@@ -27,6 +27,9 @@ A **real-time drafting application** for competitive-style sessions: **two teams
 - Source design: `design_handoff_pickban_cyber/` — `cyber.css` is the authoritative token/style source; `cyber.jsx` is the component/behavior reference (React only as a prototyping medium — reimplement as Svelte 5).
 - The svelte-realtime layer and snapshot shape stay intact; the 130 unit tests must keep passing. New behaviors (public/private, spectating toggle) extend the realtime/auth/DB layer (`room.isPublic`).
 
+**Progress:**
+- ✓ **Phase 8: Cyber Foundation & App Shell** (complete 2026-06-12) — Tailwind removed; plain-CSS Cyber design system (`src/app.css`, verbatim tokens scoped under `.cy-app`, self-hosted JetBrains Mono, zero border-radius); persistent `CyShell` terminal chrome (header `[ DRAFT_EM ]` + blinking cursor, 3-phase tracker, room-code copy button, scanlines) wired into the root layout. DS-01..05, FX-05 validated. Test suite green (150 passed). *Known env debt: production `npm run build` needs the `uWebSockets.js` native addon installed; repo-wide lint debt pre-dates this milestone.*
+
 ## Current State (v1.0 — shipped 2026-04-09)
 
 v1.0 is complete. All 34 requirements shipped across 7 phases (31 plans, ~6,800 lines JS/Svelte). The full pick/ban draft flow works end-to-end: Discord OAuth → lobby → configurable draft → real-time pick/ban → post-draft review shareable link. All Nyquist VALIDATION.md files filled. Grace-timer edge case fixed.
@@ -121,4 +124,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-06-12 — started milestone v2.0 Cyber Redesign*
+*Last updated: 2026-06-12 — Phase 8 (Cyber Foundation & App Shell) complete*
