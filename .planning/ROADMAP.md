@@ -44,7 +44,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   5. All 130 existing unit tests still pass and the draft/lobby snapshot shape is unchanged.
 **Plans**: 3 plans
   - [x] 08-00-PLAN.md — Wave 0: vendor JetBrains Mono fonts + write the foundation & CyShell specs (red)
-  - [ ] 08-01-PLAN.md — Wave 1: Cyber CSS foundation (app.css tokens/fonts) + remove Tailwind at all 4 wiring points
+  - [x] 08-01-PLAN.md — Wave 1: Cyber CSS foundation (app.css tokens/fonts) + remove Tailwind at all 4 wiring points
   - [ ] 08-02-PLAN.md — Wave 1: CyShell app-shell component + +layout.svelte wiring
 **UI hint**: yes
 
