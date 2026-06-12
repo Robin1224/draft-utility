@@ -29,6 +29,7 @@ A **real-time drafting application** for competitive-style sessions: **two teams
 
 **Progress:**
 - ✓ **Phase 8: Cyber Foundation & App Shell** (complete 2026-06-12) — Tailwind removed; plain-CSS Cyber design system (`src/app.css`, verbatim tokens scoped under `.cy-app`, self-hosted JetBrains Mono, zero border-radius); persistent `CyShell` terminal chrome (header `[ DRAFT_EM ]` + blinking cursor, 3-phase tracker, room-code copy button, scanlines) wired into the root layout. DS-01..05, FX-05 validated. Test suite green (150 passed). *Known env debt: production `npm run build` needs the `uWebSockets.js` native addon installed; repo-wide lint debt pre-dates this milestone.*
+- ✓ **Phase 9: Signature Effects Infrastructure** (complete 2026-06-12) — Three reusable, motion-safe Svelte 5 building blocks, verbatim-ported from `cyber.jsx`/`cyber.css`: `CyShader.svelte` (ASCII plasma canvas, ambient/hot, IntersectionObserver off-screen pause, single static frame under reduced-motion, full rAF/observer teardown) mounted app-wide into `CyShell` at ambient default; `cyTypedLog.svelte.js` (`createTypedLog` rune factory → reactive `{text, done}`, char-by-char, jump-to-full under reduced-motion); `CyLogo.svelte` (9-line shaded-ASCII `DRAFT` wordmark, line-by-line transform+brightness reveal). FX-01..04 validated. Suite green (164 passed). *3 visual confirmation items deferred to human UAT (no demo route by design — live confirmation in Phase 10). Svelte MCP autofixer was unavailable; substituted prettier + svelte-check.*
 
 ## Current State (v1.0 — shipped 2026-04-09)
 
@@ -124,4 +125,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-06-12 — Phase 8 (Cyber Foundation & App Shell) complete*
+*Last updated: 2026-06-12 — Phase 9 (Signature Effects Infrastructure) complete*
