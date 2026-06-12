@@ -1,10 +1,11 @@
 ---
 phase: 9
 slug: signature-effects-infrastructure
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-06-12
+reviewed_at: 2026-06-12
 ---
 
 # Phase 9 — UI Design Contract: Signature Effects Infrastructure
