@@ -1,0 +1,260 @@
+/* Cyber foundation — global stylesheet (ported verbatim from design_handoff cyber.css). */
+
+/* --- JetBrains Mono self-hosted faces (Wave 0 woff2, weights 400/500/600/700) --- */
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: url('$lib/assets/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: url('$lib/assets/fonts/JetBrainsMono-Medium.woff2') format('woff2');
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: url('$lib/assets/fonts/JetBrainsMono-SemiBold.woff2') format('woff2');
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: url('$lib/assets/fonts/JetBrainsMono-Bold.woff2') format('woff2');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* --- Token root + app shell (cyber.css .cy-app, verbatim) --- */
+.cy-app {
+	--cy-bg: #050409;
+	--cy-bg-2: #0a0814;
+	--cy-bg-3: #110d22;
+	--cy-line: #2a1f4a;
+	--cy-line-2: #4a3580;
+	--cy-text: #e8e0ff;
+	--cy-text-2: #9080c0;
+	--cy-text-3: #5a4880;
+	--cy-lime: #b3ff3d;
+	--cy-lime-glow: 0 0 12px #b3ff3d80;
+	--cy-violet: #c44bff;
+	--cy-violet-glow: 0 0 12px #c44bff80;
+	--cy-amber: #ffaa00;
+	--cy-red: #ff2255;
+	/* prettier-ignore */
+	--cy-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+	background: var(--cy-bg);
+	color: var(--cy-text);
+	font-family: var(--cy-mono);
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	position: relative;
+	background-image:
+		radial-gradient(ellipse at top, #1a0f2a, transparent 60%),
+		radial-gradient(ellipse at bottom right, #1a0a30, transparent 60%);
+}
+
+/* --- Shell / chrome structural classes (cyber.css, verbatim) --- */
+.cy-shader {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	width: 100%;
+	height: 100%;
+	opacity: 0.9;
+}
+.cy-shader-hot {
+	opacity: 1;
+}
+.cy-scanlines {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 5;
+	background: repeating-linear-gradient(0deg, transparent 0 2px, rgba(196, 75, 255, 0.04) 2px 3px);
+}
+.cy-body {
+	flex: 1;
+	overflow: auto;
+	position: relative;
+	z-index: 1;
+}
+
+.cy-header {
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	padding: 12px 20px;
+	border-bottom: 1px solid var(--cy-line);
+	background: var(--cy-bg-2);
+	font-size: 12px;
+}
+.cy-brand {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+.cy-brand-bracket {
+	color: var(--cy-violet);
+}
+.cy-brand-name {
+	color: var(--cy-lime);
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-shadow: var(--cy-lime-glow);
+}
+.cy-brand-cur {
+	color: var(--cy-lime);
+	animation: cy-blink 1s infinite step-end;
+	margin-left: 4px;
+}
+@keyframes cy-blink {
+	50% {
+		opacity: 0;
+	}
+}
+.cy-phases {
+	display: flex;
+	gap: 16px;
+}
+.cy-phase {
+	color: var(--cy-text-3);
+}
+.cy-phase.is-done {
+	color: var(--cy-text-2);
+}
+.cy-phase.is-active {
+	color: var(--cy-lime);
+	text-shadow: var(--cy-lime-glow);
+}
+.cy-meta {
+	justify-self: end;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.cy-meta-key {
+	color: var(--cy-text-3);
+}
+.cy-meta-val {
+	color: var(--cy-violet);
+	text-shadow: var(--cy-violet-glow);
+}
+.cy-meta-copy {
+	background: transparent;
+	border: 1px solid var(--cy-line);
+	color: var(--cy-text-2);
+	padding: 4px 8px;
+	cursor: pointer;
+	font: inherit;
+}
+.cy-meta-copy:hover {
+	border-color: var(--cy-lime);
+	color: var(--cy-lime);
+}
+.cy-meta-copy:disabled {
+	cursor: default;
+	opacity: 0.5;
+}
+.cy-meta-copy:disabled:hover {
+	border-color: var(--cy-line);
+	color: var(--cy-text-2);
+}
+
+/* --- Shared button + input primitives (cyber.css, verbatim) --- */
+.cy-btn {
+	background: transparent;
+	color: var(--cy-text);
+	border: 1px solid var(--cy-line-2);
+	padding: 10px 16px;
+	font: inherit;
+	font-size: 12px;
+	cursor: pointer;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+.cy-btn:hover {
+	border-color: var(--cy-lime);
+	color: var(--cy-lime);
+}
+.cy-btn-block {
+	width: 100%;
+	justify-content: center;
+}
+.cy-btn-sm {
+	padding: 6px 10px;
+	font-size: 11px;
+}
+.cy-btn-primary {
+	background: var(--cy-lime);
+	color: var(--cy-bg);
+	border-color: var(--cy-lime);
+	box-shadow: var(--cy-lime-glow);
+}
+.cy-btn-primary:hover {
+	background: #c8ff70;
+	color: var(--cy-bg);
+}
+.cy-btn-lime {
+	background: var(--cy-lime);
+	color: var(--cy-bg);
+	border-color: var(--cy-lime);
+	box-shadow: var(--cy-lime-glow);
+}
+.cy-btn-violet {
+	background: var(--cy-violet);
+	color: var(--cy-bg);
+	border-color: var(--cy-violet);
+	box-shadow: var(--cy-violet-glow);
+}
+.cy-btn-danger {
+	color: var(--cy-red);
+	border-color: var(--cy-line);
+}
+.cy-btn-danger:hover {
+	border-color: var(--cy-red);
+	color: var(--cy-red);
+}
+.cy-btn-ghost {
+	border-color: transparent;
+}
+.cy-btn-discord {
+	background: #5865f2;
+	color: #fff;
+	border-color: #5865f2;
+	width: 100%;
+	justify-content: center;
+	padding: 14px;
+}
+.cy-input {
+	background: var(--cy-bg);
+	color: var(--cy-text);
+	border: 1px solid var(--cy-line-2);
+	padding: 8px 12px;
+	font: inherit;
+	font-size: 13px;
+	width: 100%;
+}
+.cy-input:focus {
+	outline: 1px solid var(--cy-lime);
+	outline-offset: 1px;
+}
+
+/* --- Reduced-motion suppression (FX-05 / D-10) --- */
+@media (prefers-reduced-motion: reduce) {
+	.cy-brand-cur {
+		animation: none;
+	}
+}
