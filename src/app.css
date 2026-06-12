@@ -75,6 +75,16 @@
 .cy-shader-hot {
 	opacity: 1;
 }
+/* Typed boot/connect log (cyber.css verbatim) — min-height reserves layout
+   space so lines do not jump as they type in (FX-03). */
+.cy-boot {
+	white-space: pre-wrap;
+	font-size: 12px;
+	line-height: 1.55;
+	color: var(--cy-text-2);
+	min-height: 9.3em;
+	margin-bottom: 18px;
+}
 .cy-scanlines {
 	position: absolute;
 	inset: 0;
