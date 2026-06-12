@@ -83,36 +83,43 @@ Which phases cover which requirements. Populated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DS-01 | TBD | Pending |
-| DS-02 | TBD | Pending |
-| DS-03 | TBD | Pending |
-| DS-04 | TBD | Pending |
-| DS-05 | TBD | Pending |
-| FX-01 | TBD | Pending |
-| FX-02 | TBD | Pending |
-| FX-03 | TBD | Pending |
-| FX-04 | TBD | Pending |
-| FX-05 | TBD | Pending |
-| UI-01 | TBD | Pending |
-| UI-02 | TBD | Pending |
-| UI-03 | TBD | Pending |
-| UI-04 | TBD | Pending |
-| UI-05 | TBD | Pending |
-| UI-06 | TBD | Pending |
-| MOD-01 | TBD | Pending |
-| MOD-02 | TBD | Pending |
-| SCR-01 | TBD | Pending |
-| SCR-02 | TBD | Pending |
-| ACC-01 | TBD | Pending |
-| ACC-02 | TBD | Pending |
-| ACC-03 | TBD | Pending |
-| ACC-04 | TBD | Pending |
+| DS-01 | Phase 8 | Pending |
+| DS-02 | Phase 8 | Pending |
+| DS-03 | Phase 8 | Pending |
+| DS-04 | Phase 8 | Pending |
+| DS-05 | Phase 8 | Pending |
+| FX-01 | Phase 9 | Pending |
+| FX-02 | Phase 9 | Pending |
+| FX-03 | Phase 9 | Pending |
+| FX-04 | Phase 9 | Pending |
+| FX-05 | Phase 8 | Pending |
+| UI-01 | Phase 10 | Pending |
+| UI-02 | Phase 10 | Pending |
+| UI-03 | Phase 10 | Pending |
+| UI-04 | Phase 10 | Pending |
+| UI-05 | Phase 10 | Pending |
+| UI-06 | Phase 10 | Pending |
+| MOD-01 | Phase 11 | Pending |
+| MOD-02 | Phase 11 | Pending |
+| SCR-01 | Phase 12 | Pending |
+| SCR-02 | Phase 12 | Pending |
+| ACC-01 | Phase 12 | Pending |
+| ACC-02 | Phase 12 | Pending |
+| ACC-03 | Phase 12 | Pending |
+| ACC-04 | Phase 12 | Pending |
 
 **Coverage:**
 - v2.0 requirements: 24 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 24 ⚠️
+- Mapped to phases: 24 ✓
+- Unmapped: 0 ✓
+
+**By phase:**
+- Phase 8 — Cyber Foundation & App Shell: DS-01, DS-02, DS-03, DS-04, DS-05, FX-05 (6)
+- Phase 9 — Signature Effects Infrastructure: FX-01, FX-02, FX-03, FX-04 (4)
+- Phase 10 — Core Screen Reskins: UI-01, UI-02, UI-03, UI-04, UI-05, UI-06 (6)
+- Phase 11 — Terminal Modals: MOD-01, MOD-02 (2)
+- Phase 12 — Access Control & Secondary Screens: SCR-01, SCR-02, ACC-01, ACC-02, ACC-03, ACC-04 (6)
 
 ---
 *Requirements defined: 2026-06-12*
-*Last updated: 2026-06-12 after initial definition*
+*Last updated: 2026-06-12 after roadmap creation (Phases 8–12)*
