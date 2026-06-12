@@ -10,6 +10,23 @@ A **real-time drafting application** for competitive-style sessions: **two teams
 
 **A fair, readable, real-time draft** where host rules, team privacy, and spectator separation are clear — and the final pick/ban outcome is easy to review.
 
+## Current Milestone: v2.0 Cyber Redesign
+
+**Goal:** Replace the slate/amber Tailwind UI with the high-fidelity "Cyber" terminal aesthetic across the entire flow — plain CSS (no Tailwind), full motion/effects, and the new access-control behaviors the prototype implies — without touching the realtime draft engine.
+
+**Target features:**
+- **Stack shift:** Remove Tailwind entirely; establish a plain-CSS design system from `cyber.css` (tokens ported verbatim, JetBrains Mono 400/500/600/700, zero border-radius, scoped under `.cy-app`).
+- **App chrome:** Fixed header (bracketed wordmark + blinking cursor, centered phase tracker, room-code meta + copy button), scanline overlay, scrolling body.
+- **Signature effects (full fidelity):** ASCII plasma shader canvas (ambient + hot, IntersectionObserver pause), typed terminal logs (boot/connect), animated shaded-ASCII `DRAFT` wordmark, blinking cursors — all honoring `prefers-reduced-motion`.
+- **Core screens reskinned:** Home, Login, Lobby, Drafting, Pause, Review.
+- **Terminal modals:** Draft Settings (timer stepper + drag-to-reorder script editor), Host Console (move/kick + captain-gating hint).
+- **New secondary screens:** Connecting/Loading, Guest Gate (403), Room Cancelled (SIGKILL log).
+- **New behaviors:** public/private room gating with a real 403 guest gate, host "open spectating" toggle, a genuine connecting/hydration state during socket open.
+
+**Key context:**
+- Source design: `design_handoff_pickban_cyber/` — `cyber.css` is the authoritative token/style source; `cyber.jsx` is the component/behavior reference (React only as a prototyping medium — reimplement as Svelte 5).
+- The svelte-realtime layer and snapshot shape stay intact; the 130 unit tests must keep passing. New behaviors (public/private, spectating toggle) extend the realtime/auth/DB layer (`room.isPublic`).
+
 ## Current State (v1.0 — shipped 2026-04-09)
 
 v1.0 is complete. All 34 requirements shipped across 7 phases (31 plans, ~6,800 lines JS/Svelte). The full pick/ban draft flow works end-to-end: Discord OAuth → lobby → configurable draft → real-time pick/ban → post-draft review shareable link. All Nyquist VALIDATION.md files filled. Grace-timer edge case fixed.
@@ -73,6 +90,9 @@ v1.0 is complete. All 34 requirements shipped across 7 phases (31 plans, ~6,800 
 | Discord OAuth only (not email/pw + Google/GitHub) | Better Auth Discord provider was simplest working integration | ⚠️ Revisit — requirements text still describes email/pw + Google/GitHub |
 | autoAdvanceTurn publishFn parameter | Grace-timer path had no platform; threading publish avoids module-level side effects | ✓ Good — clean, testable |
 | Nyquist VALIDATION.md filled retroactively | All 6 phases filled in Phase 7 to reach nyquist_compliant:true | ✓ Good — wave-0 coverage documented |
+| v2.0: drop Tailwind for plain CSS | Tailwind judged not robust enough for the Cyber aesthetic; design depends on exact token/CSS reproduction | — Pending (milestone in progress) |
+| v2.0: full-fidelity effects (shader/typed logs/ASCII) | Signature treatments are "the soul" of the Cyber direction per handoff | — Pending |
+| v2.0: reskin + new access-control behaviors | Prototype implies public/private gating, 403 guest gate, host spectating toggle | — Pending |
 
 ## Context
 
@@ -82,6 +102,23 @@ v1.0 is complete. All 34 requirements shipped across 7 phases (31 plans, ~6,800 
 - **Phase artifacts:** Archived to `.planning/milestones/v1.0-phases/`
 - **Next milestone:** Run `/gsd:new-milestone` to define v1.1 scope
 
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
 ---
 
-*Last updated: 2026-04-09 after v1.0 milestone completion*
+*Last updated: 2026-06-12 — started milestone v2.0 Cyber Redesign*
