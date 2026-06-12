@@ -85,6 +85,113 @@
 	min-height: 9.3em;
 	margin-bottom: 18px;
 }
+/* ANSI wordmark — always visible (base state); the reveal animates a slide +
+   glow flash only, never opacity, so the logo can never get stuck hidden. */
+.cy-logo-wrap {
+	position: relative;
+}
+.cy-logo {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.05;
+	font-weight: 700;
+	white-space: pre;
+	overflow-x: auto;
+	overflow-y: hidden;
+	color: var(--cy-lime);
+	text-shadow:
+		1px 0 var(--cy-violet),
+		-1px 0 rgba(40, 200, 255, 0.55),
+		0 0 12px rgba(179, 255, 61, 0.4);
+}
+.cy-logo-line {
+	display: block;
+}
+.cy-logo-wrap.is-rendered .cy-logo-line {
+	animation: cy-logo-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+}
+.cy-logo-wrap.is-rendered .cy-logo-line:nth-child(1) {
+	animation-delay: 0.02s;
+}
+.cy-logo-wrap.is-rendered .cy-logo-line:nth-child(2) {
+	animation-delay: 0.08s;
+}
+.cy-logo-wrap.is-rendered .cy-logo-line:nth-child(3) {
+	animation-delay: 0.14s;
+}
+.cy-logo-wrap.is-rendered .cy-logo-line:nth-child(4) {
+	animation-delay: 0.2s;
+}
+.cy-logo-wrap.is-rendered .cy-logo-line:nth-child(5) {
+	animation-delay: 0.26s;
+}
+.cy-logo-wrap.is-rendered .cy-logo-line:nth-child(6) {
+	animation-delay: 0.32s;
+}
+.cy-logo-wrap.is-rendered .cy-logo-line:nth-child(7) {
+	animation-delay: 0.38s;
+}
+.cy-logo-wrap.is-rendered .cy-logo-line:nth-child(8) {
+	animation-delay: 0.44s;
+}
+.cy-logo-wrap.is-rendered .cy-logo-line:nth-child(9) {
+	animation-delay: 0.5s;
+}
+@keyframes cy-logo-in {
+	from {
+		transform: translateX(-12px);
+		filter: brightness(2.6);
+	}
+	55% {
+		filter: brightness(1.5);
+	}
+	to {
+		transform: translateX(0);
+		filter: brightness(1);
+	}
+}
+/* occasional glitch ghost overlay once rendered */
+.cy-logo-glitch {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	color: var(--cy-violet);
+	opacity: 0;
+	mix-blend-mode: screen;
+}
+.cy-logo-glitch pre {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.05;
+	font-weight: 700;
+	white-space: pre;
+}
+.cy-logo-wrap.is-rendered .cy-logo-glitch {
+	animation: cy-glitch 6.5s steps(1) infinite;
+	animation-delay: 1.2s;
+}
+@keyframes cy-glitch {
+	0%,
+	96%,
+	100% {
+		opacity: 0;
+		transform: translate(0, 0);
+	}
+	96.5% {
+		opacity: 0.7;
+		transform: translate(3px, -1px);
+	}
+	97.5% {
+		opacity: 0;
+	}
+	98% {
+		opacity: 0.5;
+		transform: translate(-2px, 1px);
+	}
+	99% {
+		opacity: 0;
+	}
+}
 .cy-scanlines {
 	position: absolute;
 	inset: 0;
@@ -266,5 +373,11 @@
 @media (prefers-reduced-motion: reduce) {
 	.cy-brand-cur {
 		animation: none;
+	}
+	.cy-logo-wrap.is-rendered .cy-logo-line {
+		animation: none;
+	}
+	.cy-logo-glitch {
+		animation: none !important;
 	}
 }
