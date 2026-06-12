@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Cyber Redesign
 status: "Roadmap ready — awaiting `/gsd:plan-phase 8`"
-stopped_at: Phase 8 context gathered
-last_updated: "2026-06-12T10:09:39.388Z"
+stopped_at: Phase 8 UI-SPEC approved
+last_updated: "2026-06-12T10:14:51.789Z"
 last_activity: 2026-06-12 — Roadmap created for v2.0 (Phases 8–12, 24 requirements mapped)
 progress:
   total_phases: 5
@@ -84,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-12T10:09:39.385Z
-Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-cyber-foundation-app-shell/08-CONTEXT.md
+Last session: 2026-06-12T10:14:51.786Z
+Stopped at: Phase 8 UI-SPEC approved
+Resume file: .planning/phases/08-cyber-foundation-app-shell/08-UI-SPEC.md
