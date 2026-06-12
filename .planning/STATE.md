@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Cyber Redesign
-status: executing
-stopped_at: Completed 08-01-PLAN.md
-last_updated: "2026-06-12T12:13:35.362Z"
+status: verifying
+stopped_at: Completed 08-02-PLAN.md
+last_updated: "2026-06-12T13:19:02.939Z"
 last_activity: 2026-06-12
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-06-12)
 
 Phase: 08 (cyber-foundation-app-shell) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-06-12
 
 Progress: [░░░░░░░░░░] 0%
@@ -54,6 +54,7 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 08 P00 | 2 | 3 tasks | 6 files |
 | Phase 08 P01 | 7min | 2 tasks | 6 files |
+| Phase 08 P02 | 9min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,7 @@ Recent decisions affecting current work:
 - [Phase 08]: Wave 0 specs written red first (node string-grep + browser DOM) encoding DS-01/02/03/04/05 + FX-05; Manrope.ttf retained until Plan 01 removes it
 - [Phase 08]: Plain CSS replaces Tailwind entirely (DS-03); cyber.css tokens reproduced byte-for-byte in src/app.css under .cy-app (D-03)
 - [Phase 08]: prettier-ignore on --cy-mono preserves verbatim double-quoted font stack the Wave 0 spec asserts despite singleQuote prettier rule
+- [Phase 08]: [Phase 08]: Persistent CyShell chrome wired in +layout.svelte; phase/code derived read-only from page.params + frozen lobby snapshot (.phase), snapshot shape untouched
 
 ### Pending Todos
 
@@ -90,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-12T12:13:29.621Z
-Stopped at: Completed 08-01-PLAN.md
+Last session: 2026-06-12T13:18:56.074Z
+Stopped at: Completed 08-02-PLAN.md
 Resume file: None

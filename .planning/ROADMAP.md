@@ -45,7 +45,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Plans**: 3 plans
   - [x] 08-00-PLAN.md — Wave 0: vendor JetBrains Mono fonts + write the foundation & CyShell specs (red)
   - [x] 08-01-PLAN.md — Wave 1: Cyber CSS foundation (app.css tokens/fonts) + remove Tailwind at all 4 wiring points
-  - [ ] 08-02-PLAN.md — Wave 1: CyShell app-shell component + +layout.svelte wiring
+  - [x] 08-02-PLAN.md — Wave 1: CyShell app-shell component + +layout.svelte wiring
 **UI hint**: yes
 
 ### Phase 9: Signature Effects Infrastructure
