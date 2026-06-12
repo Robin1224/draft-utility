@@ -20,10 +20,13 @@ describe('CyShell.svelte — DS-05 chrome', () => {
 		expect(document.querySelector('.cy-scanlines')).not.toBeNull();
 	});
 
-	it('leaves an empty .cy-shader mount point (no canvas) for Phase 9', async () => {
+	it('mounts the CyShader canvas into the .cy-shader slot (Phase 9 D-02)', async () => {
 		render(CyShell, { phase: 'lobby', code: 'K7-MIRA' });
-		expect(document.querySelector('.cy-shader')).not.toBeNull();
-		expect(document.querySelector('.cy-shader canvas')).toBeNull();
+		// The canvas itself now carries the .cy-shader class (ambient default).
+		const canvas = document.querySelector('canvas.cy-shader');
+		expect(canvas).not.toBeNull();
+		// Ambient default — no hot variant from the shell.
+		expect(canvas?.classList.contains('cy-shader-hot')).toBe(false);
 	});
 
 	it('DS-05/D-09: shows — and disables copy when there is no room', async () => {

@@ -1,4 +1,6 @@
 <script>
+	import CyShader from '$lib/components/effects/CyShader.svelte';
+
 	let { phase = 'lobby', code = null, children } = $props();
 
 	const TRACKER = ['lobby', 'drafting', 'review']; // cyber.jsx:154
@@ -18,8 +20,8 @@
 </script>
 
 <div class="cy-app">
-	<!-- Phase 9 plasma shader mount point — empty, NO canvas yet -->
-	<div class="cy-shader"></div>
+	<!-- Ambient ASCII plasma shader, app-wide (D-02). NO hot prop — Home wires hot in Phase 10. -->
+	<CyShader />
 	<div class="cy-scanlines"></div>
 	<header class="cy-header">
 		<div class="cy-brand">
