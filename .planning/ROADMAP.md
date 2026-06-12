@@ -57,7 +57,10 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   2. The shader visibly pauses when scrolled off-screen and does not animate at all under `prefers-reduced-motion`.
   3. A terminal log types out character-by-character and instantly shows the full text when `prefers-reduced-motion` is set.
   4. The shaded-ASCII `DRAFT` wordmark renders with its line-by-line reveal.
-**Plans**: TBD
+**Plans**: 3 plans
+  - [ ] 09-01-PLAN.md — Wave 1: CyShader plasma shader component + mount into CyShell (ambient, D-02) + browser tests (FX-01, FX-02)
+  - [ ] 09-02-PLAN.md — Wave 1: createTypedLog rune factory + .cy-boot CSS + browser tests (FX-03)
+  - [ ] 09-03-PLAN.md — Wave 2: CyLogo DRAFT wordmark component + .cy-logo* CSS/keyframes + browser tests (FX-04)
 **UI hint**: yes
 
 ### Phase 10: Core Screen Reskins
@@ -110,7 +113,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 6. Post-Draft Review | v1.0 | 4/4 | Complete | 2026-04-06 |
 | 7. Tech Debt Cleanup | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 8. Cyber Foundation & App Shell | v2.0 | 0/3 | Not started | - |
-| 9. Signature Effects Infrastructure | v2.0 | 0/? | Not started | - |
+| 9. Signature Effects Infrastructure | v2.0 | 0/3 | Not started | - |
 | 10. Core Screen Reskins | v2.0 | 0/? | Not started | - |
 | 11. Terminal Modals | v2.0 | 0/? | Not started | - |
 | 12. Access Control & Secondary Screens | v2.0 | 0/? | Not started | - |
