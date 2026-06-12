@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Cyber Redesign
-status: verifying
-stopped_at: Phase 9 context gathered
-last_updated: "2026-06-12T14:07:50.366Z"
+status: executing
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-06-12T14:36:08.754Z"
 last_activity: 2026-06-12
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 6
+  completed_plans: 4
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-12)
 
 **Core value:** A fair, readable, real-time draft where host rules, team privacy, and spectator separation are clear — and the final pick/ban outcome is easy to review.
-**Current focus:** Phase 08 — cyber-foundation-app-shell
+**Current focus:** Phase 09 — signature-effects-infrastructure
 
 ## Current Position
 
-Phase: 9
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 09 (signature-effects-infrastructure) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
 Last activity: 2026-06-12
 
 Progress: [░░░░░░░░░░] 0%
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P00 | 2 | 3 tasks | 6 files |
 | Phase 08 P01 | 7min | 2 tasks | 6 files |
 | Phase 08 P02 | 9min | 2 tasks | 3 files |
+| Phase 09 P01 | 9min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,8 @@ Recent decisions affecting current work:
 - [Phase 08]: Plain CSS replaces Tailwind entirely (DS-03); cyber.css tokens reproduced byte-for-byte in src/app.css under .cy-app (D-03)
 - [Phase 08]: prettier-ignore on --cy-mono preserves verbatim double-quoted font stack the Wave 0 spec asserts despite singleQuote prettier rule
 - [Phase 08]: [Phase 08]: Persistent CyShell chrome wired in +layout.svelte; phase/code derived read-only from page.params + frozen lobby snapshot (.phase), snapshot shape untouched
+- [Phase 09]: CyShader mounted app-wide in CyShell at the ambient default (hot=false, intensity=1); Home wires hot in Phase 10 (D-02)
+- [Phase 09]: Shader draws one static frame and never schedules rAF under prefers-reduced-motion (D-04 / FX-02 hard rule)
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-12T14:07:50.363Z
-Stopped at: Phase 9 context gathered
-Resume file: .planning/phases/09-signature-effects-infrastructure/09-CONTEXT.md
+Last session: 2026-06-12T14:36:03.174Z
+Stopped at: Completed 09-01-PLAN.md
+Resume file: None
