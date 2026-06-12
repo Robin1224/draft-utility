@@ -42,7 +42,10 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   3. A fixed header shows the bracketed wordmark with a blinking block cursor, a centered phase tracker (active phase lime-glowed), and the room-code meta with a copy button that writes the code to the clipboard.
   4. A scanline overlay sits over a scrolling body, and the blinking cursor is suppressed under `prefers-reduced-motion`.
   5. All 130 existing unit tests still pass and the draft/lobby snapshot shape is unchanged.
-**Plans**: TBD
+**Plans**: 3 plans
+  - [ ] 08-00-PLAN.md — Wave 0: vendor JetBrains Mono fonts + write the foundation & CyShell specs (red)
+  - [ ] 08-01-PLAN.md — Wave 1: Cyber CSS foundation (app.css tokens/fonts) + remove Tailwind at all 4 wiring points
+  - [ ] 08-02-PLAN.md — Wave 1: CyShell app-shell component + +layout.svelte wiring
 **UI hint**: yes
 
 ### Phase 9: Signature Effects Infrastructure
@@ -106,7 +109,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 5. Chat & Moderation | v1.0 | 5/5 | Complete | 2026-04-06 |
 | 6. Post-Draft Review | v1.0 | 4/4 | Complete | 2026-04-06 |
 | 7. Tech Debt Cleanup | v1.0 | 2/2 | Complete | 2026-04-09 |
-| 8. Cyber Foundation & App Shell | v2.0 | 0/? | Not started | - |
+| 8. Cyber Foundation & App Shell | v2.0 | 0/3 | Not started | - |
 | 9. Signature Effects Infrastructure | v2.0 | 0/? | Not started | - |
 | 10. Core Screen Reskins | v2.0 | 0/? | Not started | - |
 | 11. Terminal Modals | v2.0 | 0/? | Not started | - |
