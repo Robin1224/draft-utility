@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Cyber Redesign
 status: executing
-stopped_at: Completed 10-02-PLAN.md
-last_updated: "2026-06-15T13:39:45.879Z"
+stopped_at: Completed 10-03-PLAN.md
+last_updated: "2026-06-15T13:42:53.070Z"
 last_activity: 2026-06-15
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 13
-  completed_plans: 8
+  completed_plans: 9
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-06-12)
 ## Current Position
 
 Phase: 10 (core-screen-reskins) — EXECUTING
-Plan: 3 of 7
+Plan: 4 of 7
 Status: Ready to execute
 Last activity: 2026-06-15
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 09 P03 | 3min | 2 tasks | 3 files |
 | Phase 10 P01 | 3min | 3 tasks | 2 files |
 | Phase 10 P02 | 2min | 3 tasks | 5 files |
+| Phase 10 P03 | 4min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,7 @@ Recent decisions affecting current work:
 - [Phase 10]: Centralized src/app.css ownership in Plan 01: all per-screen Cyber CSS ported verbatim (cyber.css 62-463) so screen plans 02-07 only add .cy-* class names, no stylesheet conflicts.
 - [Phase 10]: New cy-pulse keyframe (drafting urgency/active-pip) gets a scoped reduced-motion suppression (D-04): animation off, red color shift kept.
 - [Phase 10]: [Phase 10]: Home (UI-01) is the first runtime consumer of Phase 9 effects — createTypedLog (default opts) drives the D-03 boot log, CyLogo reveals on boot.done, and a hot CyShader sits behind the hero; per-screen reskins render inside CyShell .cy-body and must NOT render their own Header.
+- [Phase 10]: Login collapsed to single ?/signin Discord action (register/signin both delegate to same OAuth flow); guest path is a plain link to ?redirect (spectator, no auth).
 
 ### Pending Todos
 
@@ -104,6 +106,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-15T13:39:39.629Z
-Stopped at: Completed 10-02-PLAN.md
+Last session: 2026-06-15T13:42:47.371Z
+Stopped at: Completed 10-03-PLAN.md
 Resume file: None
