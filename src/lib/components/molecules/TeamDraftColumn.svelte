@@ -10,6 +10,8 @@
 	/** @type {{ team: 'A' | 'B', label: string, script: ScriptEntry[], actions: DraftAction[], members: LobbyMember[] }} */
 	let { team, label, script, actions, members } = $props();
 
+	const accent = $derived(team === 'A' ? 'lime' : 'violet');
+
 	const banSlots = $derived(() => {
 		return script
 			.map((entry, index) => ({ entry, index }))
@@ -31,24 +33,20 @@
 	});
 </script>
 
-<div class="flex flex-col gap-4">
-	<h2 class="text-xl font-semibold text-text-primary mb-2">{label}</h2>
+<aside class="cy-draft-col cy-draft-col-{accent}">
+	<div class="cy-draft-col-head">// TEAM_{team}</div>
 
-	{#if banSlots().length > 0}
-		<div class="flex flex-col gap-2">
-			<span class="text-xs font-semibold uppercase text-text-secondary">BANS</span>
-			{#each banSlots() as slot (slot.scriptIndex)}
-				<DraftSlot action="ban" championName={slot.championName} {team} />
-			{/each}
-		</div>
-	{/if}
+	<div class="cy-draft-col-section">
+		<div class="cy-draft-col-label">&gt; bans</div>
+		{#each banSlots() as slot (slot.scriptIndex)}
+			<DraftSlot action="ban" championName={slot.championName} {team} />
+		{/each}
+	</div>
 
-	{#if pickSlots().length > 0}
-		<div class="flex flex-col gap-2">
-			<span class="text-xs font-semibold uppercase text-text-secondary">PICKS</span>
-			{#each pickSlots() as slot (slot.scriptIndex)}
-				<DraftSlot action="pick" championName={slot.championName} {team} />
-			{/each}
-		</div>
-	{/if}
-</div>
+	<div class="cy-draft-col-section">
+		<div class="cy-draft-col-label">&gt; picks</div>
+		{#each pickSlots() as slot (slot.scriptIndex)}
+			<DraftSlot action="pick" championName={slot.championName} {team} />
+		{/each}
+	</div>
+</aside>

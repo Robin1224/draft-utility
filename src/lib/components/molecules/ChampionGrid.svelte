@@ -35,7 +35,9 @@
 		}
 	}
 
-	const submitLabel = $derived(currentAction === 'pick' ? 'Submit Pick' : 'Submit Ban');
+	const total = $derived(champions.length);
+	const available = $derived(champions.length - usedIds.length);
+	const selectedName = $derived(champions.find((c) => c.id === selectedId)?.name ?? '');
 
 	const showSubmit = $derived(isActiveCaptain && selectedId != null);
 
@@ -46,8 +48,18 @@
 	}
 </script>
 
-<div class="flex flex-col gap-4">
-	<div class="grid grid-cols-4 md:grid-cols-7 gap-4">
+<main class="cy-roster">
+	<div class="cy-roster-head">
+		<h3>&gt; SELECT_TARGET[ {available} / {total} available ]</h3>
+		<div class="cy-roster-filters">
+			<button type="button" class="cy-chip is-active">all</button>
+			<button type="button" class="cy-chip">.melee</button>
+			<button type="button" class="cy-chip">.ranged</button>
+			<button type="button" class="cy-chip">.support</button>
+		</div>
+	</div>
+
+	<div class="cy-champ-grid">
 		{#each champions as champion (champion.id)}
 			<ChampionCard
 				{champion}
@@ -58,12 +70,8 @@
 	</div>
 
 	{#if showSubmit}
-		<button
-			type="button"
-			class="mt-4 w-full rounded-md bg-amber-500 px-6 py-2 font-semibold text-white hover:bg-amber-400"
-			onclick={handleSubmit}
-		>
-			{submitLabel}
+		<button type="button" class="cy-submit cy-submit-{currentAction}" onclick={handleSubmit}>
+			$ {currentAction}({selectedName}) [LOCK_IN]
 		</button>
 	{/if}
-</div>
+</main>
