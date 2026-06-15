@@ -25,21 +25,25 @@
 		snapshot.actions.filter((a) => a.champion_id != null).map((a) => a.champion_id ?? '')
 	);
 
-	const isActiveCaptain = $derived((() => {
-		if (!userId || !currentTurn) return false;
-		const teamMembers = snapshot.teams[currentTurn.team] ?? [];
-		return teamMembers.some((m) => m.userId === userId && m.isCaptain);
-	})());
+	const isActiveCaptain = $derived(
+		(() => {
+			if (!userId || !currentTurn) return false;
+			const teamMembers = snapshot.teams[currentTurn.team] ?? [];
+			return teamMembers.some((m) => m.userId === userId && m.isCaptain);
+		})()
+	);
 
-	const pausedCaptainName = $derived((() => {
-		const pausedId = snapshot.draftState?.pausedUserId;
-		if (!pausedId) return 'Captain';
-		for (const t of /** @type {Array<'A' | 'B'>} */ (['A', 'B'])) {
-			const found = (snapshot.teams[t] ?? []).find((m) => m.userId === pausedId);
-			if (found) return found.displayName;
-		}
-		return 'Captain';
-	})());
+	const pausedCaptainName = $derived(
+		(() => {
+			const pausedId = snapshot.draftState?.pausedUserId;
+			if (!pausedId) return 'Captain';
+			for (const t of /** @type {Array<'A' | 'B'>} */ (['A', 'B'])) {
+				const found = (snapshot.teams[t] ?? []).find((m) => m.userId === pausedId);
+				if (found) return found.displayName;
+			}
+			return 'Captain';
+		})()
+	);
 
 	/** @type {string | null} */
 	let promotionBanner = $state(null);
@@ -73,16 +77,18 @@
 		return team ? `Team ${team}` : 'a team';
 	}
 
-	const cancelledTeam = $derived((() => {
-		if (snapshot.phase !== 'cancelled') return null;
-		// Use the script turn that was active at cancellation — the team that lost its captain.
-		// Scanning isCaptain is unreliable: the member row remains in the snapshot after cancellation.
-		const ds = snapshot.draftState;
-		if (ds?.script && ds.turnIndex != null) {
-			return ds.script[ds.turnIndex]?.team ?? 'Unknown';
-		}
-		return 'Unknown';
-	})());
+	const cancelledTeam = $derived(
+		(() => {
+			if (snapshot.phase !== 'cancelled') return null;
+			// Use the script turn that was active at cancellation — the team that lost its captain.
+			// Scanning isCaptain is unreliable: the member row remains in the snapshot after cancellation.
+			const ds = snapshot.draftState;
+			if (ds?.script && ds.turnIndex != null) {
+				return ds.script[ds.turnIndex]?.team ?? 'Unknown';
+			}
+			return 'Unknown';
+		})()
+	);
 </script>
 
 {#if showReconnectBanner}
@@ -113,26 +119,20 @@
 {/if}
 
 {#if snapshot.phase === 'cancelled'}
-	<div class="flex flex-col items-center gap-4 py-16 text-center">
-		<h2 class="text-xl font-semibold text-text-primary">Draft cancelled</h2>
-		<p class="text-sm text-text-secondary">
+	<div class="cy-draft-cancelled">
+		<h2>Draft cancelled</h2>
+		<p>
 			No captain was available for {cancelledTeamLabel(cancelledTeam ?? '')}. The draft could not
 			continue.
 		</p>
-		<button
-			type="button"
-			class="rounded-md border border-bg-secondary px-4 py-2 text-sm font-medium text-text-primary hover:bg-bg-secondary"
-			onclick={() => goto('/')}
-		>
-			Return to lobby
-		</button>
+		<button type="button" class="cy-btn" onclick={() => goto('/')}> Return to lobby </button>
 	</div>
 {:else}
-	<div class="flex flex-col gap-4">
+	<div class="cy-draft cy-draft-chat-sidebar">
 		{#if currentTurn && snapshot.draftState && !snapshot.draftState.paused}
 			<TurnIndicator draftState={snapshot.draftState} teams={snapshot.teams} />
 		{/if}
-		<div class="grid grid-cols-1 gap-6 md:grid-cols-[280px_1fr_280px]">
+		<div class="cy-draft-grid">
 			<TeamDraftColumn
 				team="A"
 				label="Team A"
@@ -142,8 +142,8 @@
 			/>
 			<ChampionGrid
 				champions={classes}
-				usedIds={usedIds}
-				isActiveCaptain={isActiveCaptain}
+				{usedIds}
+				{isActiveCaptain}
 				currentAction={currentTurn?.action ?? 'pick'}
 				onSubmit={onPickBan}
 			/>

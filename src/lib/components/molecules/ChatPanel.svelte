@@ -33,7 +33,7 @@
 	let listEl = $state();
 
 	const showAllTab = $derived(phase === 'lobby');
-	const roleTabLabel = $derived(role === 'player' ? 'Team' : 'Spectator');
+	const roleTabLabel = $derived(role === 'player' ? 'team' : 'spec');
 	const roleTabKey = $derived(role === 'player' ? 'team' : 'spectator');
 
 	// If the "all" tab was active but we transition to draft phase, switch to role tab
@@ -51,49 +51,50 @@
 			if (listEl) listEl.scrollTop = listEl.scrollHeight;
 		});
 	});
+
+	// Responsive dock (D-02): sidebar on desktop, toggleable drawer on narrow widths.
+	let narrow = $state(false);
+	let drawerOpen = $state(false);
+
+	$effect(() => {
+		const mq = window.matchMedia('(max-width: 1100px)');
+		const apply = () => {
+			narrow = mq.matches;
+		};
+		apply();
+		mq.addEventListener('change', apply);
+		return () => mq.removeEventListener('change', apply);
+	});
 </script>
 
-<section
-	aria-label="Chat"
-	class="flex h-full w-[280px] flex-shrink-0 flex-col rounded-md border border-bg-secondary bg-bg-primary"
->
-	<div role="tablist" aria-label="Chat channels" class="flex gap-0 border-b border-bg-secondary px-3 pt-2">
-		{#if showAllTab}
+{#snippet panelBody()}
+	<div class="cy-chat-head">
+		<span>// chat.{activeTab}</span>
+		<div class="cy-chat-tabs" role="tablist" aria-label="Chat channels">
+			{#if showAllTab}
+				<button
+					role="tab"
+					type="button"
+					aria-selected={activeTab === 'all'}
+					tabindex={activeTab === 'all' ? 0 : -1}
+					class={activeTab === 'all' ? 'is-active' : ''}
+					onclick={() => (activeTab = 'all')}>all</button
+				>
+			{/if}
 			<button
 				role="tab"
-				aria-selected={activeTab === 'all'}
-				tabindex={activeTab === 'all' ? 0 : -1}
 				type="button"
-				class="mr-4 pb-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 {activeTab === 'all'
-					? 'border-b-2 border-amber-500 text-sm font-semibold text-text-primary'
-					: 'text-sm font-normal text-text-tertiary hover:text-text-primary'}"
-				onclick={() => (activeTab = 'all')}
-			>All</button>
-		{/if}
-		<button
-			role="tab"
-			aria-selected={activeTab === roleTabKey}
-			tabindex={activeTab === roleTabKey ? 0 : -1}
-			type="button"
-			class="pb-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 {activeTab === roleTabKey
-				? 'border-b-2 border-amber-500 text-sm font-semibold text-text-primary'
-				: 'text-sm font-normal text-text-tertiary hover:text-text-primary'}"
-			onclick={() => (activeTab = roleTabKey)}
-		>{roleTabLabel}</button>
+				aria-selected={activeTab === roleTabKey}
+				tabindex={activeTab === roleTabKey ? 0 : -1}
+				class={activeTab === roleTabKey ? 'is-active' : ''}
+				onclick={() => (activeTab = roleTabKey)}>{roleTabLabel}</button
+			>
+		</div>
 	</div>
 
-	<div
-		bind:this={listEl}
-		role="log"
-		aria-live="polite"
-		aria-label="Messages"
-		class="flex-1 overflow-y-auto px-3 py-2"
-	>
+	<div bind:this={listEl} class="cy-chat-list" role="log" aria-live="polite" aria-label="Messages">
 		{#if messages.length === 0}
-			<div class="flex h-full flex-col items-center justify-center gap-1 text-center">
-				<p class="text-sm font-semibold text-text-primary">No messages yet</p>
-				<p class="text-sm text-text-tertiary">Be the first to say something.</p>
-			</div>
+			<div class="cy-chat-msg"><span class="cy-chat-body">// no messages yet</span></div>
 		{:else}
 			{#each messages as msg (msg.ts + msg.sender)}
 				<ChatMessage
@@ -104,9 +105,27 @@
 				/>
 			{/each}
 		{/if}
+		<div class="cy-chat-cursor">$ _</div>
 	</div>
 
-	<div class="border-t border-bg-secondary p-3">
-		<ChatInput {onSend} bind:error={inputError} />
-	</div>
-</section>
+	<ChatInput {onSend} bind:error={inputError} />
+{/snippet}
+
+{#if narrow}
+	<button
+		type="button"
+		class="cy-btn cy-btn-sm"
+		onclick={() => (drawerOpen = !drawerOpen)}
+		aria-expanded={drawerOpen}
+		aria-controls="cy-chat-drawer">// chat</button
+	>
+	{#if drawerOpen}
+		<aside id="cy-chat-drawer" class="cy-chat cy-chat-drawer" aria-label="Chat">
+			{@render panelBody()}
+		</aside>
+	{/if}
+{:else}
+	<aside class="cy-chat cy-chat-right" aria-label="Chat">
+		{@render panelBody()}
+	</aside>
+{/if}
