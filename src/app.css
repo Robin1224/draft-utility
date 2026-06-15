@@ -381,3 +381,166 @@
 		animation: none !important;
 	}
 }
+
+/* ============ PHASE 10 — SCREEN RESKINS ============ */
+
+/* HOME */
+.cy-home { max-width: 1100px; margin: 0 auto; padding: 40px 32px 24px; }
+
+/* hero: terminal frame holding boot log + ANSI wordmark */
+.cy-hero { margin: 0 0 28px; }
+.cy-frame {
+  position: relative;
+  /* border is drawn as ASCII glyphs by CYFrameBorder; leave room via padding */
+  padding: 26px 30px 30px;
+  background:
+    linear-gradient(180deg, rgba(196,75,255,0.04), transparent 40%),
+    var(--cy-bg-2);
+  box-shadow: inset 0 0 80px rgba(196, 75, 255, 0.06), 0 0 60px rgba(0,0,0,0.4);
+}
+
+/* ── ASCII box-drawing border ── */
+.cy-frame-border {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  font-family: var(--cy-mono); font-size: 15px;
+  color: var(--cy-violet);
+}
+.cy-frame-meas {
+  position: absolute; visibility: hidden; white-space: pre;
+  font-size: 15px; line-height: 1; top: 0; left: 0;
+}
+.cy-frame-edge {
+  position: absolute; margin: 0; white-space: pre;
+  font-family: var(--cy-mono); font-size: 15px;
+}
+.cy-frame-top { top: 0; left: 0; }
+.cy-frame-bottom { left: 0; }
+.cy-frame-side { left: 0; }
+.cy-frame-label {
+  position: absolute; top: -1px; left: 26px;
+  background: var(--cy-bg-2); padding: 0 8px;
+  color: var(--cy-text-2); font-size: 12px; letter-spacing: 0.06em;
+}
+
+.cy-hero-tagline {
+  margin-top: 22px; font-size: 16px; letter-spacing: 0.08em;
+  color: var(--cy-text); text-transform: uppercase;
+}
+.cy-prompt { color: var(--cy-lime); }
+.cy-slash { color: var(--cy-violet); }
+
+.cy-home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+.cy-card {
+  background: var(--cy-bg-2); border: 1px solid var(--cy-line-2);
+  padding: 20px; display: flex; flex-direction: column; gap: 12px;
+  position: relative; text-align: left; font: inherit; color: var(--cy-text);
+  cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+}
+button.cy-card { width: 100%; }
+.cy-card:hover { border-color: var(--cy-lime); box-shadow: inset 0 0 40px rgba(179, 255, 61, 0.05); }
+/* ASCII corner ticks */
+.cy-card::before, .cy-card::after {
+  content: "+"; position: absolute; color: var(--cy-violet);
+  font-size: 12px; line-height: 1;
+}
+.cy-card::before { top: -1px; left: 3px; }
+.cy-card::after { top: -1px; right: 3px; }
+.cy-card-head { display: flex; align-items: baseline; gap: 10px; }
+.cy-card-num { color: var(--cy-text-3); font-size: 12px; letter-spacing: 0.04em; white-space: nowrap; flex-shrink: 0; }
+.cy-card-title { font-size: 19px; color: var(--cy-text); letter-spacing: 0.04em; white-space: nowrap; }
+.cy-card-prompt { color: var(--cy-lime); }
+.cy-card-rule {
+  height: 0; border-top: 1px dashed var(--cy-line-2);
+}
+.cy-card-desc { color: var(--cy-text-2); font-size: 13px; line-height: 1.5; margin: 0; }
+.cy-card-action { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+.cy-card-btn {
+  display: block; width: 100%; text-align: center;
+  background: transparent; color: var(--cy-lime);
+  border: 1px solid var(--cy-lime); padding: 11px;
+  font: inherit; font-size: 13px; letter-spacing: 0.08em; cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.cy-card:hover .cy-card-btn, .cy-card-btn:hover {
+  background: var(--cy-lime); color: var(--cy-bg); box-shadow: var(--cy-lime-glow);
+}
+.cy-input-wrap {
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--cy-line-2); padding: 0 10px;
+  background: var(--cy-bg);
+}
+.cy-input-prompt { color: var(--cy-lime); }
+.cy-input-bare {
+  border: none; background: transparent; padding: 9px 0; width: 100%;
+}
+.cy-input-bare:focus { outline: none; }
+.cy-input-wrap:focus-within { border-color: var(--cy-lime); }
+
+/* LOGIN */
+.cy-login { display: grid; place-items: center; min-height: calc(100vh - 64px); padding: 32px; }
+.cy-login-card {
+  width: 100%; max-width: 440px;
+  background: var(--cy-bg-2); border: 1px solid var(--cy-line);
+  padding: 32px; display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 0 60px rgba(196, 75, 255, 0.15);
+}
+.cy-login-eyebrow { color: var(--cy-violet); font-size: 11px; }
+.cy-login-card h2 { margin: 0; font-size: 24px; color: var(--cy-lime); text-shadow: var(--cy-lime-glow); letter-spacing: 0.04em; }
+.cy-login-card p { color: var(--cy-text-2); font-size: 13px; margin: 0 0 8px; }
+.cy-divider { color: var(--cy-text-3); text-align: center; font-size: 11px; margin: 4px 0; }
+.cy-foot { color: var(--cy-text-3); font-size: 11px; margin: 8px 0 0; }
+
+/* LOBBY */
+.cy-lobby { max-width: 1280px; margin: 0 auto; padding: 24px 32px; display: flex; flex-direction: column; gap: 20px; }
+.cy-banner {
+  background: var(--cy-bg-2); border: 1px solid var(--cy-line);
+  border-left: 3px solid var(--cy-lime);
+  padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.cy-banner-eyebrow { color: var(--cy-violet); font-size: 11px; }
+.cy-banner h2 { margin: 4px 0 6px; font-size: 22px; color: var(--cy-lime); text-shadow: var(--cy-lime-glow); }
+.cy-banner p { margin: 0; color: var(--cy-text-2); font-size: 13px; }
+.cy-banner-stats { display: flex; gap: 24px; }
+.cy-banner-stats > div { text-align: right; }
+.cy-banner-stats b { display: block; font-size: 28px; color: var(--cy-violet); text-shadow: var(--cy-violet-glow); font-weight: 400; }
+.cy-banner-stats span { font-size: 10px; color: var(--cy-text-3); text-transform: uppercase; letter-spacing: 0.1em; }
+
+.cy-host-panel { background: var(--cy-bg-2); border: 1px solid var(--cy-line); padding: 14px 18px; }
+.cy-host-head { color: var(--cy-amber); font-size: 11px; letter-spacing: 0.1em; margin-bottom: 10px; }
+.cy-host-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cy-host-row .cy-input { width: auto; }
+.cy-grow { flex: 1; }
+
+.cy-lobby-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.cy-team {
+  background: var(--cy-bg-2); border: 1px solid var(--cy-line);
+  padding: 20px; border-top: 2px solid var(--accent);
+  --accent: var(--cy-line);
+}
+.cy-team-lime { --accent: var(--cy-lime); }
+.cy-team-violet { --accent: var(--cy-violet); }
+.cy-team-head { display: flex; align-items: center; gap: 6px; font-size: 16px; margin-bottom: 16px; color: var(--accent); text-shadow: 0 0 12px var(--accent); }
+.cy-bracket { color: var(--cy-text-3); }
+.cy-team-status { margin-left: auto; color: var(--cy-text-3); font-size: 12px; }
+
+.cy-slot-list { list-style: none; padding: 0; margin: 0 0 16px; display: flex; flex-direction: column; gap: 6px; }
+.cy-slot {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border: 1px solid var(--cy-line);
+  background: var(--cy-bg);
+  font-size: 13px;
+}
+.cy-slot-empty { border-style: dashed; color: var(--cy-text-3); }
+.cy-slot-num { color: var(--cy-text-3); font-size: 11px; }
+.cy-slot-name { flex: 1; color: var(--cy-text); }
+.cy-tag {
+  font-size: 10px; padding: 2px 6px; border: 1px solid var(--cy-line-2);
+  color: var(--cy-text-2); text-transform: uppercase; letter-spacing: 0.08em;
+}
+.cy-tag-cap { color: var(--cy-amber); border-color: var(--cy-amber); }
+
+.cy-spec { background: var(--cy-bg-2); border: 1px solid var(--cy-line); padding: 14px 18px; }
+.cy-spec-head { color: var(--cy-text-3); font-size: 11px; margin-bottom: 10px; letter-spacing: 0.08em; }
+.cy-spec-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.cy-spec-pill { padding: 4px 10px; border: 1px solid var(--cy-line); font-size: 12px; color: var(--cy-text-2); }
