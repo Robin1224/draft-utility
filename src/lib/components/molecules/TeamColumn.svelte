@@ -13,53 +13,46 @@
 		`${resolve('/login')}?redirect=${encodeURIComponent(page.url.pathname + page.url.search)}`
 	);
 
-	const joinLabel = $derived(teamKey === 'A' ? 'Join Team A' : 'Join Team B');
+	const accent = $derived(teamKey === 'A' ? 'lime' : 'violet');
 
 	const slotIndices = [0, 1, 2];
 </script>
 
-<h2 class="text-xl font-semibold text-text-primary">{label}</h2>
-<ul class="mt-3 flex flex-col gap-2">
-	{#each slotIndices as slot (slot)}
-		<li
-			class="flex min-h-11 flex-wrap items-center gap-2 rounded-md border border-bg-secondary bg-bg-primary px-3 py-2"
+<div class="cy-team cy-team-{accent}" aria-label={label}>
+	<div class="cy-team-head">
+		<span class="cy-bracket">[</span>TEAM_{teamKey}<span class="cy-bracket">]</span><span
+			class="cy-team-status">{members.length}/3</span
 		>
+	</div>
+	<ul class="cy-slot-list">
+		{#each slotIndices as slot (slot)}
 			{#if members[slot]}
-				<span class="font-medium text-text-primary">{members[slot].displayName}</span>
-				{#if members[slot].isCaptain}
-					<span
-						class="rounded-full border border-bg-secondary bg-bg-secondary px-2 py-0.5 text-xs text-text-secondary"
-						>Captain</span
-					>
-				{/if}
-				{#if members[slot].isHost}
-					<span
-						class="rounded-full border border-text-tertiary px-2 py-0.5 text-xs text-text-secondary"
-						>Host</span
-					>
-				{/if}
+				<li class="cy-slot">
+					<span class="cy-slot-num">[{String(slot).padStart(2, '0')}]</span>
+					<span class="cy-slot-name">{members[slot].displayName}</span>
+					{#if members[slot].isCaptain}
+						<span class="cy-tag cy-tag-cap">CAPTAIN</span>
+					{/if}
+					{#if members[slot].isHost}
+						<span class="cy-tag">HOST</span>
+					{/if}
+				</li>
 			{:else}
-				<span class="text-sm text-text-tertiary">Open</span>
+				<li class="cy-slot cy-slot-empty">
+					<span class="cy-slot-num">[{String(slot).padStart(2, '0')}]</span>
+					<span class="cy-slot-name">&lt;EMPTY&gt;</span>
+				</li>
 			{/if}
-		</li>
-	{/each}
-</ul>
+		{/each}
+	</ul>
 
-{#if canJoin && !full && !isGuest}
-	<button
-		type="button"
-		class="mt-4 w-full cursor-pointer rounded-md bg-amber-500 px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
-		onclick={onJoin}
-	>
-		{joinLabel}
-	</button>
-{:else if isGuest}
-	<p class="mt-4 text-sm text-text-tertiary">
-		<a href={loginHref} class="font-medium text-amber-600 underline hover:text-amber-500"
-			>Sign in</a
-		>
-		to join a team.
-	</p>
-{:else if full && !isGuest && canJoin}
-	<p class="mt-4 text-sm text-text-tertiary">Team full</p>
-{/if}
+	{#if canJoin && !full && !isGuest}
+		<button type="button" class="cy-btn cy-btn-{accent} cy-btn-block" onclick={onJoin}>
+			JOIN_TEAM_{teamKey}()
+		</button>
+	{:else if isGuest}
+		<a href={loginHref} class="cy-btn cy-btn-ghost cy-btn-block">SIGN_IN_TO_JOIN()</a>
+	{:else if full && !isGuest && canJoin}
+		<p class="cy-foot">// team full</p>
+	{/if}
+</div>
