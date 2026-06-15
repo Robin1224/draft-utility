@@ -279,22 +279,32 @@
 			<!-- Review branch: full-width, no ChatPanel (D-09) -->
 			<!-- Uses data.actions (SSR-loaded) as primary source; falls back to snapshot.actions -->
 			<!-- for participants transitioning from live draft (Pitfall 2 / Open Question 3) -->
-			<div>
-				<h2>Draft complete</h2>
-				<div>
-					<a href="/">Back to home</a>
-					<button type="button" onclick={copyLink}>Copy link</button>
-					{#if copied}
-						<span role="status">Copied</span>
-					{/if}
-					{#if actionError}
-						<span>{actionError}</span>
-					{/if}
+			<div class="cy-review">
+				<div class="cy-review-head">
+					<div>
+						<div class="cy-review-eyebrow">// status: COMPLETE</div>
+						<h2>$ DRAFT.RESULT()</h2>
+					</div>
+					<pre class="cy-review-receipt">code: {code}
+turns: {(data.actions?.length ? data.actions : (snapshot.actions ?? [])).length}
+status: complete</pre>
 				</div>
 				<DraftReview
 					actions={data.actions?.length ? data.actions : (snapshot.actions ?? [])}
 					teams={data.teams ?? snapshot.teams}
 				/>
+				<div class="cy-review-actions">
+					<button type="button" class="cy-btn" onclick={copyLink} aria-label="Copy room link">
+						$ COPY_LINK()
+					</button>
+					{#if copied}
+						<span class="cy-foot" role="status">// copied</span>
+					{/if}
+					{#if actionError}
+						<span class="cy-foot">{actionError}</span>
+					{/if}
+					<a href="/" class="cy-btn cy-btn-primary">$ NEW_DRAFT()</a>
+				</div>
 			</div>
 		{:else}
 			<!-- Lobby phase: cy-lobby content area + ChatPanel sidebar -->
