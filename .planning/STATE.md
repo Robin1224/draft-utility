@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Cyber Redesign
 status: executing
-stopped_at: Completed 10-05-PLAN.md
-last_updated: "2026-06-15T14:06:00.778Z"
+stopped_at: Completed 10-06-PLAN.md
+last_updated: "2026-06-15T14:08:56.399Z"
 last_activity: 2026-06-15
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 13
-  completed_plans: 11
+  completed_plans: 12
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-06-12)
 ## Current Position
 
 Phase: 10 (core-screen-reskins) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
 Last activity: 2026-06-15
 
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 10 P02 | 2min | 3 tasks | 5 files |
 | Phase 10 P03 | 4min | 2 tasks | 2 files |
 | Phase 10 P05 | 4min | 3 tasks | 10 files |
+| Phase 10 P06 | 3min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,7 @@ Recent decisions affecting current work:
 - [Phase 10]: Login collapsed to single ?/signin Discord action (register/signin both delegate to same OAuth flow); guest path is a plain link to ?redirect (spectator, no auth).
 - [Phase 10]: Lobby route drops <Header>/<Phases> + mainClass derive — CyShell renders the .cy-phases tracker app-wide from the live snapshot, so the route must not double-render it
 - [Phase 10]: Drafting (UI-04): final-5s clock urgency (secondsLeft <= 5, D-04) toggles is-urgent; red+pulse + reduced-motion suppression owned by app.css. Chat dock (D-02) is matchMedia(1100px): cy-chat-right sidebar desktop / cy-chat-drawer overlay narrow. All frozen draft/chat wiring (onPickBan, onSend, activeTab, snapshot timer reads, isActiveCaptain) preserved byte-for-byte; PauseOverlay invocation left for Plan 06.
+- [Phase 10]: [Phase 10]: PauseOverlay (UI-05) reskinned to the .cy-pause-card with a self-contained grace countdown (own setInterval reading graceEndsAt) instead of reusing TimerDisplay (Plan 05 reskinned it to .cy-turn-clock) — decouples the two Wave-2 plans; event log binds the frozen captainName, props { captainName, graceEndsAt, timerMs } + DraftBoard invocation left frozen (D-01).
 
 ### Pending Todos
 
@@ -109,6 +111,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-15T14:05:53.818Z
-Stopped at: Completed 10-05-PLAN.md
+Last session: 2026-06-15T14:08:49.899Z
+Stopped at: Completed 10-06-PLAN.md
 Resume file: None
