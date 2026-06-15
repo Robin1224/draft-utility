@@ -1,6 +1,5 @@
 <script>
 	import classes from '$lib/catalog/classes.json' with { type: 'json' };
-	import DraftSlot from '$lib/components/atoms/DraftSlot.svelte';
 
 	/**
 	 * @type {{
@@ -10,84 +9,71 @@
 	 */
 	let { actions, teams } = $props();
 
-	// Resolve champion_id to display name; skip null champion_id (timeout slots)
-	const resolvedBansA = $derived(
-		actions
-			.filter((a) => a.team === 'A' && a.action === 'ban' && a.champion_id != null)
-			.map((a) => classes.find((c) => c.id === a.champion_id)?.name ?? a.champion_id)
-	);
+	/** @param {string} id */
+	const lookup = (id) => classes.find((c) => c.id === id) ?? { id, name: id, role: 'melee' };
 
-	const resolvedPicksA = $derived(
+	// Resolve champion_id to full champ object {name, role}; skip null champion_id (timeout slots)
+	const picksA = $derived(
 		actions
 			.filter((a) => a.team === 'A' && a.action === 'pick' && a.champion_id != null)
-			.map((a) => classes.find((c) => c.id === a.champion_id)?.name ?? a.champion_id)
+			.map((a) => lookup(/** @type {string} */ (a.champion_id)))
 	);
-
-	const resolvedBansB = $derived(
+	const bansA = $derived(
 		actions
-			.filter((a) => a.team === 'B' && a.action === 'ban' && a.champion_id != null)
-			.map((a) => classes.find((c) => c.id === a.champion_id)?.name ?? a.champion_id)
+			.filter((a) => a.team === 'A' && a.action === 'ban' && a.champion_id != null)
+			.map((a) => lookup(/** @type {string} */ (a.champion_id)))
 	);
-
-	const resolvedPicksB = $derived(
+	const picksB = $derived(
 		actions
 			.filter((a) => a.team === 'B' && a.action === 'pick' && a.champion_id != null)
-			.map((a) => classes.find((c) => c.id === a.champion_id)?.name ?? a.champion_id)
+			.map((a) => lookup(/** @type {string} */ (a.champion_id)))
+	);
+	const bansB = $derived(
+		actions
+			.filter((a) => a.team === 'B' && a.action === 'ban' && a.champion_id != null)
+			.map((a) => lookup(/** @type {string} */ (a.champion_id)))
 	);
 
 	const isEmpty = $derived(
-		resolvedBansA.length === 0 &&
-			resolvedPicksA.length === 0 &&
-			resolvedBansB.length === 0 &&
-			resolvedPicksB.length === 0
+		picksA.length === 0 && bansA.length === 0 && picksB.length === 0 && bansB.length === 0
 	);
+
+	/** @param {'A' | 'B'} t */
+	const roster = (t) => (teams[t] ?? []).map((m) => '"' + m.displayName + '"').join(', ');
+
+	const cols = $derived([
+		{ team: /** @type {'A'} */ ('A'), accent: 'lime', picks: picksA, bans: bansA },
+		{ team: /** @type {'B'} */ ('B'), accent: 'violet', picks: picksB, bans: bansB }
+	]);
 </script>
 
-<div class="grid w-full max-w-3xl grid-cols-1 gap-6 md:grid-cols-2">
+<div class="cy-review-grid">
 	{#if isEmpty}
-		<p class="col-span-full text-center text-sm text-text-secondary">
-			Draft ended without picks or bans.
-		</p>
+		<div class="cy-review-team">
+			<div class="cy-review-team-head">// no_data — draft ended without picks or bans</div>
+		</div>
 	{:else}
-		<!-- Team A column -->
-		<div class="flex flex-col gap-4">
-			<h2 class="text-xl font-semibold text-text-primary">Team A</h2>
-			{#if resolvedBansA.length > 0}
-				<div class="flex flex-col gap-2">
-					<span class="text-xs font-semibold uppercase text-text-secondary">Bans</span>
-					{#each resolvedBansA as ban}
-						<DraftSlot action="ban" championName={ban} team="A" />
+		{#each cols as col (col.team)}
+			<div class="cy-review-team cy-review-team-{col.accent}">
+				<div class="cy-review-team-head">&gt; TEAM_{col.team}.roster = [{roster(col.team)}]</div>
+				<div class="cy-review-picks">
+					{#each col.picks as c, i (i)}
+						<div class="cy-review-pick">
+							<div class="cy-review-pick-art cy-champ-art-{c.role}">
+								<span>{c.name.slice(0, 2)}</span>
+							</div>
+							<div class="cy-review-pick-name">{c.name}</div>
+							<div class="cy-review-pick-role">.{c.role}</div>
+						</div>
 					{/each}
 				</div>
-			{/if}
-			{#if resolvedPicksA.length > 0}
-				<div class="flex flex-col gap-2">
-					<span class="text-xs font-semibold uppercase text-text-secondary">Picks</span>
-					{#each resolvedPicksA as pick}
-						<DraftSlot action="pick" championName={pick} team="A" />
+				<div class="cy-review-bans">
+					<span>BANS:</span>
+					{#each col.bans as c, i (i)}
+						<span class="cy-review-ban">{c.name}</span>
 					{/each}
 				</div>
-			{/if}
-		</div>
-		<!-- Team B column -->
-		<div class="flex flex-col gap-4">
-			<h2 class="text-xl font-semibold text-text-primary">Team B</h2>
-			{#if resolvedBansB.length > 0}
-				<div class="flex flex-col gap-2">
-					<span class="text-xs font-semibold uppercase text-text-secondary">Bans</span>
-					{#each resolvedBansB as ban}
-						<DraftSlot action="ban" championName={ban} team="B" />
-					{/each}
-				</div>
-			{/if}
-			{#if resolvedPicksB.length > 0}
-				<div class="flex flex-col gap-2">
-					<span class="text-xs font-semibold uppercase text-text-secondary">Picks</span>
-					{#each resolvedPicksB as pick}
-						<DraftSlot action="pick" championName={pick} team="B" />
-					{/each}
-				</div>
-			{/if}
-		</div>
+			</div>
+		{/each}
 	{/if}
 </div>
