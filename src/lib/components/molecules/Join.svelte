@@ -14,25 +14,18 @@
 	}
 </script>
 
-<section
-	class="m-auto flex flex-col items-center justify-center gap-4 rounded-lg border border-bg-secondary p-6 text-text-primary"
->
-	<h2 class="text-xl font-semibold">Join a Draft</h2>
-	<form
-		class="flex flex-col items-center justify-center gap-2"
-		onsubmit={handleSubmit}
-	>
-		<input
-			type="text"
-			placeholder="Draft ID or URL"
-			class="w-full rounded-md border border-gray-300 p-2"
-			bind:value={draftId}
-		/>
-		<button
-			type="submit"
-			{disabled}
-			class="w-full cursor-pointer rounded-md bg-amber-500 p-2 text-text-primary transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:text-slate-50 disabled:opacity-50 disabled:hover:bg-amber-500"
-			>Join</button
-		>
-	</form>
-</section>
+<form class="cy-card" onsubmit={handleSubmit}>
+	<div class="cy-card-head">
+		<span class="cy-card-num">[ 02 ]</span>
+		<span class="cy-card-title"><span class="cy-card-prompt">&gt;</span> JOIN_ROOM</span>
+	</div>
+	<div class="cy-card-rule" aria-hidden="true"></div>
+	<p class="cy-card-desc">Connect to an existing session via room code or URL.</p>
+	<div class="cy-card-action">
+		<label class="cy-input-wrap">
+			<span class="cy-input-prompt">&gt;</span>
+			<input class="cy-input cy-input-bare" placeholder="K7-MIRA" bind:value={draftId} />
+		</label>
+		<button class="cy-card-btn" type="submit" {disabled}>▸ CONNECT</button>
+	</div>
+</form>
