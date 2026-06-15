@@ -26,7 +26,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [ ] **Phase 8: Cyber Foundation & App Shell** — Remove Tailwind; establish plain-CSS tokens, JetBrains Mono, zero-radius, and the persistent header/phase-tracker/scanline chrome every screen depends on.
 - [ ] **Phase 9: Signature Effects Infrastructure** — Build the reusable plasma shader, typed-terminal-log hook, and shaded-ASCII wordmark, all honoring `prefers-reduced-motion`.
-- [ ] **Phase 10: Core Screen Reskins** — Reskin Home, Login, Lobby, Drafting, Pause, and Review in full Cyber style using the foundation and effects.
+- [x] **Phase 10: Core Screen Reskins** — Reskin Home, Login, Lobby, Drafting, Pause, and Review in full Cyber style using the foundation and effects. (completed 2026-06-15)
 - [ ] **Phase 11: Terminal Modals** — Reskin Draft Settings (timer stepper + drag-to-reorder script editor) and Host Console (move/kick + captain-gating hint) as terminal modals over the lobby.
 - [ ] **Phase 12: Access Control & Secondary Screens** — Add room public/private gating + host spectating toggle to the backend, and build the Connecting, Guest Gate (403), and Room Cancelled screens.
 
@@ -80,7 +80,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   - [x] 10-04-PLAN.md — Wave 2: Lobby reskin — LOBBY.INIT() banner, team columns, spectators, host console (UI-03)
   - [x] 10-05-PLAN.md — Wave 2: Drafting + team chat reskin — turn/clock urgency, pick/ban columns, champ grid, responsive chat (UI-04)
   - [x] 10-06-PLAN.md — Wave 2: Pause reskin — Cyber pause card with event log + grace countdown (UI-05)
-  - [ ] 10-07-PLAN.md — Wave 3: Review reskin — both compositions, full ban list, recap, copy/new-draft actions (UI-06)
+  - [x] 10-07-PLAN.md — Wave 3: Review reskin — both compositions, full ban list, recap, copy/new-draft actions (UI-06)
 **UI hint**: yes
 
 ### Phase 11: Terminal Modals
@@ -121,6 +121,6 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 7. Tech Debt Cleanup | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 8. Cyber Foundation & App Shell | v2.0 | 0/3 | Not started | - |
 | 9. Signature Effects Infrastructure | v2.0 | 0/3 | Not started | - |
-| 10. Core Screen Reskins | v2.0 | 6/7 | In Progress|  |
+| 10. Core Screen Reskins | v2.0 | 7/7 | Complete   | 2026-06-15 |
 | 11. Terminal Modals | v2.0 | 0/? | Not started | - |
 | 12. Access Control & Secondary Screens | v2.0 | 0/? | Not started | - |
