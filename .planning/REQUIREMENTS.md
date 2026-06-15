@@ -27,12 +27,12 @@
 
 ### Screen Reskins
 
-- [ ] **UI-01**: Home shows the boot log → ASCII wordmark → `CREATE_DRAFT()` and join-by-code actions, with a Discord sign-in entry.
-- [ ] **UI-02**: Login renders the Cyber card with Discord OAuth and guest-continue.
-- [ ] **UI-03**: Lobby renders two team columns (filled / `[ open slot ]`, captain marked), the spectators strip, and the host bar in Cyber style.
-- [ ] **UI-04**: Drafting renders the turn readout + countdown clock (with urgency state), the champion catalog grid, both teams' pick (lime) / ban (red, struck) columns, and team chat as sidebar or drawer.
-- [ ] **UI-05**: Pause renders the Cyber pause card with event log and grace countdown over the draft.
-- [ ] **UI-06**: Review renders both final compositions, the full ban list, and the draft-order recap in Cyber style, viewable without auth.
+- [x] **UI-01**: Home shows the boot log → ASCII wordmark → `CREATE_DRAFT()` and join-by-code actions, with a Discord sign-in entry.
+- [x] **UI-02**: Login renders the Cyber card with Discord OAuth and guest-continue.
+- [x] **UI-03**: Lobby renders two team columns (filled / `[ open slot ]`, captain marked), the spectators strip, and the host bar in Cyber style.
+- [x] **UI-04**: Drafting renders the turn readout + countdown clock (with urgency state), the champion catalog grid, both teams' pick (lime) / ban (red, struck) columns, and team chat as sidebar or drawer.
+- [x] **UI-05**: Pause renders the Cyber pause card with event log and grace countdown over the draft.
+- [x] **UI-06**: Review renders both final compositions, the full ban list, and the draft-order recap in Cyber style, viewable without auth.
 
 ### Terminal Modals
 
@@ -93,12 +93,12 @@ Which phases cover which requirements. Populated during roadmap creation.
 | FX-03 | Phase 9 | Complete |
 | FX-04 | Phase 9 | Complete |
 | FX-05 | Phase 8 | Complete |
-| UI-01 | Phase 10 | Pending |
-| UI-02 | Phase 10 | Pending |
-| UI-03 | Phase 10 | Pending |
-| UI-04 | Phase 10 | Pending |
-| UI-05 | Phase 10 | Pending |
-| UI-06 | Phase 10 | Pending |
+| UI-01 | Phase 10 | Complete |
+| UI-02 | Phase 10 | Complete |
+| UI-03 | Phase 10 | Complete |
+| UI-04 | Phase 10 | Complete |
+| UI-05 | Phase 10 | Complete |
+| UI-06 | Phase 10 | Complete |
 | MOD-01 | Phase 11 | Pending |
 | MOD-02 | Phase 11 | Pending |
 | SCR-01 | Phase 12 | Pending |
