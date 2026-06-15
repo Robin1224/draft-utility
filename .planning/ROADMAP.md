@@ -121,6 +121,6 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 7. Tech Debt Cleanup | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 8. Cyber Foundation & App Shell | v2.0 | 0/3 | Not started | - |
 | 9. Signature Effects Infrastructure | v2.0 | 0/3 | Not started | - |
-| 10. Core Screen Reskins | v2.0 | 7/7 | Complete   | 2026-06-15 |
+| 10. Core Screen Reskins | v2.0 | 7/7 | Complete    | 2026-06-15 |
 | 11. Terminal Modals | v2.0 | 0/? | Not started | - |
 | 12. Access Control & Secondary Screens | v2.0 | 0/? | Not started | - |
