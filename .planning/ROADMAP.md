@@ -73,7 +73,14 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   3. Drafting renders the turn readout + countdown clock with an urgency state, the champion catalog grid, both teams' pick (lime) / ban (red, struck) columns, and team chat as sidebar or drawer.
   4. Pause renders the Cyber pause card with event log and grace countdown over the draft.
   5. Review renders both final compositions, the full ban list, and the draft-order recap in Cyber style and remains viewable without auth.
-**Plans**: TBD
+**Plans**: 7 plans
+  - [ ] 10-01-PLAN.md — Wave 1: port all per-screen Cyber CSS into src/app.css + node string-grep spec (UI-01..06 foundation)
+  - [ ] 10-02-PLAN.md — Wave 2: Home reskin — boot log → DRAFT wordmark → CREATE_DRAFT()/join + Discord (UI-01)
+  - [ ] 10-03-PLAN.md — Wave 2: Login reskin — Cyber auth card, Discord OAuth + guest continue (UI-02)
+  - [ ] 10-04-PLAN.md — Wave 2: Lobby reskin — LOBBY.INIT() banner, team columns, spectators, host console (UI-03)
+  - [ ] 10-05-PLAN.md — Wave 2: Drafting + team chat reskin — turn/clock urgency, pick/ban columns, champ grid, responsive chat (UI-04)
+  - [ ] 10-06-PLAN.md — Wave 2: Pause reskin — Cyber pause card with event log + grace countdown (UI-05)
+  - [ ] 10-07-PLAN.md — Wave 3: Review reskin — both compositions, full ban list, recap, copy/new-draft actions (UI-06)
 **UI hint**: yes
 
 ### Phase 11: Terminal Modals
@@ -114,6 +121,6 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 7. Tech Debt Cleanup | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 8. Cyber Foundation & App Shell | v2.0 | 0/3 | Not started | - |
 | 9. Signature Effects Infrastructure | v2.0 | 0/3 | Not started | - |
-| 10. Core Screen Reskins | v2.0 | 0/? | Not started | - |
+| 10. Core Screen Reskins | v2.0 | 0/7 | Not started | - |
 | 11. Terminal Modals | v2.0 | 0/? | Not started | - |
 | 12. Access Control & Secondary Screens | v2.0 | 0/? | Not started | - |
