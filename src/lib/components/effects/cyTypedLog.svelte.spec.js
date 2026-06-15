@@ -129,8 +129,8 @@ describe('cyTypedLog — FX-03 typed terminal log (D-03)', () => {
 
 	it('exports CY_BOOT_LINES verbatim (6 lines)', () => {
 		expect(CY_BOOT_LINES).toHaveLength(6);
-		expect(CY_BOOT_LINES[0]).toBe('$ ./draftnet --init');
-		expect(CY_BOOT_LINES[1]).toContain('28 found');
-		expect(CY_BOOT_LINES[5]).toBe('> booting interface_');
+		expect(CY_BOOT_LINES[0]).toBe('$ draft --connect');
+		expect(CY_BOOT_LINES[2]).toContain('syncing champion catalog');
+		expect(CY_BOOT_LINES[5]).toBe('> ready_');
 	});
 });

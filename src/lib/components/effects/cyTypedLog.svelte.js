@@ -18,18 +18,19 @@
  */
 
 /**
- * Boot-sequence log content, copied VERBATIM from `cyber.jsx` (the reference
- * default consumed by Phase 10 Home; final boot copy is a Phase 10 decision).
+ * Boot-sequence log content, finalized per Phase 10 CONTEXT D-03 (draft-themed
+ * connect narrative). The dot-leader spacing is load-bearing for typed-log
+ * alignment — preserve every space verbatim.
  *
  * @type {string[]}
  */
 export const CY_BOOT_LINES = [
-	'$ ./draftnet --init',
-	'[ OK ] mounting entity catalog ......... 28 found',
-	'[ OK ] websocket bridge ................ connected',
-	'[ OK ] chat filter ..................... armed',
-	'[ OK ] render protocol ................. ready',
-	'> booting interface_'
+	'$ draft --connect',
+	'[ OK ] handshake with draftnet ...... ok',
+	'[ OK ] syncing champion catalog ..... 28',
+	'[ OK ] team channels A/B ............ open',
+	'[ OK ] turn clock .................... 30s',
+	'> ready_'
 ];
 
 /**
