@@ -1,12 +1,15 @@
 <script>
-	/** @type {{ turnEndsAt: string, timerMs?: number }} */
-	let { turnEndsAt, timerMs = 30000 } = $props();
+	/** @type {{ turnEndsAt: string, timerMs?: number, accent?: 'lime' | 'violet' }} */
+	let { turnEndsAt, timerMs = 30000, accent = 'lime' } = $props();
 
 	let secondsLeft = $state(30);
 
 	$effect(() => {
 		function tick() {
-			const remaining = Math.max(0, Math.ceil((new Date(turnEndsAt).getTime() - Date.now()) / 1000));
+			const remaining = Math.max(
+				0,
+				Math.ceil((new Date(turnEndsAt).getTime() - Date.now()) / 1000)
+			);
 			secondsLeft = remaining;
 		}
 		tick();
@@ -14,25 +17,18 @@
 		return () => clearInterval(id);
 	});
 
-	const urgency = $derived(secondsLeft <= 10);
+	const urgency = $derived(secondsLeft <= 5);
 
 	const barWidth = $derived(
-		timerMs > 0 ? Math.max(0, Math.min(100, (secondsLeft * 1000 / timerMs) * 100)) : 100
+		timerMs > 0 ? Math.max(0, Math.min(100, ((secondsLeft * 1000) / timerMs) * 100)) : 100
 	);
 </script>
 
-<div class="flex flex-col items-center gap-2 w-full">
-	<span
-		class={`text-5xl font-semibold leading-none ${urgency ? 'text-red-600' : 'text-text-primary'}`}
-		aria-live="polite"
-		aria-label="{secondsLeft} seconds remaining"
-	>
-		{secondsLeft}
-	</span>
-	<div class="w-full h-1 rounded-full bg-bg-secondary overflow-hidden">
-		<div
-			class={`h-full rounded-full transition-[width] duration-200 ${urgency ? 'bg-red-600' : 'bg-amber-500'}`}
-			style="width: {barWidth}%"
-		></div>
+<div class="cy-turn-clock {urgency ? 'is-urgent' : ''}" style="--accent: var(--cy-{accent})">
+	<div class="cy-turn-clock-num" aria-live="polite" aria-label="{secondsLeft} seconds remaining">
+		{String(secondsLeft).padStart(2, '0')}<span>s</span>
+	</div>
+	<div class="cy-turn-clock-bar">
+		<div style="width: {barWidth}%"></div>
 	</div>
 </div>

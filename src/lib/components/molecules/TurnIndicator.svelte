@@ -12,21 +12,33 @@
 
 	const currentTurn = $derived(draftState.script[draftState.turnIndex]);
 	const activeTeam = $derived(currentTurn.team);
+	const accent = $derived(activeTeam === 'A' ? 'lime' : 'violet');
 
 	const captainName = $derived(() => {
 		const captain = teams[activeTeam]?.find((m) => m.isCaptain);
 		return captain ? captain.displayName : 'Captain';
 	});
-
-	const turnHeading = $derived(
-		`Team ${activeTeam} \u2014 ${currentTurn.action === 'pick' ? 'Pick' : 'Ban'}`
-	);
 </script>
 
-<div class="flex flex-col items-center gap-2 py-4 text-center">
-	<h2 class="text-xl font-semibold text-text-primary">{turnHeading}</h2>
-	<p class="text-sm text-text-secondary">{captainName()}'s turn</p>
-	<div class="w-48">
-		<TimerDisplay turnEndsAt={draftState.turnEndsAt} timerMs={draftState.timerMs} />
+<div class="cy-turn cy-turn-{accent}">
+	<div class="cy-turn-readout">
+		<span class="cy-turn-label"
+			>$ TURN_{String(draftState.turnIndex + 1).padStart(2, '0')}/{draftState.script.length}</span
+		>
+		<span class="cy-turn-team">TEAM_{activeTeam} :: {currentTurn.action.toUpperCase()}</span>
+		<span class="cy-turn-cap">cap=&gt;{captainName()}</span>
+	</div>
+	<TimerDisplay turnEndsAt={draftState.turnEndsAt} timerMs={draftState.timerMs} {accent} />
+	<div class="cy-turn-pips">
+		{#each draftState.script as t, i (i)}
+			<span
+				class="cy-pip cy-pip-{t.team === 'A' ? 'lime' : 'violet'} cy-pip-{t.action} {i <
+				draftState.turnIndex
+					? 'is-done'
+					: i === draftState.turnIndex
+						? 'is-active'
+						: ''}">{t.action === 'ban' ? '▲' : '■'}</span
+			>
+		{/each}
 	</div>
 </div>
