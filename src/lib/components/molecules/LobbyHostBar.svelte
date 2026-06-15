@@ -40,9 +40,7 @@
 	const hasCaptainA = $derived(snapshot.teams.A.some((m) => m.isCaptain));
 	const hasCaptainB = $derived(snapshot.teams.B.some((m) => m.isCaptain));
 
-	const startDisabled = $derived(
-		snapshot.phase !== 'lobby' || !hasCaptainA || !hasCaptainB
-	);
+	const startDisabled = $derived(snapshot.phase !== 'lobby' || !hasCaptainA || !hasCaptainB);
 
 	const showCaptainHint = $derived(snapshot.phase === 'lobby' && (!hasCaptainA || !hasCaptainB));
 
@@ -51,9 +49,7 @@
 		...snapshot.teams.B.map((m) => ({ ...m, side: 'B' }))
 	]);
 
-	const movableUsers = $derived(
-		[...snapshot.teams.A, ...snapshot.teams.B].filter((m) => m.userId)
-	);
+	const movableUsers = $derived([...snapshot.teams.A, ...snapshot.teams.B].filter((m) => m.userId));
 
 	/** @param {LobbyMember} m */
 	function kickPayload(m) {
@@ -69,106 +65,84 @@
 </script>
 
 {#if isHost}
-	<section
-		class="mt-4 flex flex-col gap-4 border-b border-bg-secondary pb-4"
-		aria-label="Host controls"
-	>
-		<div class="flex flex-wrap items-end gap-3">
-			<div class="flex min-w-[10rem] flex-col gap-1">
-				<label for="host-move-user" class="text-xs font-medium text-text-tertiary">Move player</label>
-				<select
-					id="host-move-user"
-					bind:value={moveUserId}
-					class="rounded-md border border-bg-secondary bg-bg-primary px-2 py-1.5 text-sm text-text-primary"
-				>
-					<option value="">Select player</option>
-					{#each movableUsers as m (m.userId)}
-						<option value={m.userId}>{m.displayName}</option>
-					{/each}
-				</select>
-			</div>
-			<div class="flex min-w-[6rem] flex-col gap-1">
-				<label for="host-move-team" class="text-xs font-medium text-text-tertiary">To team</label>
-				<select
-					id="host-move-team"
-					bind:value={moveTarget}
-					class="rounded-md border border-bg-secondary bg-bg-primary px-2 py-1.5 text-sm text-text-primary"
-				>
-					<option value="A">A</option>
-					<option value="B">B</option>
-				</select>
-			</div>
+	<section class="cy-host-panel" aria-label="Host controls">
+		<div class="cy-host-head">[HOST_CONSOLE]</div>
+		<div class="cy-host-row">
+			<select id="host-move-user" bind:value={moveUserId} class="cy-input" aria-label="Move player">
+				<option value="">--move--</option>
+				{#each movableUsers as m (m.userId)}
+					<option value={m.userId}>{m.displayName}</option>
+				{/each}
+			</select>
+			<select id="host-move-team" bind:value={moveTarget} class="cy-input" aria-label="To team">
+				<option value="A">A</option>
+				<option value="B">B</option>
+			</select>
 			<button
 				type="button"
-				class="rounded-md border border-bg-secondary px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-bg-secondary"
+				class="cy-btn cy-btn-sm"
 				onclick={submitMove}
 				disabled={!moveUserId || snapshot.phase !== 'lobby'}
 			>
-				Move
+				EXEC
 			</button>
 
 			{#if snapshot.phase === 'lobby'}
 				<button
 					type="button"
-					class="rounded-md border border-bg-secondary px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-bg-secondary"
+					class="cy-btn cy-btn-sm"
 					aria-expanded={settingsOpen}
 					aria-controls="draft-settings-panel"
 					onclick={() => (settingsOpen = !settingsOpen)}
 				>
-					Settings
+					CONFIG
 				</button>
 			{/if}
 
-			<div class="flex flex-wrap items-center gap-2 sm:ml-auto">
-				<div class="flex flex-col items-start gap-1">
-					<button
-						type="button"
-						class="rounded-md bg-amber-500 px-4 py-2 text-sm font-semibold text-text-primary transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
-						disabled={startDisabled}
-						aria-disabled={startDisabled}
-						onclick={onStartDraft}
-					>
-						Start draft
-					</button>
-					{#if showCaptainHint}
-						<span class="text-sm text-text-tertiary">Both teams need a captain</span>
-					{/if}
-				</div>
-				<button
-					type="button"
-					class="rounded-md px-3 py-2 text-sm font-medium text-red-600 hover:underline"
-					onclick={onCancelRoom}
-				>
-					Cancel room
-				</button>
-			</div>
+			<div class="cy-grow"></div>
+
+			<button type="button" class="cy-btn cy-btn-sm cy-btn-danger" onclick={onCancelRoom}>
+				CANCEL
+			</button>
+			<button
+				type="button"
+				class="cy-btn cy-btn-primary"
+				disabled={startDisabled}
+				aria-disabled={startDisabled}
+				onclick={onStartDraft}
+			>
+				▶ START_DRAFT()
+			</button>
 		</div>
+
+		{#if showCaptainHint}
+			<span class="cy-foot">// both teams need a captain</span>
+		{/if}
 
 		{#if snapshot.phase === 'lobby' && settingsOpen}
 			<DraftSettingsPanel bind:script bind:timerSeconds />
 		{/if}
 
 		{#if snapshot.phase === 'lobby'}
-			<div class="flex flex-col gap-2">
-				<span class="text-xs font-semibold uppercase text-text-tertiary">Kick</span>
-				<ul class="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+			<div class="cy-spec">
+				<div class="cy-spec-head">// KICK</div>
+				<div class="cy-spec-list">
 					{#each rosterForKick as m (`${m.userId ?? ''}-${m.guestId ?? ''}-${m.side}`)}
 						{#if !m.isHost}
-							<li class="flex items-center gap-2 rounded-md border border-bg-secondary px-2 py-1">
-								<span class="text-sm text-text-primary">{m.displayName}</span>
-								<span class="text-xs text-text-tertiary">Team {m.side}</span>
+							<div class="cy-spec-pill">
+								{m.displayName} · Team {m.side}
 								<button
 									type="button"
-									class="text-sm font-medium text-red-600 hover:underline"
+									class="cy-btn cy-btn-sm cy-btn-danger"
 									aria-label="Kick {m.displayName}"
 									onclick={() => onKick(kickPayload(m))}
 								>
-									Kick
+									KICK
 								</button>
-							</li>
+							</div>
 						{/if}
 					{/each}
-				</ul>
+				</div>
 			</div>
 		{/if}
 	</section>
