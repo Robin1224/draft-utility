@@ -19,6 +19,12 @@
 	/** @type {HTMLDialogElement | undefined} */
 	let dialogEl = $state();
 
+	// WR-01: `click` retargets to the nearest common ancestor of pointerdown and
+	// pointerup — a text-selection drag from the body released over the backdrop
+	// would look like a scrim click. Only dismiss when the press STARTED on the
+	// dialog element too. Plain variable: never read by the template.
+	let pressOnScrim = false;
+
 	// Dialog stays mounted permanently (never conditionally mounted — focus-return
 	// is tied to close(), not DOM removal); sync open ↔ showModal()/close().
 	$effect(() => {
@@ -45,10 +51,13 @@
 		if (onAttemptClose && onAttemptClose() === false) e.preventDefault();
 	}}
 	onclose={() => (open = false)}
+	onpointerdown={(e) => (pressOnScrim = e.target === dialogEl)}
 	onclick={(e) => {
 		// Backdrop clicks target the dialog element itself; with padding: 0 the
-		// inner chrome covers the whole box, so target === dialog ⇒ scrim click.
-		if (e.target === dialogEl) requestDismiss();
+		// inner chrome covers the whole box, so target === dialog ⇒ scrim click —
+		// but only when the interaction also began on the dialog (WR-01).
+		if (pressOnScrim && e.target === dialogEl) requestDismiss();
+		pressOnScrim = false;
 	}}
 >
 	<div class="cy-modal-bar">

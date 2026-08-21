@@ -25,6 +25,16 @@ function dialogNode() {
 }
 
 /**
+ * Simulate a genuine scrim interaction: BOTH the pointerdown and the click
+ * land on the dialog element itself (WR-01 gates dismissal on the pair).
+ */
+function scrimPressAndClick() {
+	const d = dialogNode();
+	d.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+	d.click();
+}
+
+/**
  * A closed <dialog> drops out of the a11y tree entirely, so the role-based
  * locator matches nothing and expect.element(...) would throw ("cannot find
  * element") instead of passing .not.toBeVisible(). Poll the DOM state instead.
@@ -70,12 +80,29 @@ describe('CyModal.svelte — native <dialog> terminal modal (D-07/D-08)', () => 
 		await expectClosed();
 	});
 
-	it('closes on scrim click (click whose target is the dialog element itself)', async () => {
+	it('closes on scrim click (pointerdown + click both targeting the dialog element)', async () => {
 		render(CyModalHost, { title: TITLE });
 		await openModal();
-		// A programmatic click on the dialog element has target === dialog — the
-		// backdrop region case (inner chrome covers the whole box since padding is 0).
+		// A press+release on the dialog element has target === dialog for both
+		// events — the backdrop region case (inner chrome covers the whole box
+		// since padding is 0).
+		scrimPressAndClick();
+		await expectClosed();
+	});
+
+	it('WR-01: a press starting inside the modal body released over the backdrop does NOT dismiss', async () => {
+		render(CyModalHost, { title: TITLE });
+		const dialog = await openModal();
+		// Text-selection drag: pointerdown lands on the body, the retargeted
+		// click lands on the dialog (nearest common ancestor of down/up targets).
+		const body = /** @type {HTMLElement} */ (document.querySelector('.cy-modal-body'));
+		body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
 		dialogNode().click();
+		await expect.element(dialog).toBeVisible();
+		expect(dialogNode().open).toBe(true);
+
+		// The stale press state must not leak: a genuine scrim press still closes.
+		scrimPressAndClick();
 		await expectClosed();
 	});
 
@@ -91,7 +118,7 @@ describe('CyModal.svelte — native <dialog> terminal modal (D-07/D-08)', () => 
 		await userEvent.keyboard('{Escape}');
 		await expect.element(dialog).toBeVisible();
 
-		dialogNode().click();
+		scrimPressAndClick();
 		await expect.element(dialog).toBeVisible();
 
 		expect(onAttemptClose).toHaveBeenCalledTimes(3);
