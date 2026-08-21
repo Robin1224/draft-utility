@@ -17,4 +17,9 @@ describe('Phase 11 review fixes — draft page contracts', () => {
 			/const store = activeChatStream\(code\);[\s\S]*?chatStreamVal = undefined;[\s\S]*?store\.subscribe/
 		);
 	});
+
+	it('WR-05: lobby banner TURNS falls back to the configured script, not a hardcoded 10', () => {
+		expect(pageSrc).toContain('snapshot.draftState?.script?.length ?? draftScript.length');
+		expect(pageSrc).not.toContain('script?.length ?? 10');
+	});
 });

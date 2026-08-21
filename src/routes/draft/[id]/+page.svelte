@@ -323,7 +323,11 @@ status: complete</pre>
 							<b>{snapshot.teams.A.length + snapshot.teams.B.length}</b><span>PLAYERS</span>
 						</div>
 						<div><b>{snapshot.spectators.length}</b><span>SPECTATORS</span></div>
-						<div><b>{snapshot.draftState?.script?.length ?? 10}</b><span>TURNS</span></div>
+						<!-- WR-05: pre-draft there is no draftState — fall back to the local
+						     config handleStart will actually send, not a hardcoded 10. -->
+						<div>
+							<b>{snapshot.draftState?.script?.length ?? draftScript.length}</b><span>TURNS</span>
+						</div>
 					</div>
 				</div>
 
