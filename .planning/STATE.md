@@ -4,13 +4,13 @@ milestone: v2.0
 milestone_name: Cyber Redesign
 status: executing
 stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-08-21T12:33:45.327Z"
+last_updated: "2026-08-21T12:46:44.021Z"
 last_activity: 2026-08-21
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 16
-  completed_plans: 14
+  completed_plans: 15
   percent: 60
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-06-12)
 ## Current Position
 
 Phase: 11 (terminal-modals) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-08-21
 
@@ -65,6 +65,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 10 P06 | 3min | 1 tasks | 1 files |
 | Phase 10 P07 | 2min | 2 tasks | 2 files |
 | Phase 11 P01 | 15min | 2 tasks | 5 files |
+| Phase 11 P02 | 11min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,8 @@ Recent decisions affecting current work:
 - [Phase 11]: CyModal built on always-mounted native <dialog>: $effect open<->showModal()/close() sync, one requestDismiss() veto path for esc/scrim/✕, close event as single source of closed-truth (no cleanup on cancel — Chromium force-close safe)
 - [Phase 11]: cy-modal-in/cy-fade-in applied at 0.18s ease-out (prototype never applied its keyframes); 640px CSS-only full-screen takeover is app.css's first width media query; .cy-script-move clones rm chrome with neutral hover (red exclusive to rm)
 - [Phase 11]: Closed-dialog browser-spec assertions poll dialog.open/checkVisibility — vitest-browser expect.element throws when a role locator matches nothing (closed dialog leaves the a11y tree)
+- [Phase 11]: Draft Settings dirty check uses $derived.by with early null-return — plain $derived expressions TS-narrow closure-assigned nullable locals to never; base snapshot stays non-reactive
+- [Phase 11]: .cy-script got the list reset (prototype relied on removed Tailwind preflight) and minmax(0,1fr) select tracks so the 7-column D-11 row fits the 320px takeover width
 
 ### Pending Todos
 
@@ -117,6 +120,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-21T12:33:32.730Z
+Last session: 2026-08-21T12:46:28.877Z
 Stopped at: Completed 11-01-PLAN.md
 Resume file: None
