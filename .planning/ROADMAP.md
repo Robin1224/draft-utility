@@ -92,7 +92,10 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   2. The script editor lets the host drag-to-reorder pick/ban turns and add/remove turns, preserving the existing script data shape.
   3. Host Console opens as a terminal modal with working move-player and kick controls plus the amber captain-gating hint.
   4. `START_DRAFT()` stays disabled until both teams have a captain.
-**Plans**: TBD
+**Plans**: 3 plans
+  - [ ] 11-01-PLAN.md — Wave 1: modal CSS port (cyber.css 520-599 + dialog guards) + shared CyModal `<dialog>` wrapper + spec
+  - [ ] 11-02-PLAN.md — Wave 2: Draft Settings modal — timer stepper, drag/arrow script editor, draft-copy save semantics (MOD-01)
+  - [ ] 11-03-PLAN.md — Wave 3: slim launcher bar + Host Console modal (move/kick, captain hint, dual START gating) (MOD-02)
 **UI hint**: yes
 
 ### Phase 12: Access Control & Secondary Screens
@@ -122,5 +125,5 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 8. Cyber Foundation & App Shell | v2.0 | 0/3 | Not started | - |
 | 9. Signature Effects Infrastructure | v2.0 | 0/3 | Not started | - |
 | 10. Core Screen Reskins | v2.0 | 7/7 | Complete    | 2026-06-15 |
-| 11. Terminal Modals | v2.0 | 0/? | Not started | - |
+| 11. Terminal Modals | v2.0 | 0/3 | Not started | - |
 | 12. Access Control & Secondary Screens | v2.0 | 0/? | Not started | - |
