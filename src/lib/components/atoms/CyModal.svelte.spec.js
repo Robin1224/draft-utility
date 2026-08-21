@@ -157,4 +157,20 @@ describe('CyModal.svelte — native <dialog> terminal modal (D-07/D-08)', () => 
 		expect(reducedBlock).toMatch(/dialog\.cy-modal\[open\] \{\s*animation: none;/);
 		expect(reducedBlock).toMatch(/dialog\.cy-modal::backdrop \{\s*animation: none;/);
 	});
+
+	// Kept last: changes the viewport into the ≤640px takeover for this test.
+	it('WR-02: ≤640px takeover — the body absorbs leftover height, no bare dialog surface below content', async () => {
+		await page.viewport(375, 667);
+		render(CyModalHost, { title: TITLE });
+		await openModal();
+
+		const dialogRect = dialogNode().getBoundingClientRect();
+		const body = /** @type {HTMLElement} */ (document.querySelector('.cy-modal-body'));
+		const foot = document.querySelector('.cy-modal-foot');
+		// The body must stretch down to the footer (or the dialog bottom edge) —
+		// otherwise the dead zone below short content is the <dialog> itself and
+		// a tap there would register as a scrim click.
+		const bottomEdge = foot ? foot.getBoundingClientRect().top : dialogRect.bottom;
+		expect(Math.abs(body.getBoundingClientRect().bottom - bottomEdge)).toBeLessThanOrEqual(1);
+	});
 });

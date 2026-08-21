@@ -827,6 +827,10 @@ dialog.cy-modal[open] {
     width: 100vw; height: 100dvh; /* dvh: correct under mobile URL-bar collapse */
     margin: 0;
   }
+  /* WR-02: body absorbs leftover height so the bare dialog surface is never
+     directly hittable — a tap below short content must not read as a scrim
+     click (there is no visible backdrop in the takeover). */
+  dialog.cy-modal[open] .cy-modal-body { flex: 1; }
 }
 
 /* Phase 11 reduced-motion (D-09, Phase 8 D-10 rule): modal + backdrop appear instantly —
