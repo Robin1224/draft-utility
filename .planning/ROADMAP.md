@@ -33,47 +33,61 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 ## Phase Details
 
 ### Phase 8: Cyber Foundation & App Shell
+
 **Goal**: The app renders in the Cyber visual system — plain CSS only, monospace, squared edges — with a persistent terminal chrome (header, phase tracker, scanlines) that every downstream screen sits inside.
 **Depends on**: Nothing new (builds on v1.0 codebase; first phase of v2.0)
 **Requirements**: DS-01, DS-02, DS-03, DS-04, DS-05, FX-05
 **Success Criteria** (what must be TRUE):
+
   1. The app boots with Tailwind fully gone — no `@import 'tailwindcss'`, no Tailwind config/dependency, and no component renders via Tailwind utility classes.
   2. All UI text renders in JetBrains Mono (400/500/600/700) and every surface has squared corners with 1px borders, matching the `cyber.css` tokens scoped under `.cy-app`.
   3. A fixed header shows the bracketed wordmark with a blinking block cursor, a centered phase tracker (active phase lime-glowed), and the room-code meta with a copy button that writes the code to the clipboard.
   4. A scanline overlay sits over a scrolling body, and the blinking cursor is suppressed under `prefers-reduced-motion`.
   5. All 130 existing unit tests still pass and the draft/lobby snapshot shape is unchanged.
+
 **Plans**: 3 plans
+
   - [x] 08-00-PLAN.md — Wave 0: vendor JetBrains Mono fonts + write the foundation & CyShell specs (red)
   - [x] 08-01-PLAN.md — Wave 1: Cyber CSS foundation (app.css tokens/fonts) + remove Tailwind at all 4 wiring points
   - [x] 08-02-PLAN.md — Wave 1: CyShell app-shell component + +layout.svelte wiring
+
 **UI hint**: yes
 
 ### Phase 9: Signature Effects Infrastructure
+
 **Goal**: The reusable signature treatments — plasma shader, typed terminal logs, and the shaded-ASCII wordmark — exist as Svelte 5 building blocks that screens can drop in, all motion-safe.
 **Depends on**: Phase 8 (tokens, font, `.cy-app` scope, chrome)
 **Requirements**: FX-01, FX-02, FX-03, FX-04
 **Success Criteria** (what must be TRUE):
+
   1. An ASCII plasma shader canvas renders behind content on a violet→lime brightness ramp with ambient and "hot" intensities.
   2. The shader visibly pauses when scrolled off-screen and does not animate at all under `prefers-reduced-motion`.
   3. A terminal log types out character-by-character and instantly shows the full text when `prefers-reduced-motion` is set.
   4. The shaded-ASCII `DRAFT` wordmark renders with its line-by-line reveal.
+
 **Plans**: 3 plans
+
   - [x] 09-01-PLAN.md — Wave 1: CyShader plasma shader component + mount into CyShell (ambient, D-02) + browser tests (FX-01, FX-02)
   - [x] 09-02-PLAN.md — Wave 1: createTypedLog rune factory + .cy-boot CSS + browser tests (FX-03)
   - [x] 09-03-PLAN.md — Wave 2: CyLogo DRAFT wordmark component + .cy-logo* CSS/keyframes + browser tests (FX-04)
+
 **UI hint**: yes
 
 ### Phase 10: Core Screen Reskins
+
 **Goal**: Every primary screen of the existing flow — Home, Login, Lobby, Drafting, Pause, Review — is reskinned to the Cyber direction using the foundation and effects, with no change to draft behavior.
 **Depends on**: Phase 8 (chrome/tokens), Phase 9 (shader, typed log, wordmark for Home)
 **Requirements**: UI-01, UI-02, UI-03, UI-04, UI-05, UI-06
 **Success Criteria** (what must be TRUE):
+
   1. Home shows the typed boot log, then the ASCII `DRAFT` wordmark, then `CREATE_DRAFT()` / join-by-code actions and a Discord sign-in entry.
   2. Login renders the Cyber card with Discord OAuth and guest-continue; Lobby renders two team columns (filled / `[ open slot ]`, captain marked), the spectators strip, and the host bar in Cyber style.
   3. Drafting renders the turn readout + countdown clock with an urgency state, the champion catalog grid, both teams' pick (lime) / ban (red, struck) columns, and team chat as sidebar or drawer.
   4. Pause renders the Cyber pause card with event log and grace countdown over the draft.
   5. Review renders both final compositions, the full ban list, and the draft-order recap in Cyber style and remains viewable without auth.
+
 **Plans**: 7 plans
+
   - [x] 10-01-PLAN.md — Wave 1: port all per-screen Cyber CSS into src/app.css + node string-grep spec (UI-01..06 foundation)
   - [x] 10-02-PLAN.md — Wave 2: Home reskin — boot log → DRAFT wordmark → CREATE_DRAFT()/join + Discord (UI-01)
   - [x] 10-03-PLAN.md — Wave 2: Login reskin — Cyber auth card, Discord OAuth + guest continue (UI-02)
@@ -81,33 +95,42 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   - [x] 10-05-PLAN.md — Wave 2: Drafting + team chat reskin — turn/clock urgency, pick/ban columns, champ grid, responsive chat (UI-04)
   - [x] 10-06-PLAN.md — Wave 2: Pause reskin — Cyber pause card with event log + grace countdown (UI-05)
   - [x] 10-07-PLAN.md — Wave 3: Review reskin — both compositions, full ban list, recap, copy/new-draft actions (UI-06)
+
 **UI hint**: yes
 
 ### Phase 11: Terminal Modals
+
 **Goal**: The host's pre-launch configuration surfaces — Draft Settings and Host Console — open as terminal modals over the dimmed lobby with full Cyber interactions.
 **Depends on**: Phase 10 (lobby reskin must exist for modals to render over it)
 **Requirements**: MOD-01, MOD-02
 **Success Criteria** (what must be TRUE):
+
   1. Draft Settings opens as a terminal modal over the dimmed lobby with a timer stepper clamped 10–120s in steps of 5.
   2. The script editor lets the host drag-to-reorder pick/ban turns and add/remove turns, preserving the existing script data shape.
   3. Host Console opens as a terminal modal with working move-player and kick controls plus the amber captain-gating hint.
   4. `START_DRAFT()` stays disabled until both teams have a captain.
+
 **Plans**: 3 plans
-  - [ ] 11-01-PLAN.md — Wave 1: modal CSS port (cyber.css 520-599 + dialog guards) + shared CyModal `<dialog>` wrapper + spec
+
+  - [x] 11-01-PLAN.md — Wave 1: modal CSS port (cyber.css 520-599 + dialog guards) + shared CyModal `<dialog>` wrapper + spec
   - [ ] 11-02-PLAN.md — Wave 2: Draft Settings modal — timer stepper, drag/arrow script editor, draft-copy save semantics (MOD-01)
   - [ ] 11-03-PLAN.md — Wave 3: slim launcher bar + Host Console modal (move/kick, captain hint, dual START gating) (MOD-02)
+
 **UI hint**: yes
 
 ### Phase 12: Access Control & Secondary Screens
+
 **Goal**: Rooms carry a real public/private flag the host can toggle live, unauthenticated visitors to private pre-draft rooms hit a 403 Guest Gate, and the Connecting and Room Cancelled terminal states complete the flow.
 **Depends on**: Phase 8 (chrome/tokens), Phase 9 (typed connect log), Phase 10 (lobby for the spectating toggle)
 **Requirements**: ACC-01, ACC-02, ACC-03, ACC-04, SCR-01, SCR-02
 **Success Criteria** (what must be TRUE):
+
   1. A room persists an "open spectating" (public/private) flag defaulting to closed, and the host can toggle it from the lobby to flip the room public/private live.
   2. An unauthenticated visitor to a private, pre-draft room sees the 403 Guest Gate (Discord sign-in + retry-as-guest) instead of the lobby; once the room is public or the draft has started, guests can view it as spectators.
   3. While the socket is connecting / the room is hydrating, a Connecting screen shows the typed connect log and progress meter, then transitions to lobby (or draft on rejoin).
   4. When the host cancels the room, everyone sees the red SIGKILL-log Room Cancelled terminal state.
   5. All 130 existing unit tests still pass and the realtime snapshot shape is unchanged.
+
 **Plans**: TBD
 **UI hint**: yes
 
@@ -125,5 +148,5 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 8. Cyber Foundation & App Shell | v2.0 | 0/3 | Not started | - |
 | 9. Signature Effects Infrastructure | v2.0 | 0/3 | Not started | - |
 | 10. Core Screen Reskins | v2.0 | 7/7 | Complete    | 2026-06-15 |
-| 11. Terminal Modals | v2.0 | 0/3 | Not started | - |
+| 11. Terminal Modals | v2.0 | 1/3 | In Progress|  |
 | 12. Access Control & Secondary Screens | v2.0 | 0/? | Not started | - |

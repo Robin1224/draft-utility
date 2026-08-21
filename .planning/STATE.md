@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Cyber Redesign
 status: executing
-stopped_at: Phase 11 UI-SPEC approved
-last_updated: "2026-08-21T12:13:09.462Z"
-last_activity: 2026-08-21 -- Phase 11 planning complete
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-08-21T12:33:45.327Z"
+last_activity: 2026-08-21
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 16
-  completed_plans: 13
+  completed_plans: 14
   percent: 60
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-12)
 
 **Core value:** A fair, readable, real-time draft where host rules, team privacy, and spectator separation are clear — and the final pick/ban outcome is easy to review.
-**Current focus:** Phase 10 — core-screen-reskins
+**Current focus:** Phase 11 — terminal-modals
 
 ## Current Position
 
-Phase: 11
-Plan: Not started
+Phase: 11 (terminal-modals) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-08-21 -- Phase 11 planning complete
+Last activity: 2026-08-21
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -64,6 +64,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 10 P05 | 4min | 3 tasks | 10 files |
 | Phase 10 P06 | 3min | 1 tasks | 1 files |
 | Phase 10 P07 | 2min | 2 tasks | 2 files |
+| Phase 11 P01 | 15min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,9 @@ Recent decisions affecting current work:
 - [Phase 10]: Drafting (UI-04): final-5s clock urgency (secondsLeft <= 5, D-04) toggles is-urgent; red+pulse + reduced-motion suppression owned by app.css. Chat dock (D-02) is matchMedia(1100px): cy-chat-right sidebar desktop / cy-chat-drawer overlay narrow. All frozen draft/chat wiring (onPickBan, onSend, activeTab, snapshot timer reads, isActiveCaptain) preserved byte-for-byte; PauseOverlay invocation left for Plan 06.
 - [Phase 10]: [Phase 10]: PauseOverlay (UI-05) reskinned to the .cy-pause-card with a self-contained grace countdown (own setInterval reading graceEndsAt) instead of reusing TimerDisplay (Plan 05 reskinned it to .cy-turn-clock) — decouples the two Wave-2 plans; event log binds the frozen captainName, props { captainName, graceEndsAt, timerMs } + DraftBoard invocation left frozen (D-01).
 - [Phase 10]: Review (UI-06) reskinned: DraftReview renders .cy-review-grid (full champ {name,role} resolution for pick art tint, DraftSlot decoupled); route review branch wraps it in .cy-review head+receipt+actions ($ COPY_LINK()/$ NEW_DRAFT()). Frozen props/data source/copyLink unchanged; no auth gate (review guest-viewable).
+- [Phase 11]: CyModal built on always-mounted native <dialog>: $effect open<->showModal()/close() sync, one requestDismiss() veto path for esc/scrim/✕, close event as single source of closed-truth (no cleanup on cancel — Chromium force-close safe)
+- [Phase 11]: cy-modal-in/cy-fade-in applied at 0.18s ease-out (prototype never applied its keyframes); 640px CSS-only full-screen takeover is app.css's first width media query; .cy-script-move clones rm chrome with neutral hover (red exclusive to rm)
+- [Phase 11]: Closed-dialog browser-spec assertions poll dialog.open/checkVisibility — vitest-browser expect.element throws when a role locator matches nothing (closed dialog leaves the a11y tree)
 
 ### Pending Todos
 
@@ -113,6 +117,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-21T11:46:41.615Z
-Stopped at: Phase 11 UI-SPEC approved
-Resume file: .planning/phases/11-terminal-modals/11-UI-SPEC.md
+Last session: 2026-08-21T12:33:32.730Z
+Stopped at: Completed 11-01-PLAN.md
+Resume file: None

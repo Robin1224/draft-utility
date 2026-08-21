@@ -36,8 +36,8 @@
 
 ### Terminal Modals
 
-- [ ] **MOD-01**: Draft Settings opens as a terminal modal over the dimmed lobby with a timer stepper (10–120s, step 5) and a drag-to-reorder pick/ban script editor (add/remove turns).
-- [ ] **MOD-02**: Host Console opens as a terminal modal with move-player and kick controls plus the amber captain-gating hint; `START_DRAFT()` is disabled until both teams have a captain.
+- [x] **MOD-01**: Draft Settings opens as a terminal modal over the dimmed lobby with a timer stepper (10–120s, step 5) and a drag-to-reorder pick/ban script editor (add/remove turns).
+- [x] **MOD-02**: Host Console opens as a terminal modal with move-player and kick controls plus the amber captain-gating hint; `START_DRAFT()` is disabled until both teams have a captain.
 
 ### New Secondary Screens
 
@@ -99,8 +99,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | UI-04 | Phase 10 | Complete |
 | UI-05 | Phase 10 | Complete |
 | UI-06 | Phase 10 | Complete |
-| MOD-01 | Phase 11 | Pending |
-| MOD-02 | Phase 11 | Pending |
+| MOD-01 | Phase 11 | Complete |
+| MOD-02 | Phase 11 | Complete |
 | SCR-01 | Phase 12 | Pending |
 | SCR-02 | Phase 12 | Pending |
 | ACC-01 | Phase 12 | Pending |
@@ -109,11 +109,13 @@ Which phases cover which requirements. Populated during roadmap creation.
 | ACC-04 | Phase 12 | Pending |
 
 **Coverage:**
+
 - v2.0 requirements: 24 total
 - Mapped to phases: 24 ✓
 - Unmapped: 0 ✓
 
 **By phase:**
+
 - Phase 8 — Cyber Foundation & App Shell: DS-01, DS-02, DS-03, DS-04, DS-05, FX-05 (6)
 - Phase 9 — Signature Effects Infrastructure: FX-01, FX-02, FX-03, FX-04 (4)
 - Phase 10 — Core Screen Reskins: UI-01, UI-02, UI-03, UI-04, UI-05, UI-06 (6)
