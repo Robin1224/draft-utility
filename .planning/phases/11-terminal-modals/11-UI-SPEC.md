@@ -1,7 +1,8 @@
 ---
 phase: 11
 slug: terminal-modals
-status: draft
+status: approved
+reviewed_at: 2026-08-21
 shadcn_initialized: false
 preset: none
 created: 2026-08-21
