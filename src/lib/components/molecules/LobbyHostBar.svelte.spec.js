@@ -157,6 +157,29 @@ describe('LobbyHostBar (MOD-02) — slim launcher bar + ~/draft/host_console mod
 		expect(onMove).toHaveBeenCalledWith('u2', 'B');
 	});
 
+	it('WR-06: EXEC disables (and never fires onMove) when the selected member leaves the roster', async () => {
+		const onMove = vi.fn();
+		const screen = render(LobbyHostBar, makeProps({ onMove }));
+		await openConsole();
+
+		await page.getByRole('combobox', { name: 'Move player' }).selectOptions('u2');
+		await expect.element(page.getByRole('button', { name: 'EXEC' })).toBeEnabled();
+
+		// u2 leaves / is kicked while the console is open — the stale bound id
+		// no longer resolves to a roster member.
+		const without = bothCaptains();
+		without.teams.A = without.teams.A.filter((m) => m.userId !== 'u2');
+		await screen.rerender({ snapshot: without });
+
+		await expect.element(page.getByRole('button', { name: 'EXEC' })).toBeDisabled();
+		// Even a forced click must not fire the RPC for a departed member.
+		const exec = [...document.querySelectorAll('button')].find(
+			(b) => b.textContent.trim() === 'EXEC'
+		);
+		exec.click();
+		expect(onMove).not.toHaveBeenCalled();
+	});
+
 	it('console kick list shows non-host members and calls onKick with the frozen payload (MOD-02)', async () => {
 		const onKick = vi.fn();
 		const withMembers = render(LobbyHostBar, makeProps({ onKick }));

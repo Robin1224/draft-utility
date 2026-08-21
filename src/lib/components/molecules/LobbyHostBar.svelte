@@ -58,6 +58,13 @@
 
 	const removableMembers = $derived(rosterForKick.filter((m) => !m.isHost));
 
+	// WR-06: the bound moveUserId can go stale when the selected member leaves
+	// or is kicked while the console is open — EXEC must only fire for someone
+	// still on the live roster.
+	const moveTargetValid = $derived(
+		moveUserId !== '' && movableUsers.some((m) => m.userId === moveUserId)
+	);
+
 	/** @param {LobbyMember} m */
 	function kickPayload(m) {
 		if (m.userId) return { userId: m.userId };
@@ -66,7 +73,7 @@
 	}
 
 	function submitMove() {
-		if (!moveUserId) return;
+		if (!moveTargetValid) return; // WR-06: never fire onMove for a departed member
 		onMove(moveUserId, moveTarget);
 	}
 </script>
@@ -130,7 +137,7 @@
 						type="button"
 						class="cy-btn cy-btn-sm"
 						onclick={submitMove}
-						disabled={!moveUserId || snapshot.phase !== 'lobby'}
+						disabled={!moveTargetValid || snapshot.phase !== 'lobby'}
 					>
 						EXEC
 					</button>
