@@ -3,17 +3,46 @@
 	 * @typedef {{ id: string, team: 'A'|'B', action: 'pick'|'ban' }} ScriptTurn
 	 */
 
-	/** @type {{ turn: ScriptTurn, index: number, onDragStart: (e: DragEvent, i: number) => void, onDragOver: (e: DragEvent, i: number) => void, onDrop: (e: DragEvent, i: number) => void, onRemove: (i: number) => void, onUpdate: (i: number, field: 'team'|'action', value: string) => void }} */
-	let { turn, index, onDragStart, onDragOver, onDrop, onRemove, onUpdate } = $props();
+	/**
+	 * Cyber script-editor row (D-11): ⠿ grip drag + ↑/↓ move buttons + rm.
+	 * The whole li is draggable (grip is the visual affordance only); the
+	 * ↑/↓ buttons are the keyboard/touch reorder path sharing the parent's
+	 * single splice data path.
+	 * @type {{
+	 *   turn: ScriptTurn,
+	 *   index: number,
+	 *   isFirst: boolean,
+	 *   isLast: boolean,
+	 *   onDragStart: (e: DragEvent, i: number) => void,
+	 *   onDragOver: (e: DragEvent, i: number) => void,
+	 *   onDrop: (e: DragEvent, i: number) => void,
+	 *   onRemove: (i: number) => void,
+	 *   onUpdate: (i: number, field: 'team'|'action', value: string) => void,
+	 *   onMoveUp: (i: number) => void,
+	 *   onMoveDown: (i: number) => void
+	 * }}
+	 */
+	let {
+		turn,
+		index,
+		isFirst,
+		isLast,
+		onDragStart,
+		onDragOver,
+		onDrop,
+		onRemove,
+		onUpdate,
+		onMoveUp,
+		onMoveDown
+	} = $props();
 
 	let dragging = $state(false);
 	let dragOver = $state(false);
 </script>
 
 <li
-	class="flex items-center gap-2 rounded-md border {dragOver
-		? 'border-amber-400'
-		: 'border-bg-secondary'} {dragging ? 'opacity-50' : ''} bg-bg-primary px-3 py-2"
+	class="cy-script-row"
+	class:is-drag={dragging || dragOver}
 	draggable="true"
 	ondragstart={(e) => {
 		dragging = true;
@@ -35,62 +64,44 @@
 		onDrop(e, index);
 	}}
 >
-	<!-- Drag handle -->
-	<button
-		type="button"
-		class="cursor-grab text-text-tertiary"
-		aria-label="Drag to reorder"
-		tabindex="-1"
-		onclick={(e) => e.preventDefault()}
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="16"
-			height="16"
-			viewBox="0 0 24 24"
-			fill="currentColor"
-			aria-hidden="true"
-		>
-			<circle cx="9" cy="6" r="1.5" /><circle cx="15" cy="6" r="1.5" />
-			<circle cx="9" cy="12" r="1.5" /><circle cx="15" cy="12" r="1.5" />
-			<circle cx="9" cy="18" r="1.5" /><circle cx="15" cy="18" r="1.5" />
-		</svg>
-	</button>
-
-	<!-- Turn index (1-based) -->
-	<span class="w-5 text-right text-sm text-text-tertiary">{index + 1}</span>
-
-	<!-- Team select -->
-	<label class="sr-only" for="turn-team-{turn.id}">Team for turn {index + 1}</label>
+	<span class="cy-script-grip" aria-hidden="true">⠿</span>
+	<span class="cy-script-idx">{String(index + 1).padStart(2, '0')}</span>
 	<select
-		id="turn-team-{turn.id}"
-		class="w-24 rounded-md border border-bg-secondary bg-bg-primary px-2 py-1 text-sm text-text-primary"
+		class={turn.team === 'A' ? 'team-a' : 'team-b'}
+		aria-label="Team for turn {index + 1}"
 		value={turn.team}
 		onchange={(e) => onUpdate(index, 'team', e.currentTarget.value)}
 	>
-		<option value="A">Team A</option>
-		<option value="B">Team B</option>
+		<option value="A">TEAM_A</option>
+		<option value="B">TEAM_B</option>
 	</select>
-
-	<!-- Action select -->
-	<label class="sr-only" for="turn-action-{turn.id}">Action for turn {index + 1}</label>
 	<select
-		id="turn-action-{turn.id}"
-		class="w-24 rounded-md border border-bg-secondary bg-bg-primary px-2 py-1 text-sm text-text-primary"
+		class={turn.action === 'ban' ? 'is-ban' : 'is-pick'}
+		aria-label="Action for turn {index + 1}"
 		value={turn.action}
 		onchange={(e) => onUpdate(index, 'action', e.currentTarget.value)}
 	>
-		<option value="pick">Pick</option>
-		<option value="ban">Ban</option>
+		<option value="ban">ban()</option>
+		<option value="pick">pick()</option>
 	</select>
-
-	<!-- Remove button -->
 	<button
 		type="button"
-		class="text-sm font-medium text-red-600 hover:underline"
-		aria-label="Remove turn {index + 1}"
-		onclick={() => onRemove(index)}
+		class="cy-script-move"
+		aria-label="move turn {index + 1} up"
+		disabled={isFirst}
+		onclick={() => onMoveUp(index)}>↑</button
 	>
-		Remove
-	</button>
+	<button
+		type="button"
+		class="cy-script-move"
+		aria-label="move turn {index + 1} down"
+		disabled={isLast}
+		onclick={() => onMoveDown(index)}>↓</button
+	>
+	<button
+		type="button"
+		class="cy-script-rm"
+		aria-label="remove turn {index + 1}"
+		onclick={() => onRemove(index)}>rm</button
+	>
 </li>
