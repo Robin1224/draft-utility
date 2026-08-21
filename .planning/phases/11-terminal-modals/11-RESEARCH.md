@@ -510,11 +510,13 @@ Note the minus glyph is `−` (U+2212), not hyphen — copy from the prototype. 
 | A4 | Scroll chaining from backdrop to `.cy-body` is possible in some engines; `overscroll-behavior: contain` guard suggested | Pitfall 8 | Cosmetic; guard is one declaration |
 | A5 | Playwright headless chromium delivers Escape through CloseWatcher so `cancel` fires in tests | Code Examples | If flaky, test the veto path by calling the ✕/scrim path instead; esc coverage becomes manual |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Does the slim launcher bar keep the `[HOST_CONSOLE]` head label?** (explicitly Claude's discretion) — Recommendation: keep `.cy-host-panel`/`.cy-host-row` shell and the amber head label; it reads as the console *launcher* and reuses shipped Phase 10 CSS with zero new classes. Planner may decide otherwise; no research blocker.
-2. **Where does modal open-state live — `LobbyHostBar` or the page?** CONTEXT says planner's call. Research recommendation: `LobbyHostBar` (it already owns `settingsOpen` and every derive both modals need; the page's frozen invocation then needs no changes). No downside found.
-3. **Lobby banner copy `configure script via [SETTINGS]`** references the old inline panel; `CONFIG()` is the new launcher name. Cosmetic string in `+page.svelte:316` — planner may align it or leave it (not covered by MOD-01/02 acceptance).
+All three questions were resolved during planning — none remain open.
+
+1. **Does the slim launcher bar keep the `[HOST_CONSOLE]` head label?** (explicitly Claude's discretion) — Recommendation: keep `.cy-host-panel`/`.cy-host-row` shell and the amber head label; it reads as the console *launcher* and reuses shipped Phase 10 CSS with zero new classes. Planner may decide otherwise; no research blocker. **RESOLVED — Plan 03 (11-03-PLAN.md Task 1): keeps the `.cy-host-panel` shell and the amber `[HOST_CONSOLE]` head label, per this recommendation.**
+2. **Where does modal open-state live — `LobbyHostBar` or the page?** CONTEXT says planner's call. Research recommendation: `LobbyHostBar` (it already owns `settingsOpen` and every derive both modals need; the page's frozen invocation then needs no changes). No downside found. **RESOLVED — the LobbyHostBar-owns-modal-state architecture was adopted: `settingsOpen`/`consoleOpen` live in LobbyHostBar (Plan 03), and the page invocation only gains a `code` prop.**
+3. **Lobby banner copy `configure script via [SETTINGS]`** references the old inline panel; `CONFIG()` is the new launcher name. Cosmetic string in `+page.svelte:316` — planner may align it or leave it (not covered by MOD-01/02 acceptance). **RESOLVED — Plan 03 (11-03-PLAN.md Task 1): banner copy updated to `configure script via [CONFIG()].`**
 
 ## Environment Availability
 
