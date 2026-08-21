@@ -313,7 +313,7 @@ status: complete</pre>
 					<div>
 						<div class="cy-banner-eyebrow">// status: AWAITING_HOST_SIGNAL</div>
 						<h2>LOBBY.INIT()</h2>
-						<p>&gt; assemble both teams. captains required. configure script via [SETTINGS].</p>
+						<p>&gt; assemble both teams. captains required. configure script via [CONFIG()].</p>
 					</div>
 					<div class="cy-banner-stats">
 						<div>
@@ -327,6 +327,7 @@ status: complete</pre>
 				<LobbyHostBar
 					{isHost}
 					{snapshot}
+					{code}
 					onKick={handleKick}
 					onMove={handleMove}
 					onStartDraft={handleStart}

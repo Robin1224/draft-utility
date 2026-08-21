@@ -1,4 +1,5 @@
 <script>
+	import CyModal from '$lib/components/atoms/CyModal.svelte';
 	import DraftSettingsPanel from './DraftSettingsPanel.svelte';
 
 	/**
@@ -11,6 +12,7 @@
 	 * @type {{
 	 *   isHost: boolean,
 	 *   snapshot: LobbySnap,
+	 *   code: string,
 	 *   onKick: (p: { userId?: string, guestId?: string }) => void,
 	 *   onMove: (userId: string, toTeam: 'A' | 'B') => void,
 	 *   onStartDraft: () => void,
@@ -22,6 +24,7 @@
 	let {
 		isHost,
 		snapshot,
+		code,
 		onKick,
 		onMove,
 		onStartDraft,
@@ -37,6 +40,8 @@
 
 	let settingsOpen = $state(false);
 
+	let consoleOpen = $state(false);
+
 	const hasCaptainA = $derived(snapshot.teams.A.some((m) => m.isCaptain));
 	const hasCaptainB = $derived(snapshot.teams.B.some((m) => m.isCaptain));
 
@@ -50,6 +55,8 @@
 	]);
 
 	const movableUsers = $derived([...snapshot.teams.A, ...snapshot.teams.B].filter((m) => m.userId));
+
+	const removableMembers = $derived(rosterForKick.filter((m) => !m.isHost));
 
 	/** @param {LobbyMember} m */
 	function kickPayload(m) {
@@ -68,42 +75,17 @@
 	<section class="cy-host-panel" aria-label="Host controls">
 		<div class="cy-host-head">[HOST_CONSOLE]</div>
 		<div class="cy-host-row">
-			<select id="host-move-user" bind:value={moveUserId} class="cy-input" aria-label="Move player">
-				<option value="">--move--</option>
-				{#each movableUsers as m (m.userId)}
-					<option value={m.userId}>{m.displayName}</option>
-				{/each}
-			</select>
-			<select id="host-move-team" bind:value={moveTarget} class="cy-input" aria-label="To team">
-				<option value="A">A</option>
-				<option value="B">B</option>
-			</select>
-			<button
-				type="button"
-				class="cy-btn cy-btn-sm"
-				onclick={submitMove}
-				disabled={!moveUserId || snapshot.phase !== 'lobby'}
-			>
-				EXEC
-			</button>
-
 			{#if snapshot.phase === 'lobby'}
-				<button
-					type="button"
-					class="cy-btn cy-btn-sm"
-					aria-expanded={settingsOpen}
-					aria-controls="draft-settings-panel"
-					onclick={() => (settingsOpen = !settingsOpen)}
-				>
-					CONFIG
+				<button type="button" class="cy-btn cy-btn-sm" onclick={() => (settingsOpen = true)}>
+					CONFIG()
+				</button>
+				<button type="button" class="cy-btn cy-btn-sm" onclick={() => (consoleOpen = true)}>
+					HOST_CONSOLE()
 				</button>
 			{/if}
 
 			<div class="cy-grow"></div>
 
-			<button type="button" class="cy-btn cy-btn-sm cy-btn-danger" onclick={onCancelRoom}>
-				CANCEL
-			</button>
 			<button
 				type="button"
 				class="cy-btn cy-btn-primary"
@@ -119,31 +101,86 @@
 			<span class="cy-foot">// both teams need a captain</span>
 		{/if}
 
-		{#if snapshot.phase === 'lobby' && settingsOpen}
-			<DraftSettingsPanel bind:script bind:timerSeconds />
-		{/if}
+		<DraftSettingsPanel bind:open={settingsOpen} bind:script bind:timerSeconds />
 
-		{#if snapshot.phase === 'lobby'}
-			<div class="cy-spec">
-				<div class="cy-spec-head">// KICK</div>
-				<div class="cy-spec-list">
-					{#each rosterForKick as m (`${m.userId ?? ''}-${m.guestId ?? ''}-${m.side}`)}
-						{#if !m.isHost}
-							<div class="cy-spec-pill">
-								{m.displayName} · Team {m.side}
-								<button
-									type="button"
-									class="cy-btn cy-btn-sm cy-btn-danger"
-									aria-label="Kick {m.displayName}"
-									onclick={() => onKick(kickPayload(m))}
-								>
-									KICK
-								</button>
-							</div>
-						{/if}
-					{/each}
+		<CyModal bind:open={consoleOpen} title="~/draft/host_console">
+			<div class="cy-modal-head">
+				<h3>&gt; HOST_CONSOLE</h3>
+				<p>// root@{code} — manage rosters before launch</p>
+			</div>
+
+			<div class="cy-hc-section">
+				<span class="cy-field-label">move_player</span>
+				<div class="cy-hc-row">
+					<div class="cy-field">
+						<select bind:value={moveUserId} class="cy-input" aria-label="Move player">
+							<option value="">--move--</option>
+							{#each movableUsers as m (m.userId)}
+								<option value={m.userId}>{m.displayName}</option>
+							{/each}
+						</select>
+					</div>
+					<div class="cy-field" style="flex: 0 0 90px">
+						<select bind:value={moveTarget} class="cy-input" aria-label="To team">
+							<option value="A">→ A</option>
+							<option value="B">→ B</option>
+						</select>
+					</div>
+					<button
+						type="button"
+						class="cy-btn cy-btn-sm"
+						onclick={submitMove}
+						disabled={!moveUserId || snapshot.phase !== 'lobby'}
+					>
+						EXEC
+					</button>
 				</div>
 			</div>
-		{/if}
+
+			<div class="cy-hc-section">
+				<span class="cy-field-label">kick</span>
+				{#if removableMembers.length === 0}
+					<p class="cy-foot">// no removable players</p>
+				{:else}
+					<ul class="cy-kick-list">
+						{#each removableMembers as m (`${m.userId ?? ''}-${m.guestId ?? ''}-${m.side}`)}
+							<li class="cy-kick-item">
+								<span class="cy-kick-name">{m.displayName}</span>
+								<span class="cy-kick-team">team_{m.side}{m.isCaptain ? ' · cap' : ''}</span>
+								<span class="cy-grow"></span>
+								<button
+									type="button"
+									class="cy-kick-btn"
+									aria-label="kick {m.displayName}"
+									onclick={() => onKick(kickPayload(m))}
+								>
+									kick()
+								</button>
+							</li>
+						{/each}
+					</ul>
+				{/if}
+			</div>
+
+			{#if showCaptainHint}
+				<div class="cy-hc-hint">both teams need a captain before START_DRAFT() unlocks</div>
+			{/if}
+
+			{#snippet footer()}
+				<button type="button" class="cy-btn cy-btn-sm cy-btn-danger" onclick={onCancelRoom}>
+					CANCEL_ROOM
+				</button>
+				<div class="cy-grow"></div>
+				<button
+					type="button"
+					class="cy-btn cy-btn-primary cy-btn-sm"
+					disabled={startDisabled}
+					aria-disabled={startDisabled}
+					onclick={onStartDraft}
+				>
+					▶ START_DRAFT()
+				</button>
+			{/snippet}
+		</CyModal>
 	</section>
 {/if}
