@@ -5,6 +5,7 @@ import { describe, it, expect } from 'vitest';
 // +page.svelte — the draft page imports $live/* directly, so there is no
 // browser render harness for it (phase10-screens.spec.js precedent).
 
+/** @param {string} p */
 const read = (p) => (existsSync(p) ? readFileSync(p, 'utf8') : '');
 
 const pageSrc = read('src/routes/draft/[id]/+page.svelte');
