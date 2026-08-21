@@ -180,6 +180,9 @@
 	let chatStreamVal = $state(/** @type {any} */ (undefined));
 	$effect(() => {
 		const store = activeChatStream(code);
+		// WR-04: drop the previous channel's messages immediately on resubscribe —
+		// otherwise they render under the new tab until the new stream emits.
+		chatStreamVal = undefined;
 		const unsub = store.subscribe(
 			/** @param {any} val */ (val) => {
 				chatStreamVal = val;
