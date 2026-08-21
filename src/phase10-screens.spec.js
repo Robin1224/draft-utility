@@ -80,15 +80,11 @@ describe('Phase 10 — Review/Pause CSS', () => {
 	});
 });
 
-describe('Phase 10 — scope guards (no Phase 11/12, no radius)', () => {
-	it('does not leak Phase 11/12 selectors into the Phase 10 port', () => {
+describe('Phase 10 — scope guards (no Phase 12, no radius)', () => {
+	it('does not leak Phase 12 selectors into the port', () => {
 		expect(css).not.toContain('cy-loading');
 		expect(css).not.toContain('cy-gate');
 		expect(css).not.toContain('cy-cancel');
-		expect(css).not.toContain('cy-modal');
-		expect(css).not.toContain('cy-stepper');
-		expect(css).not.toContain('cy-script');
-		expect(css).not.toContain('cy-hc-');
 	});
 
 	it('DS-04: still contains zero border-radius declarations', () => {
