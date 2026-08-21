@@ -24,13 +24,23 @@ function dialogNode() {
 	return /** @type {HTMLDialogElement} */ (document.querySelector('dialog.cy-modal'));
 }
 
+/**
+ * A closed <dialog> drops out of the a11y tree entirely, so the role-based
+ * locator matches nothing and expect.element(...) would throw ("cannot find
+ * element") instead of passing .not.toBeVisible(). Poll the DOM state instead.
+ */
+async function expectClosed() {
+	await expect.poll(() => dialogNode().open).toBe(false);
+	expect(dialogNode().checkVisibility()).toBe(false);
+}
+
 describe('CyModal.svelte — native <dialog> terminal modal (D-07/D-08)', () => {
 	it('stays closed until launched, then opens in the top layer with the title as aria-label', async () => {
 		render(CyModalHost, { title: TITLE });
 		// Always-mounted dialog: present in the DOM but not open/visible.
 		expect(dialogNode()).not.toBeNull();
 		expect(dialogNode().open).toBe(false);
-		await expect.element(page.getByRole('dialog')).not.toBeVisible();
+		expect(dialogNode().checkVisibility()).toBe(false);
 
 		const dialog = await openModal();
 		expect(dialogNode().getAttribute('aria-label')).toBe(TITLE);
@@ -39,7 +49,7 @@ describe('CyModal.svelte — native <dialog> terminal modal (D-07/D-08)', () => 
 
 	it('renders three aria-hidden titlebar dots (r/a/g order), the title and an esc ✕ button that closes', async () => {
 		render(CyModalHost, { title: TITLE });
-		const dialog = await openModal();
+		await openModal();
 
 		const dots = document.querySelectorAll('.cy-modal-bar .cy-dot');
 		expect(dots.length).toBe(3);
@@ -50,23 +60,23 @@ describe('CyModal.svelte — native <dialog> terminal modal (D-07/D-08)', () => 
 		expect(document.querySelector('.cy-modal-title')?.textContent).toBe(TITLE);
 
 		await page.getByRole('button', { name: 'esc ✕' }).click();
-		await expect.element(dialog).not.toBeVisible();
+		await expectClosed();
 	});
 
 	it('closes on Escape (native cancel path)', async () => {
 		render(CyModalHost, { title: TITLE });
-		const dialog = await openModal();
+		await openModal();
 		await userEvent.keyboard('{Escape}');
-		await expect.element(dialog).not.toBeVisible();
+		await expectClosed();
 	});
 
 	it('closes on scrim click (click whose target is the dialog element itself)', async () => {
 		render(CyModalHost, { title: TITLE });
-		const dialog = await openModal();
+		await openModal();
 		// A programmatic click on the dialog element has target === dialog — the
 		// backdrop region case (inner chrome covers the whole box since padding is 0).
 		dialogNode().click();
-		await expect.element(dialog).not.toBeVisible();
+		await expectClosed();
 	});
 
 	it('onAttemptClose returning false vetoes esc ✕ / Escape / scrim; returning true allows dismissal (D-05)', async () => {
@@ -88,14 +98,14 @@ describe('CyModal.svelte — native <dialog> terminal modal (D-07/D-08)', () => 
 
 		allow = true;
 		await page.getByRole('button', { name: 'esc ✕' }).click();
-		await expect.element(dialog).not.toBeVisible();
+		await expectClosed();
 	});
 
 	it('returns focus to the launcher button on close (browser-owned focus return)', async () => {
 		render(CyModalHost, { title: TITLE });
-		const dialog = await openModal();
+		await openModal();
 		await userEvent.keyboard('{Escape}');
-		await expect.element(dialog).not.toBeVisible();
+		await expectClosed();
 		expect(document.activeElement?.textContent).toContain('CONFIG()');
 	});
 
