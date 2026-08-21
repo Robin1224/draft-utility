@@ -109,15 +109,28 @@
 
 	/** @param {DragEvent} e */
 	function handleDragOver(e) {
+		// WR-03: only accept drags we started — never external ones (OS files,
+		// dragged links). Not calling preventDefault marks the row as an invalid
+		// drop target for anything that isn't a row drag.
+		if (dragSrcIndex === -1) return;
 		e.preventDefault();
 		if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
 	}
 
 	/** @param {DragEvent} e @param {number} dropIndex */
 	function handleDrop(e, dropIndex) {
+		// WR-03: consume the index up front so no path can leak a stale value.
+		const from = dragSrcIndex;
+		dragSrcIndex = -1;
+		if (from === -1) return; // external drag — not ours
 		e.preventDefault();
-		if (dragSrcIndex === -1 || dragSrcIndex === dropIndex) return;
-		moveTurn(dragSrcIndex, dropIndex);
+		if (from === dropIndex) return;
+		moveTurn(from, dropIndex);
+	}
+
+	// WR-03: cancelled drags (Escape, drop outside the list) end with dragend
+	// and no drop — reset here so a later drag can't reuse the stale index.
+	function handleDragEnd() {
 		dragSrcIndex = -1;
 	}
 
@@ -170,6 +183,7 @@
 						onDragStart={handleDragStart}
 						onDragOver={handleDragOver}
 						onDrop={handleDrop}
+						onDragEnd={handleDragEnd}
 						onRemove={removeTurn}
 						onUpdate={updateTurn}
 						onMoveUp={moveUp}

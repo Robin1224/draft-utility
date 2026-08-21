@@ -133,6 +133,45 @@ describe('DraftSettingsPanel (MOD-01) — ~/draft/config.sh terminal modal', () 
 		expect(firstRowSelects[1].value).toBe('ban');
 	});
 
+	it('grip drag reorders through the single splice path (dragstart → dragover → drop)', async () => {
+		render(DraftSettingsPanelHost, { script: defaultScript(), timerSeconds: 30 });
+		await openModal();
+		const rows = () => [...document.querySelectorAll('.cy-script-row')];
+
+		rows()[0].dispatchEvent(new DragEvent('dragstart', { bubbles: true }));
+		const over = new DragEvent('dragover', { bubbles: true, cancelable: true });
+		rows()[1].dispatchEvent(over);
+		expect(over.defaultPrevented).toBe(true); // internal drag accepted
+		rows()[1].dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true }));
+		rows()[0].dispatchEvent(new DragEvent('dragend', { bubbles: true }));
+
+		// Rows 1/2 were A/ban then B/ban — dropping row 1 onto row 2 puts B first.
+		await expect.poll(() => document.querySelector('.cy-script-row select')?.value).toBe('B');
+	});
+
+	it('WR-03: cancelled drags reset state — a later external drop cannot phantom-reorder', async () => {
+		render(DraftSettingsPanelHost, { script: defaultScript(), timerSeconds: 30 });
+		await openModal();
+		const rows = () => [...document.querySelectorAll('.cy-script-row')];
+		const teams = () => rows().map((r) => r.querySelector('select')?.value);
+		const before = teams();
+
+		// Start a row drag, then cancel it (dragend with no drop — Escape or
+		// releasing outside the list).
+		rows()[0].dispatchEvent(new DragEvent('dragstart', { bubbles: true }));
+		rows()[0].dispatchEvent(new DragEvent('dragend', { bubbles: true }));
+
+		// A later external drag (OS file) over row 3 must be rejected outright …
+		const over = new DragEvent('dragover', { bubbles: true, cancelable: true });
+		rows()[2].dispatchEvent(over);
+		expect(over.defaultPrevented).toBe(false);
+		expect(rows()[2].classList.contains('is-drag')).toBe(false);
+		// … and even a forced drop must not reorder with a stale index.
+		rows()[2].dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true }));
+
+		expect(teams()).toEqual(before);
+	});
+
 	it('SAVE_CONFIG() commits to page state; esc-discard leaves it untouched (D-04)', async () => {
 		const a = render(DraftSettingsPanelHost, { script: defaultScript(), timerSeconds: 30 });
 		await openModal();

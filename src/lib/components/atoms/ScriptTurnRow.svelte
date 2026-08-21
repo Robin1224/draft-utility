@@ -16,6 +16,7 @@
 	 *   onDragStart: (e: DragEvent, i: number) => void,
 	 *   onDragOver: (e: DragEvent, i: number) => void,
 	 *   onDrop: (e: DragEvent, i: number) => void,
+	 *   onDragEnd: () => void,
 	 *   onRemove: (i: number) => void,
 	 *   onUpdate: (i: number, field: 'team'|'action', value: string) => void,
 	 *   onMoveUp: (i: number) => void,
@@ -30,6 +31,7 @@
 		onDragStart,
 		onDragOver,
 		onDrop,
+		onDragEnd,
 		onRemove,
 		onUpdate,
 		onMoveUp,
@@ -49,12 +51,16 @@
 		onDragStart(e, index);
 	}}
 	ondragend={() => {
+		// Fires on cancelled drags too (Escape / drop outside the list) — the
+		// parent resets its drag index here (WR-03).
 		dragging = false;
+		onDragEnd();
 	}}
 	ondragover={(e) => {
-		e.preventDefault();
-		dragOver = true;
+		// The parent decides acceptance (WR-03: external drags are ignored);
+		// only highlight as a drop target when it preventDefault()ed.
 		onDragOver(e, index);
+		dragOver = e.defaultPrevented;
 	}}
 	ondragleave={() => {
 		dragOver = false;
