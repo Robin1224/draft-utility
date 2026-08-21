@@ -772,10 +772,14 @@ dialog.cy-modal[open] {
 .cy-stepper-val span { color: var(--cy-text-3); font-size: 11px; margin-left: 4px; }
 
 /* script editor */
-.cy-script { display: flex; flex-direction: column; gap: 6px; }
+/* list-style/margin/padding reset: the prototype ul relied on Tailwind preflight,
+   which this milestone removed — same reset .cy-kick-list already carries. */
+.cy-script { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .cy-script-row {
-  /* +2 auto cols for D-11 move buttons (verbatim was 18px 22px 1fr 1fr auto) */
-  display: grid; grid-template-columns: 18px 22px 1fr 1fr auto auto auto; align-items: center; gap: 8px;
+  /* +2 auto cols for D-11 move buttons (verbatim was 18px 22px 1fr 1fr auto);
+     minmax(0, 1fr) so the selects can shrink below min-content — the 7-column
+     row must fit the D-10 takeover width at 320px without horizontal overflow. */
+  display: grid; grid-template-columns: 18px 22px minmax(0, 1fr) minmax(0, 1fr) auto auto auto; align-items: center; gap: 8px;
   padding: 7px 10px; border: 1px solid var(--cy-line); background: var(--cy-bg); font-size: 12px;
   cursor: grab;
 }
@@ -786,6 +790,7 @@ dialog.cy-modal[open] {
 .cy-script-row select {
   background: var(--cy-bg-2); color: var(--cy-text); border: 1px solid var(--cy-line);
   padding: 5px 8px; font: inherit; font-size: 12px; cursor: pointer;
+  width: 100%; min-width: 0; /* fill + shrink inside the minmax(0, 1fr) tracks (320px fit) */
 }
 .cy-script-row select.is-ban { color: var(--cy-red); border-color: rgba(255,34,85,0.4); }
 .cy-script-row select.is-pick { color: var(--cy-lime); border-color: rgba(179,255,61,0.4); }
