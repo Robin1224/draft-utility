@@ -21,7 +21,12 @@ findings:
   warning: 6
   info: 6
   total: 12
-status: issues_found
+fixed:
+  critical: 0
+  warning: 6
+  info: 0
+  total: 6
+status: fixed
 ---
 
 # Phase 11: Code Review Report
@@ -29,7 +34,7 @@ status: issues_found
 **Reviewed:** 2026-08-21T13:29:11Z
 **Depth:** standard
 **Files Reviewed:** 12
-**Status:** issues_found
+**Status:** fixed (all 6 Warning findings resolved; Info findings documented, not fixed)
 
 ## Summary
 
@@ -49,6 +54,7 @@ The core state machinery (open/close sync, dirty-veto, single splice reorder pat
 ### WR-01: Text-selection drag ending on the backdrop dismisses the modal
 
 **File:** `src/lib/components/atoms/CyModal.svelte:48-52`
+**Fixed:** 5de1b42
 **Issue:** Scrim dismissal is detected via the `click` event with `e.target === dialogEl`. Per the UI Events spec, `click` is dispatched on the nearest common ancestor of the `mousedown` and `mouseup` targets. If a user presses down inside the modal body (e.g. selecting text in the settings modal, or mis-dragging off a button) and releases over the backdrop, the common ancestor is the `<dialog>` itself — so `target === dialogEl` and the modal dismisses (or, when dirty, unexpectedly flips to the discard-confirm footer). The host console closes outright.
 **Fix:** Track where the interaction started and only treat it as a scrim click when both ends land on the dialog:
 ```svelte
@@ -64,6 +70,7 @@ onclick={(e) => {
 ### WR-02: Full-screen takeover (≤640px): tapping empty space *inside* the modal dismisses it
 
 **File:** `src/app.css:824-830` (interacts with `src/lib/components/atoms/CyModal.svelte:48-52`)
+**Fixed:** 6bdab4d
 **Issue:** At ≤640px the dialog becomes `width: 100vw; height: 100dvh`. The dialog is a flex column of `.cy-modal-bar` + `.cy-modal-body` + optional `.cy-modal-foot`, and `.cy-modal-body` has no `flex: 1` — so when content is shorter than the viewport, the remaining space at the bottom is the bare `<dialog>` element. A tap there satisfies `e.target === dialogEl` and is treated as a scrim click, dismissing (or discard-confirming) the modal from what visually looks like *inside* the full-screen surface. There is no visible backdrop at this breakpoint, so no scrim dismissal should be possible at all.
 **Fix:** Make the body absorb the leftover height in the takeover so the dialog element is never directly hittable:
 ```css
@@ -77,6 +84,7 @@ onclick={(e) => {
 ### WR-03: `dragSrcIndex` never reset on drag end — external drags can trigger a phantom reorder
 
 **File:** `src/lib/components/molecules/DraftSettingsPanel.svelte:104-122` (and `src/lib/components/atoms/ScriptTurnRow.svelte:51-53`)
+**Fixed:** c30d176
 **Issue:** `dragSrcIndex` is set in `handleDragStart` and only cleared inside `handleDrop` after a successful internal move. Two leak paths: (1) `handleDrop` early-returns at line 119 without resetting when `dragSrcIndex === dropIndex`; (2) if a row drag is cancelled (Escape) or dropped outside the list, `dragend` fires on the row but only clears the row-local `dragging` flag — the parent's `dragSrcIndex` stays stale. Because `ondragover` unconditionally calls `preventDefault()` (accepting *any* drag, including OS file drags), a subsequent file dragged from the desktop onto a row fires `handleDrop` with the stale index and silently reorders the script.
 **Fix:** Add an `onDragEnd` callback from `ScriptTurnRow` that resets `dragSrcIndex = -1` in the parent, and guard the drop against external drags:
 ```js
@@ -92,6 +100,7 @@ function handleDrop(e, dropIndex) {
 ### WR-04: Switching chat tabs briefly renders the previous channel's messages under the new tab
 
 **File:** `src/routes/draft/[id]/+page.svelte:180-195`
+**Fixed:** c47737c
 **Issue:** The chat `$effect` resubscribes when `activeChatStream` changes, but `chatStreamVal` is not reset at resubscription time. Between unsubscribing from the old stream and the first emission of the new one, `chatMessages` still holds the previous channel's messages — e.g. team-chat content is displayed under the "spectator" tab until the new stream emits. For a slow/empty channel this stale cross-channel display persists indefinitely.
 **Fix:** Clear the buffer when the effect re-runs:
 ```js
@@ -106,6 +115,7 @@ $effect(() => {
 ### WR-05: Lobby banner TURNS stat ignores the host's configured script — hardcoded `?? 10` fallback
 
 **File:** `src/routes/draft/[id]/+page.svelte:323`
+**Fixed:** b917b93 (+ f98862f spec typing follow-up)
 **Issue:** `{snapshot.draftState?.script?.length ?? 10}` — during the lobby phase `draftState` does not exist yet (the script is only sent to the server at `startDraft`), so the banner always shows `10`. If the host uses CONFIG() to add/remove turns (e.g. saves a 12-turn script), the banner keeps displaying 10 while the draft will actually run 12 turns. The magic number also duplicates `DEFAULT_SCRIPT.length`.
 **Fix:** Fall back to the live local config, which is the value `handleStart` will actually send:
 ```svelte
@@ -116,6 +126,7 @@ $effect(() => {
 ### WR-06: Host console EXEC can fire `onMove` for a member who already left the room
 
 **File:** `src/lib/components/molecules/LobbyHostBar.svelte:36,68-71,116-136`
+**Fixed:** a956ca8
 **Issue:** `moveUserId` is bound to the select but never revalidated against the live roster. If the selected player leaves or is kicked while the console is open, their `<option>` disappears from `movableUsers` but the bound `moveUserId` keeps the stale id — the select renders no selection, yet EXEC stays enabled (`!moveUserId` is false) and clicking it calls `onMove('u2', ...)` for a non-member, producing a guaranteed server error surfaced as `actionError`. The stale id also persists across console close/reopen.
 **Fix:** Gate EXEC on the id still resolving to a roster member:
 ```svelte
