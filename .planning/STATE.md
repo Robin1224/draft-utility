@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Cyber Redesign
-status: executing
-stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-08-21T12:46:44.021Z"
+status: verifying
+stopped_at: Completed 11-03-PLAN.md
+last_updated: "2026-08-21T13:10:41.200Z"
 last_activity: 2026-08-21
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 16
-  completed_plans: 15
-  percent: 60
+  completed_plans: 16
+  percent: 80
 ---
 
 # Project State
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-06-12)
 
 Phase: 11 (terminal-modals) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-21
 
 Progress: [░░░░░░░░░░] 0%
@@ -66,6 +66,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 10 P07 | 2min | 2 tasks | 2 files |
 | Phase 11 P01 | 15min | 2 tasks | 5 files |
 | Phase 11 P02 | 11min | 2 tasks | 5 files |
+| Phase 11 P03 | 7min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,8 @@ Recent decisions affecting current work:
 - [Phase 11]: Closed-dialog browser-spec assertions poll dialog.open/checkVisibility — vitest-browser expect.element throws when a role locator matches nothing (closed dialog leaves the a11y tree)
 - [Phase 11]: Draft Settings dirty check uses $derived.by with early null-return — plain $derived expressions TS-narrow closure-assigned nullable locals to never; base snapshot stays non-reactive
 - [Phase 11]: .cy-script got the list reset (prototype relied on removed Tailwind preflight) and minmax(0,1fr) select tracks so the 7-column D-11 row fits the 320px takeover width
+- [Phase 11]: Lobby-phase gate wraps only the CONFIG()/HOST_CONSOLE() launchers; START_DRAFT() stays always-rendered in the bar, gated by the single startDisabled derive shared with the console footer (D-02)
+- [Phase 11]: Host Console CyModal passes no onAttemptClose (no dirty state, free dismissal — D-05); a removableMembers derive layered on the frozen five feeds the kick list and its // no removable players empty state
 
 ### Pending Todos
 
@@ -120,6 +123,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-21T12:46:28.877Z
-Stopped at: Completed 11-01-PLAN.md
+Last session: 2026-08-21T13:10:41.196Z
+Stopped at: Completed 11-03-PLAN.md
 Resume file: None
