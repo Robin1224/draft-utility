@@ -85,12 +85,14 @@ Base scale (established Phases 8–11, unchanged):
 | `14px 16px` | `.cy-loading-log` (478) and `.cy-cancel-log` (512) padding |
 | `12px 14px` | `.cy-gate-readout` padding (500) |
 | `0 0 18px` / `2px 0` / `0 0 22px` | log/readout margins (478, 500, 512) |
-| `8.4em` | `.cy-loading-log` `min-height` — reserves space so the card does not jump as lines type (478) |
+| `8.4em` | `.cy-loading-log` `min-height` — reserves **~5 of the 6** log lines (478). Do the arithmetic before "fixing" this: `8.4em × 12px = 100.8px`, while 6 lines at `line-height: 1.6` is `115.2px`, and `app.css` has no global `box-sizing` reset so `min-height` is content-box. The well therefore grows ~14px once, when line 6 lands — which is ~2.4s in, long after the ~900ms floor has normally dismissed the screen. Keep the verbatim value: it is stable across the entire window a user actually sees |
 | `12px` / `3em` | `.cy-loading-meter` gap / `.cy-loading-pct` min-width (482, 486) |
 | `14px` / `10px` / `6px 0 0` | `.cy-gate-card` flex gap / `.cy-gate-actions` gap / `.cy-gate-foot` margin (494, 502, 504) |
 | `1px` | letter-spacing on `.cy-loading-bar` (483) — glyph metric, not spacing |
 
-**Designed additions (not in the prototype):** `.cy-loading-actions` gap `8px` (matches `.cy-cancel-actions`); switch segment padding `4px 10px` (matches the Phase 11 `.cy-script-rm` / `.cy-kick-btn` micro-control band). Both are on the 4-grid.
+**Designed additions (not in the prototype):** `.cy-loading-actions` gap `8px` (matches `.cy-cancel-actions`); switch segment padding **`4px 8px`** — byte-identical to `.cy-script-rm` (`app.css:799`), the nearest shipped Host-Console micro-control. Both are on the 4-grid.
+
+> Corrected after checker review. An earlier draft specified `4px 10px` and cited `.cy-script-rm` / `.cy-kick-btn` as precedent for it — but those are `4px 8px` (`:799`) and `3px 9px` (`:816`), and 10 is not a multiple of 4, so both the value and the 4-grid claim were wrong. The stated *intent* was to match the Phase 11 micro-control band, so the value moved to the one that actually does. (10px precedent does exist nearby — `.cy-hc-section` gap `:808`, `.cy-kick-item` gap `:812`, ported `.cy-gate-actions` gap — but those are flex gaps, not button padding.)
 
 ---
 
@@ -244,7 +246,7 @@ The `> hint:` line is the ACC-01 flag made legible to a guest — it says exactl
 | Hint — private | `// guests are blocked until you start the draft` (`.cy-foot`) |
 | Hint — public | `// anyone with the link can spectate the lobby` (`.cy-foot`) |
 | Accessible name | the visible `open_spectating` label, via `aria-labelledby` |
-| Failure copy | none new — RPC rejections flow through the page's existing `actionError` path (`{errMsg(e)}` in `.cy-foot`), exactly like `handleKick` / `handleMove` |
+| Failure copy | Rejections flow through the page's existing `actionError` path (`{errMsg(e)}` in `.cy-foot`), exactly like `handleKick` / `handleMove`. **But author the string rather than inheriting it:** `errMsg` (`+page.svelte:67-71`) falls back to the literal `Something went wrong` when the error carries no message — out of terminal register and uninformative. `setRoomVisibility` must reject with an explicit `LiveError` message: **`Not the host`** for the non-host/`FORBIDDEN` case and **`Sign in to change room visibility`** for the guest/`UNAUTHORIZED` case, so `.cy-foot` renders real copy. (Both paths are unreachable through the UI — the launcher is host-gated — but the RPC is directly callable over the socket, so the strings are the boundary's user-facing voice.) |
 
 ---
 
@@ -390,6 +392,8 @@ Branch order is load-bearing (RESEARCH Pattern 4) — the UI contract depends on
 - Placing `cancelled` **above** `showConnecting` stops a dead room flashing `ESTABLISHING_LINK` during the floor window.
 - `DraftBoard`'s `.cy-draft-cancelled` sub-branch and its `cancelledTeam` / `cancelledTeamLabel` derives are **deleted** in the same task that adds branch 2 — two competing cancelled UIs would otherwise double-render (RESEARCH Pitfall 10).
 - `+layout.svelte` gates its `fromStore(lobby(code))` read on `page.data.gated`; without it the gate is a poison pill and `RETRY_AS_GUEST()` can never succeed.
+- **The chat `$effect` at `+page.svelte:181-192` gets a `gated` guard** (`if (gated) return;`). This sits *outside* the branch chain above — it subscribes on mount regardless of which branch renders — so a gated guest would otherwise keep receiving all-channel chat for a room they cannot see. This is D-20's client-side half; the authoritative `chatAll` / `chatSpectators` room-privacy guard in `src/live/chat.js` is server-side and out of this spec's remit, but the two ship together and mirror D-01's two-layer model (SSR/client = UX, server = boundary).
+- **`ChatPanel` is NOT rendered on the cancelled screen.** `+page.svelte:265-278` currently renders it for `phase === 'drafting' || phase === 'cancelled'`; splitting `cancelled` into branch 2 removes the chat sidebar from a dead room. This is prototype-faithful (`CYCancelled` has no chat) and intended — stated explicitly because it removes a currently-shipped surface, so neither an executor nor the UI auditor should read it as a regression and re-add it.
 
 ---
 
@@ -420,7 +424,7 @@ The room-code meta (`$ ROOM={code}` + `[copy]`) stays live on all three screens 
 | A3 | `.cy-loading-card.is-timeout h2 { color: var(--cy-red); text-shadow: 0 0 12px #ff225580; }` | D-08 heading must not stay lime while the link is dead. Literal glow copied from `.cy-cancel-eyebrow` |
 | A4 | `.cy-loading-actions { display: flex; gap: 8px; flex-wrap: wrap; }` | D-08 retry row replacing the meter. Completes the prototype's own `.cy-gate-actions` / `.cy-cancel-actions` naming symmetry |
 | A5 | `.cy-cancel-actions { flex-wrap: wrap; }` (added to the ported rule) | The prototype was authored at 1400×900; at 320 px two `.cy-btn`s plus the status span overflow the 520 px card. Wrapping is the minimal fix and the only responsive concession these screens need |
-| A6 | `.cy-hc-switch` · `:hover:not(:disabled)` · `:focus-visible` · `:disabled` · `.cy-hc-switch-seg` · `.cy-hc-switch-seg.is-on` · `.cy-hc-switch-sep` · `.cy-hc-switch-state` · `.cy-hc-switch-state.is-public` | D-10. Metrics from the Phase 11 micro-control band (11px, `4px 10px`, 1px `--cy-line`, `background: var(--cy-bg)`); active inversion from `.cy-chat-tabs button.is-active`; disabled from `.cy-script-move:disabled` (`opacity: 0.4; cursor: default`); focus from `.cy-input:focus` (`outline: 1px solid var(--cy-lime); outline-offset: 1px`) |
+| A6 | `.cy-hc-switch` · `:hover:not(:disabled)` · `:focus-visible` · `:disabled` · `.cy-hc-switch-seg` · `.cy-hc-switch-seg.is-on` · `.cy-hc-switch-sep` · `.cy-hc-switch-state` · `.cy-hc-switch-state.is-public` | D-10. Metrics from the Phase 11 micro-control band (11px, **`4px 8px`** matching `.cy-script-rm` at `app.css:799` — see the Spacing correction note, 1px `--cy-line`, `background: var(--cy-bg)`); active inversion from `.cy-chat-tabs button.is-active`; disabled from `.cy-script-move:disabled` (`opacity: 0.4; cursor: default`); focus from `.cy-input:focus` (`outline: 1px solid var(--cy-lime); outline-offset: 1px`) |
 | A7 | `.cy-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }` | The only new **foundation** class. Carries the two `role="alert"` sentences on the gate and cancelled screens (both can arrive *live*, mid-session, and a silent branch swap is a real defect for AT users). Uses `clip-path`, not the legacy `clip` |
 
 `.cy-loading-bar` keeps `overflow: hidden; white-space: nowrap` verbatim — the 40-glyph meter is *designed* to clip on narrow viewports; that is not a bug to fix.
@@ -475,6 +479,7 @@ No new width media query is required. The Phase 11 `@media (max-width: 640px)` m
 | Decorative elements | `aria-hidden="true"` on: `.cy-dots`, the trailing `▮` `.cy-chat-cursor`, `.cy-loading-bar` (the whole decorative meter), the Discord `<svg>`, the switch `\|` separator, and the `room = …` state readout (redundant with `aria-checked`) |
 | No fake progress | The meter is **never** `role="progressbar"` — there is no measurable progress (D-07). Reporting one would be a lie encoded in the a11y tree |
 | Switch | `<button role="switch" aria-checked={isPublic} aria-labelledby="cy-hc-visibility-label">`. `aria-checked` is mandatory — Svelte's compiler enforces it (`a11y_role_has_required_aria_props`, verified in the installed compiler source). `aria-labelledby` (not `aria-label`) so the accessible name **is** the visible `open_spectating` text (WCAG 2.5.3 Label in Name). Space/Enter activate natively |
+| Label casing (not a defect) | `.cy-field-label` carries `text-transform: uppercase` (`app.css:765`), so `open_spectating` *renders* as `OPEN_SPECTATING` while `aria-labelledby` resolves to the lowercase DOM text. Label-in-Name still holds — WCAG 2.5.3 matching is case-insensitive — and this is exactly how the shipped `move_player` / `kick` labels already behave. Noted so a reviewer does not read the mismatch as a violation and "fix" it by hardcoding an uppercase `aria-label` |
 | Busy / disabled | `aria-busy` + `disabled` on the switch while the RPC is in flight and on `RETRY_AS_GUEST()` while checking. Because there is no global `.cy-btn:disabled` rule in `app.css` (pre-existing gap, out of scope), the busy state must be conveyed by the **label swap** (`CHECKING…`) as well as the attribute — do not rely on a dim style that does not exist |
 | Status vs alert | `role="status"` (polite) for `// copied`, `// clipboard unavailable`, `// still private — …`. `role="alert"` (assertive) only for the three terminal/error arrivals |
 | Escaping | All strings via Svelte interpolation (auto-escaped). **No `{@html}` anywhere** — `> identity = <guest:anon>` and `→` are plain text, and `{@html}` next to interpolated `displayName`-adjacent data would be a needless XSS surface |
@@ -570,11 +575,15 @@ No new width media query is required. The Phase 11 `@media (max-width: 640px)` m
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: **FLAG** — every literal traced to prototype or shipped source; dot-leader columns verified by computation (40/39, incl. the preserved prototype off-by-one on line 5). Flag was the unauthored switch failure string → **fixed** (explicit `LiveError` messages now named in §Copywriting)
+- [x] Dimension 2 Visuals: **FLAG** — hierarchy, anatomy trees, and glow specifics accepted; no icon-only actions. Flags were two omissions from §5's self-declared closed list → **both fixed** (D-20 client chat-effect gate; explicit ChatPanel-not-on-cancelled statement)
+- [x] Dimension 3 Color: **PASS** — lime reserved to 7 named elements, red to 6, both closed. 60/30/10 declared. Colour-independence verified against every coloured line's text
+- [x] Dimension 4 Typography: **PASS** — verbatim-port override upheld. All 6 sizes traced to a specific `cyber.css` declaration; single weight (400) is stricter than the 2-weight cap
+- [x] Dimension 5 Spacing: **FLAG** — all 20 verbatim exceptions confirmed present in `cyber.css`; base scale all multiples of 4. Flags were the one designed value citing precedent that did not match, and the `8.4em` rationale overclaiming "no layout jump" → **both fixed** (`4px 10px` → `4px 8px`; `8.4em` reworded with the arithmetic)
+- [x] Dimension 6 Registry Safety: **PASS** — no `components.json`, no registries, zero new dependencies; manual design system declared (plain CSS under `.cy-app`, DS-01..04)
 
-**Approval:** pending
+**Approval:** approved 2026-09-04 by gsd-ui-checker (`## UI-SPEC VERIFIED`). Zero BLOCKs. All 6 non-blocking recommendations applied by the orchestrator after sign-off — see the inline correction notes.
+
+**Independently re-verified by the checker against source** (not accepted from RESEARCH.md's transcription): all 8 prototype line refs; `cyber.css` 465–520 and `cyber.jsx` 640–730; `CODE_LENGTH = 7` at `rooms.js:12` vs the `K7-MIRA` leader width; the zero-change phase-tracker contract at `CyShell.svelte:6,10,35` and `+layout.svelte:17-20`; the `.cy-chat-cursor` reduced-motion gap (**real** — `app.css:373/712/838` cover `.cy-brand-cur` but never `.cy-chat-cursor` at `:668`, and Phase 9's UI-SPEC:179 wrongly asserted it *was* suppressed); `app.css` being exactly 841 lines; and `role="switch"` requiring `aria-checked` per `aria-query` + `svelte/compiler/warnings.js:462`.
+
+**Scope fence intact.** A1–A7 are all presentational (CSS only) and §5 touches exactly authorized fence item #5 (`+layout.svelte`). No seventh realtime touch point. CONTEXT.md's fence governs the realtime layer specifically — "nothing else in the realtime layer moves" — so the `.cy-chat-cursor` retro-fix in A1, which edits Phase 8/10 CSS, does not breach it.
