@@ -958,7 +958,7 @@ describe('Phase 10 — scope guards (no Phase 12, no radius)', () => {
 });
 ```
 
-Delete lines 84-88 (the whole `it`, not just its three assertions — `vite.config.js:31` sets `expect: { requireAssertions: true }`, so an empty `it` fails) and retitle the `describe` to `'Phase 10 — scope guards (no radius)'`. Keep `:90-92` byte-identical. Net test count −1.
+Delete lines 84-88 (the whole `it`, not just its three assertions — `vite.config.js:19` sets `expect: { requireAssertions: true }`, so an empty `it` fails) and retitle the `describe` to `'Phase 10 — scope guards (no radius)'`. Keep `:90-92` byte-identical. Net test count −1.
 
 **Precedent:** Phase 11 Plan 01 performed exactly this operation on the four Phase-11 exclusions in the same block, in the same task as its CSS append.
 
@@ -1333,7 +1333,7 @@ Strict literal/typeof comparisons; `LiveError('VALIDATION', …)` with a human m
 | `*.svelte.spec.js` | `client` | Playwright chromium |
 | anything else `*.spec.js` | `server` | node |
 
-`expect: { requireAssertions: true }` (`vite.config.js:31`) — an `it` with zero assertions **fails**. This is why `phase10-screens.spec.js`'s emptied `it` must be deleted, not just gutted.
+`expect: { requireAssertions: true }` (`vite.config.js:19`) — an `it` with zero assertions **fails**. This is why `phase10-screens.spec.js`'s emptied `it` must be deleted, not just gutted.
 
 ### Gates
 

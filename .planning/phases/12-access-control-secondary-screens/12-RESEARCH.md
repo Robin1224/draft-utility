@@ -516,7 +516,7 @@ describe('Phase 10 — scope guards (no Phase 12, no radius)', () => {
 
 `css` is `readFileSync('src/app.css', 'utf8')` (line 6). Phase 11's Plan 01 already deleted the four Phase-11 exclusions and retitled the block; the three Phase-12 exclusions and the DS-04 assertion were deliberately retained (`11-01-SUMMARY.md:70,87`, `11-VERIFICATION.md:96`).
 
-**Required change, in the same task that appends the CSS block:** delete lines 85-87 and remove the now-empty `it('does not leak Phase 12 selectors into the port')`. Because `expect: { requireAssertions: true }` is set in `vite.config.js:31`, an `it` left with zero assertions **fails**. Two options:
+**Required change, in the same task that appends the CSS block:** delete lines 85-87 and remove the now-empty `it('does not leak Phase 12 selectors into the port')`. Because `expect: { requireAssertions: true }` is set in `vite.config.js:19`, an `it` left with zero assertions **fails**. Two options:
 
 - **(a) Recommended:** delete the whole `it` and retitle the describe to `'Phase 10 — scope guards (no radius)'`, leaving only the DS-04 test. Net test count −1.
 - **(b)** Invert it into a positive Phase-12 presence check — but that duplicates the new `src/phase12-access-screens.spec.js` CSS contract and misplaces Phase-12 assertions in a Phase-10 file. Prefer (a).
@@ -782,7 +782,7 @@ This phase adds a DB column and changes a published payload shape, so runtime st
 
 **What goes wrong:** the CSS-port task's own gate fails.
 **Why:** `src/phase10-screens.spec.js:85-87` asserts `app.css` contains none of `cy-loading` / `cy-gate` / `cy-cancel`.
-**How to avoid:** delete those three assertions **and** the now-empty `it` (an assertion-free `it` fails under `expect: { requireAssertions: true }`, `vite.config.js:31`) in the same task. Keep the DS-04 `border-radius` assertion byte-identical.
+**How to avoid:** delete those three assertions **and** the now-empty `it` (an assertion-free `it` fails under `expect: { requireAssertions: true }`, `vite.config.js:19`) in the same task. Keep the DS-04 `border-radius` assertion byte-identical.
 **Warning signs:** exactly one failing test named "does not leak Phase 12 selectors into the port".
 
 ### Pitfall 7: The Connecting screen swallows the reconnect / grace flow
@@ -1075,27 +1075,31 @@ export async function removeGuestSpectators(db, roomId) {
 | A7 | Omitting `host_user_id` from the gated load payload is desirable minimal-disclosure | E1 | If any consumer needs it while gated, restore it; `isHost` is already `false` for a null `userId` either way |
 | A8 | `vitest` `env.connect({ role: 'guest', guestId })` + `stream.waitFor` surfaces the guard's `LiveError` as `{ error: { code } }` in the test harness, matching the browser client | E6 | The harness pattern is verified in-repo for `client.call` (`room.spec.js:87-93`) and for `client.subscribe` (`229-257`), but not for a *throwing* subscribe. If the shape differs, assert via `.catch()` on the subscribe promise instead |
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+> All five questions below are settled. Each resolution is carried into plan text with a citation:
+> Q1 → 12-06/12-07, Q2 → 12-06-T2's `disabled` expression, Q3 → 12-04-T1 item 5, Q4 → 12-08-T3's
+> zero-`CyShell`-change criteria, Q5 → 12-05-T2. Nothing here is open.
 
 1. **Should flipping the toggle back to public re-admit the ejected guests automatically?**
    - What we know: their `room_member` rows were deleted; their WS subscription was torn down (with Pattern 5 in place) or holds `{error: FORBIDDEN}` (without it).
    - What's unclear: whether ACC-02's "flipping the room public/private live" implies live *re-*admission, or only that the flag flips live.
-   - Recommendation: no automatic re-admission. The ejected guest sees the gate with a working `RETRY_AS_GUEST()`, which is exactly what D-04 designed that button for. Their spectator row is recreated by `upsertGuestSpectator` on the successful re-subscribe. Document as intended behavior.
+   - **RESOLVED:** no automatic re-admission. The ejected guest sees the gate with a working `RETRY_AS_GUEST()`, which is exactly what D-04 designed that button for. Their spectator row is recreated by `upsertGuestSpectator` on the successful re-subscribe. Document as intended behavior.
 
 2. **Does the toggle lock once the draft has started?** (explicitly Claude's discretion, D-10)
    - What we know: the gate predicate only applies in `phase === 'lobby'`, so post-start the flag has no effect on access. The Host Console launcher itself is already gated on `snapshot.phase === 'lobby'` (`LobbyHostBar.svelte:85`), so the toggle is unreachable mid-draft anyway.
-   - Recommendation: no extra lock needed — the existing lobby-phase gate on the launcher already achieves it. Optionally add `disabled={snapshot.phase !== 'lobby'}` on the control for defence in depth, matching the `EXEC` button's pattern at `LobbyHostBar.svelte:140`.
+   - **RESOLVED:** no extra lock needed — the existing lobby-phase gate on the launcher already achieves it. Optionally add `disabled={snapshot.phase !== 'lobby'}` on the control for defence in depth, matching the `EXEC` button's pattern at `LobbyHostBar.svelte:140`.
 
 3. **Should `data.room` carry `is_public` for first paint?** (explicitly Claude's discretion)
    - What we know: D-13 covers it via the snapshot, which arrives within one round-trip. The host bar renders inside `{#if snapshot}` already, so there is no pre-snapshot paint of the toggle.
-   - Recommendation: **no** — adding it to `data.room` creates a second source of truth for the same bit with no consumer. Skip.
+   - **RESOLVED: no** — adding it to `data.room` creates a second source of truth for the same bit with no consumer. Skip.
 
 4. **Does the CyShell phase tracker need anything special on the gate / cancelled screens?** (explicitly Claude's discretion)
    - What we know: `idx = TRACKER.indexOf(phase)` → `-1` for `'cancelled'`, which Phase 8 D-07 already handles ("no active step, no crash"). With Pattern 5 in place a gated guest has no snapshot, so `phase` falls back to `'lobby'` (`+layout.svelte:19-21`) — which is exactly what the prototype does (`CYGuestGate` renders `<CYChrome phase="lobby">`).
-   - Recommendation: **zero changes.** Both screens already look correct by construction.
+   - **RESOLVED: zero changes.** Both screens already look correct by construction.
 
 5. **Should `$ COPY_LOG()` be kept?** (explicitly Claude's discretion)
-   - Recommendation: keep both footer actions. `$ NEW_DRAFT()` is a one-line `<a href={resolve('/')}>`; `$ COPY_LOG()` reuses the verified `copyLink()` + `copied` + `copyTimer` pattern (`+page.svelte:73-86`) against the assembled log string. Both are cheap and prototype-faithful.
+   - **RESOLVED:** keep both footer actions. `$ NEW_DRAFT()` is a one-line `<a href={resolve('/')}>`; `$ COPY_LOG()` reuses the verified `copyLink()` + `copied` + `copyTimer` pattern (`+page.svelte:73-86`) against the assembled log string. Both are cheap and prototype-faithful.
 
 ## Environment Availability
 
@@ -1120,7 +1124,7 @@ export async function removeGuestSpectators(db, roomId) {
 | Property | Value |
 |----------|-------|
 | Framework | Vitest 4.1.0 — two projects: `server` (node) and `client` (browser via `@vitest/browser-playwright`, chromium headless) |
-| Config file | `vite.config.js` (`test.projects`, lines 29-52); `expect: { requireAssertions: true }` at line 31 |
+| Config file | `vite.config.js` (`test.projects`, lines 20-44); `expect: { requireAssertions: true }` at line 19 |
 | Quick run command | `npx vitest run <path/to/spec>` (project auto-selected by filename: `*.svelte.spec.js` → `client`, everything else → `server`) |
 | Full suite command | `npm test` |
 | **Baseline** | **202 passed / 1 skipped / 34 todo across 24 files** (server 150, client 52). NOT 130 — that figure is stale |
