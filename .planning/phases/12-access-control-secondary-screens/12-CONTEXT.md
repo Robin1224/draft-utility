@@ -15,7 +15,18 @@ Requirements covered: **ACC-01, ACC-02, ACC-03, ACC-04, SCR-01, SCR-02**. This c
 
 **Constraint carried from Phases 10/11 (D-01):** no change to draft *behavior*. The pick/ban engine, timer, disconnect/grace flow, chat, and the existing RPCs (`kickMember`, `movePlayer`, `startDraft`, `cancelRoom`, `pickBan`, `sendMessage`) are FROZEN. Existing tests must keep passing.
 
-**Explicitly authorized exception:** unlike Phases 8–11, this phase **does** extend the realtime/auth/DB layer — REQUIREMENTS.md scopes ACC as "the view layer **plus** the access-control additions". The additions are strictly: one `room` column, one new RPC, one additive snapshot field, and one guard inside the existing `lobby` stream. Nothing else in the realtime layer moves.
+**Explicitly authorized exception:** unlike Phases 8–11, this phase **does** extend the realtime/auth/DB layer — REQUIREMENTS.md scopes ACC as "the view layer **plus** the access-control additions".
+
+**Scope fence — AMENDED 2026-09-04 after research (see D-19, D-20).** The original fence read "one `room` column, one new RPC, one additive snapshot field, and one guard inside the existing `lobby` stream." Research (`12-RESEARCH.md`) established that this fence cannot hold while implementing D-04, D-11, D-15 and D-18 correctly. The authorized additions are now **six touch points**:
+
+1. One `room` column — `is_public` (D-14).
+2. One new RPC — `setRoomVisibility` (D-12).
+3. **Two** additive snapshot fields — `isPublic` (D-13) **and** `cancelReason` (D-19).
+4. One guard inside the existing `lobby` stream (D-01).
+5. A subscription gate in `src/routes/draft/[id]/+layout.svelte` (D-19).
+6. A room-privacy guard in `chatAll` / `chatSpectators` in `src/live/chat.js` (D-20).
+
+Nothing else in the realtime layer moves. Both new snapshot fields are strictly additive, so the frozen-shape constraint still holds — existing tests assert on existing keys.
 
 **Out of scope:** anything in v2.0's Out of Scope table (draft engine changes, alt palettes, custom lists, transferable host, transport/DB migration) and the v1.0 tech-debt items TD-01..06.
 
@@ -54,9 +65,19 @@ Requirements covered: **ACC-01, ACC-02, ACC-03, ACC-04, SCR-01, SCR-02**. This c
 - **D-17:** The log **renders complete, not typed**. The prototype's `CYCancelled` deliberately does *not* use the typed-log hook (unlike `CYLoading`, which does) — a termination notice should be instantly readable, and it avoids another motion path to suppress.
 - **D-18:** **Both cancellation paths land on the same screen with different wording.** Host-issued `cancelRoom` keeps `[SIG] host issued SIGKILL → room {code}`; the automatic `cancelDraftNoCaption` path (captain disconnects, grace expires, no replacement) swaps that line to a grace-expiry variant. Both set `phase = 'cancelled'`, so one branch handles both — but misattributing an automatic timeout to the host is confusing precisely when the host is also its victim. Planner: check whether the snapshot already distinguishes the two paths; if it does not, the minimal distinguishing signal is part of this phase.
 
+### Post-research amendments (locked 2026-09-04)
+
+These two decisions were taken by the user after `12-RESEARCH.md` surfaced that the original scope fence was not implementable. They amend `<domain>` above.
+
+- **D-19: The fence widens to two additive snapshot fields and five realtime touch points.** Two research findings force this:
+  - **`cancelReason: 'host' | 'grace'`** is added to the cancellation publish payload, resolving D-18's delegated question at **zero migration cost**. Research found the two paths are otherwise indistinguishable downstream. It also found a latent bug that blocks SCR-02 entirely: `cancelRoomAsHost` sets `ended_at`, `getRoomByPublicCode` then hides the row, so `loadLobbySnapshot` returns `null` and `cancelRoom` broadcasts `publish(topic, 'set', null)` — every connected client currently renders a **blank `<main>`** on host cancel, and D-15's branch can never fire. The fix is to load the snapshot *before* cancelling, exactly as `disconnectGraceExpired` already does at `src/live/room.js:104-108`. Tagging `cancelReason` at the two publish sites is free once that fix lands. Note `src/live/room.spec.js:160-166` stays green either way because `loadLobbySnapshot` is mocked — the mock hides the real integration.
+  - **`src/routes/draft/[id]/+layout.svelte` must gate its subscription on `page.data.gated`.** svelte-realtime caches stream stores by `path + ':' + args` with a refcount, and the layout subscribes to the *same* `lobby(code)` store as the page. Once the D-01 guard throws, that shared store holds `{error: FORBIDDEN}` permanently — it has no `refetch`, and `invalidateAll()` only re-runs HTTP loads. **Without this gate, D-04's `RETRY_AS_GUEST()` is dead on arrival.** The same change also stops an ejected guest from continuing to receive every roster broadcast (`access`/`filter` in this library is subscribe-time only).
+
+- **D-20: The chat leak is fixed server-side — a sixth touch point.** `chatAll` / `chatSpectators` (`src/live/chat.js:124-184`) check only team membership, never room privacy, and the chat `$effect` at `+page.svelte:181-192` subscribes unconditionally on mount — so a gated guest reads all-channel chat for a private room. This is pre-existing behavior, not a Phase-12 regression, and research recommended client-side mitigation only. **The user overrode that recommendation:** add a real room-privacy guard inside `chatAll` / `chatSpectators` so the boundary holds against a direct WS client, not just the rendered page. Gate the client-side `$effect` on `gated` as well — that is the UX layer, the server guard is the boundary, mirroring D-01's two-layer model. This does **not** pull in TD-05 (guest spectator accumulation on review-phase rooms), which stays out of scope.
+
 ### Claude's Discretion
 
-- Exact minimum-display-window value for the Connecting screen (D-05) and the timeout threshold (D-08).
+- Exact minimum-display-window value for the Connecting screen (D-05) and the timeout threshold (D-08). Research computed the typed connect log at **2594 ms** total, so a ~900 ms floor lands mid-line-2.
 - Visual treatment of the spectating toggle (D-10) — checkbox, two-state `[ON|OFF]` terminal switch, or a `.cy-hc-*` row — and whether it locks once the draft has started.
 - The cancelled screen's `$ COPY_LOG()` / `$ NEW_DRAFT()` footer actions — keep both as designed, or trim.
 - Whether the CyShell phase tracker shows anything special on the gate and cancelled screens.
@@ -150,6 +171,7 @@ Adjacent work that surfaced but is **not** Phase 12:
 
 - **Outstanding human UAT debt** — `09-HUMAN-UAT.md` (3 pending), `10-UAT.md` (`status: testing`, 1 recorded issue unresolved, 4 pending), `11-HUMAN-UAT.md` (4 pending). All visual checks the specs can't simulate. Run `/gsd:verify-work` before completing the milestone, not during this phase.
 - **ROADMAP.md bookkeeping drift** — Phases 8 and 9 are listed as `[ ]` / `0/3` / "Not started" despite being complete on disk with passing verification. Cosmetic; fix at milestone completion.
+- **ROADMAP.md success criterion 5 cites a stale test count** — it says "All **130** existing unit tests still pass". Research measured the real baseline at **202 passed / 1 skipped / 34 todo across 24 files** (server 150, client 52). Read the criterion as "the full suite stays green", not as a literal count, or a verifier could pass the phase on 130 of 202. Also: `npm run lint` and `npm run check` are **red at baseline** (19 prettier + 20 eslint src failures; 10 svelte-check errors) — `npm test` is the only green gate, and `npm run format` must never be run.
 - **Stale `.planning/HANDOFF.json`** — describes Phase 03 plan 06 from 2026-04-03 (v1.0, shipped). Safe to delete.
 - **v1.0 tech debt TD-01..06** — explicitly out of scope for v2.0 per REQUIREMENTS.md. TD-05 (guest spectator accumulation on review-phase rooms) is *adjacent* to this phase's guest handling; resist folding it in.
 
