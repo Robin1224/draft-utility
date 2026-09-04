@@ -383,11 +383,14 @@ Branch order is load-bearing (RESEARCH Pattern 4) — the UI contract depends on
 
 ```
 1. {#if gated}                          → CyGuestGate     (reads NO stream value)
-2. {:else if snapshot?.phase === 'cancelled'} → CyCancelled
+2. {:else if snapshot && snapshot.phase === 'cancelled'} → CyCancelled
 3. {:else if showConnecting}            → CyConnecting
 4. {:else if loadError}                 → existing error copy (NOT the gate, NOT connecting)
 5. {:else if snapshot}                  → drafting | review | lobby   ('cancelled' removed from the drafting condition)
 ```
+
+> **Branch-form note.** Branch 2 uses the explicit `snapshot && snapshot.phase` form, not the `snapshot?.phase` shorthand. Both behave identically at runtime, but two source contracts grep for the literal (`12-08-T2`'s count-of-1 and `12-09-T1`'s "appears exactly once"), so the shorthand fails the suite. `12-RESEARCH.md:580` and `:792` still show the shorthand in prose diagrams — the plans are authoritative.
+
 
 - Placing `cancelled` **above** `showConnecting` stops a dead room flashing `ESTABLISHING_LINK` during the floor window.
 - `DraftBoard`'s `.cy-draft-cancelled` sub-branch and its `cancelledTeam` / `cancelledTeamLabel` derives are **deleted** in the same task that adds branch 2 — two competing cancelled UIs would otherwise double-render (RESEARCH Pitfall 10).
