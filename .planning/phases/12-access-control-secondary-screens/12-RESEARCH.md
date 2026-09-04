@@ -456,7 +456,7 @@ Implement the floor as a mount-time latch so it is structurally cold-load-only (
 
 **Corrected baseline.** `npm test` → **24 files passed, 3 skipped; 202 tests passed, 1 skipped, 34 todo (237 total)**. The "130 existing unit tests" in REQUIREMENTS.md line 6 and CONTEXT.md is the **v1.0 figure and is stale** — plans and verification must assert against 202 passing (or simply "suite green"), not 130. Per project: `server` = 16 files / 150 passed / 1 skipped / 26 todo; `client` = 8 files / 52 passed / 8 todo.
 
-**Project routing (`vite.config.js:29-52`)** — the only rule is the filename:
+**Project routing (`vite.config.js:20-44`)** — the only rule is the filename:
 
 | Project | Include | Exclude | Environment |
 |---------|---------|---------|-------------|

@@ -1325,7 +1325,7 @@ Strict literal/typeof comparisons; `LiveError('VALIDATION', …)` with a human m
 
 ### Test routing
 
-**Source:** `vite.config.js:29-52`.
+**Source:** `vite.config.js:20-44`.
 **Apply to:** every new spec. Filename is the only routing rule.
 
 | Filename | Project | Environment |
