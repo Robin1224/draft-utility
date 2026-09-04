@@ -129,9 +129,20 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   2. An unauthenticated visitor to a private, pre-draft room sees the 403 Guest Gate (Discord sign-in + retry-as-guest) instead of the lobby; once the room is public or the draft has started, guests can view it as spectators.
   3. While the socket is connecting / the room is hydrating, a Connecting screen shows the typed connect log and progress meter, then transitions to lobby (or draft on rejoin).
   4. When the host cancels the room, everyone sees the red SIGKILL-log Room Cancelled terminal state.
-  5. All 130 existing unit tests still pass and the realtime snapshot shape is unchanged.
+  5. The full unit test suite still passes and the realtime snapshot shape is unchanged apart from two additive fields (`isPublic`, `cancelReason`). Note: the "130 tests" figure carried from v1.0 is stale — the measured baseline is 202 passed / 1 skipped / 34 todo across 24 files.
 
-**Plans**: TBD
+**Plans**: 9 plans
+
+  - [ ] 12-01-PLAN.md — Wave 1: `room.is_public` column + generated `0002` migration + `isPublic` snapshot field + `setRoomVisibilityAsHost`/`removeGuestSpectators` helpers (ACC-01)
+  - [ ] 12-02-PLAN.md — Wave 1: Phase 12 CSS port into `app.css` (loading/gate/cancel + keyframes + A1–A7) + Phase 10 scope-guard reconciliation + CSS contract spec
+  - [ ] 12-03-PLAN.md — Wave 2: `setRoomVisibility` live RPC with guest ejection + `cancelRoom` load-before-cancel fix carrying `cancelReason` (ACC-02, SCR-02)
+  - [ ] 12-04-PLAN.md — Wave 2: SSR `gated` computation on the draft page load + the guest/authed × public/private × phase matrix (ACC-03, ACC-04)
+  - [ ] 12-05-PLAN.md — Wave 2: `CyConnecting` + `CyCancelled` components with browser specs (SCR-01, SCR-02)
+  - [ ] 12-06-PLAN.md — Wave 2: `CyGuestGate` component + the `open_spectating` switch in the Host Console (ACC-01, ACC-02, ACC-03)
+  - [ ] 12-07-PLAN.md — Wave 3: throwing `lobby` stream guard + `chatAll`/`chatSpectators` room-privacy guards (ACC-03, ACC-04)
+  - [ ] 12-08-PLAN.md — Wave 4: `+page.svelte` five-branch chain, gate derive, connect latches, `DraftBoard` cleanup, root-layout subscription gate (all six)
+  - [ ] 12-09-PLAN.md — Wave 5: page/layout source contracts + phase regression sweep + `12-VALIDATION.md` sign-off
+
 **UI hint**: yes
 
 ## Progress
@@ -149,4 +160,4 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 9. Signature Effects Infrastructure | v2.0 | 0/3 | Not started | - |
 | 10. Core Screen Reskins | v2.0 | 7/7 | Complete    | 2026-06-15 |
 | 11. Terminal Modals | v2.0 | 3/3 | Complete    | 2026-08-21 |
-| 12. Access Control & Secondary Screens | v2.0 | 0/? | Not started | - |
+| 12. Access Control & Secondary Screens | v2.0 | 0/9 | Planned | - |
