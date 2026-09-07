@@ -27,7 +27,8 @@ export const room = pgTable('room', {
 	created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 	updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 	ended_at: timestamp('ended_at', { withTimezone: true }),
-	draft_state: jsonb('draft_state')
+	draft_state: jsonb('draft_state'),
+	is_public: boolean('is_public').notNull().default(false)
 });
 
 export const room_member = pgTable(
