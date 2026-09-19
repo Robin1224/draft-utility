@@ -1,76 +1,90 @@
+---
+last_mapped_commit: a6621e6df6e72e09b43157d0d2d0b048118a8016
+---
+
 # Technology Stack
 
-**Analysis Date:** 2026-04-03
+**Analysis Date:** 2026-09-19
 
 ## Languages
 
 **Primary:**
-- JavaScript (ES modules, `type: "module"`) — application source under `src/`, server modules in `src/lib/server/`
-- JSDoc-checked JavaScript — `jsconfig.json` sets `checkJs: true` and `strict: true`; types augmented in `src/app.d.ts`
+- JavaScript (ES modules, `"type": "module"` in `package.json`) with JSDoc type annotations — used across `src/`. No `.ts` source files; type-checking is done via `svelte-check` against `jsconfig.json` (JSDoc-driven, `checkJs: true`, `strict: true`).
+- Svelte 5 (`.svelte` files) with **runes mode forced** for all app code via `svelte.config.js` (`vitePlugin.dynamicCompileOptions`), except files under `node_modules`.
 
 **Secondary:**
-- TypeScript — dev dependency used by `svelte-check` and tooling; not a separate TS source tree
+- SQL — hand-reviewed Drizzle-generated migrations in `drizzle/*.sql` (Postgres dialect).
+- CSS — a single large hand-written stylesheet `src/app.css` (no CSS framework; see Frameworks below).
 
 ## Runtime
 
 **Environment:**
-- Node.js — implied by `@sveltejs/adapter-node`, Vite 7, and server-side SvelteKit
+- Node.js 24 (`node:24-alpine` base image in `dockerfile`; `@types/node: ^24` devDependency).
+- `.npmrc` sets `engine-strict=true`, but `package.json` has **no `engines` field** — engine-strict has nothing to enforce (see CONCERNS.md candidate).
 
 **Package Manager:**
-- npm — `package.json` scripts and lockfile `package-lock.json`
+- npm (`package-lock.json` present and committed).
+- Lockfile: present (`package-lock.json`).
 
 ## Frameworks
 
 **Core:**
-- SvelteKit `^2.50.2` — full-stack framework; routes in `src/routes/`, hooks in `src/hooks.server.js`
-- Svelte `^5.51.0` — UI with runes enabled for app sources via `svelte.config.js` (`vitePlugin.dynamicCompileOptions`)
-- Vite `^7.3.1` — bundler and dev server (`vite.config.js`)
+- SvelteKit `^2.50.2` (`@sveltejs/kit`) — full-stack app framework, file-based routing under `src/routes/`.
+- Svelte `^5.51.0` — component framework, runes-only compilation enforced project-wide.
+- `svelte-realtime` `^0.4.6` — RPC + reactive pub/sub layer for WebSockets, built on `svelte-adapter-uws`. Provides the `src/live/*.js` "live function" pattern (see ARCHITECTURE.md) and generates `src/live/$types.d.ts`.
+- `svelte-adapter-uws` `^0.4.5` — the actual SvelteKit **production adapter** in use (configured in `svelte.config.js` as `adapter({ websocket: true })`). It runs the app on µWebSockets (uWS) instead of Node's `http` module, enabling native WebSocket upgrade handling required by `svelte-realtime`.
+  - Note: `@sveltejs/adapter-node ^5.5.2` is also listed in `devDependencies` but is **not referenced anywhere** in config or source — a leftover from the `sv create` scaffold template (see `README.md` recreate command). `svelte-adapter-uws` is the adapter actually wired up.
 
 **Testing:**
-- Vitest `^4.1.0` — unit and server tests; config merged in `vite.config.js` with two projects (`client` browser, `server` node)
-- `@vitest/browser-playwright` + Playwright — browser tests for `src/**/*.svelte.{test,spec}.{js,ts}`
-- `vitest-browser-svelte` — Svelte component testing in the browser project
+- Vitest `^4.1.0`, configured in `vite.config.js` with two **projects**:
+  - `client` — browser-mode tests (`@vitest/browser-playwright` + `vitest-browser-svelte`, Chromium headless) for `src/**/*.svelte.{test,spec}.{js,ts}`, excluding `src/lib/server/**`.
+  - `server` — Node-environment tests for all other `*.{test,spec}.{js,ts}` files.
+  - `expect: { requireAssertions: true }` is set globally — every test must contain at least one assertion.
+- `svelte-check` `^4.4.2` — JSDoc/type checking (`npm run check`), not a test runner but part of the quality gate.
 
 **Build/Dev:**
-- `@sveltejs/adapter-node` `^5.5.2` — production adapter configured in `svelte.config.js` (Node server build)
-- `@tailwindcss/vite` `^4.1.18` + Tailwind CSS `^4.1.18` — utility CSS pipeline
-- `vite-plugin-devtools-json` `^1.0.0` — devtools integration
-- ESLint `^9.39.2` — flat config in `eslint.config.js` (`eslint-plugin-svelte`, `eslint-config-prettier`)
-- Prettier `^3.8.1` — with `prettier-plugin-svelte` and `prettier-plugin-tailwindcss` (no project-local `.prettierrc` in repo root)
+- Vite `^7.3.1` — dev server and bundler, plugins: `sveltekit()`, `uws()` (from `svelte-adapter-uws/vite`), `realtime()` (from `svelte-realtime/vite`), `devtoolsJson()` (from `vite-plugin-devtools-json`).
+- Drizzle Kit `^0.31.8` — schema push/generate/migrate/studio (`drizzle.config.js`, scripts `db:push`, `db:generate`, `db:migrate`, `db:studio`).
+- `@better-auth/cli` `~1.4.21` — regenerates the Better Auth Drizzle schema file (`npm run auth:schema` → writes `src/lib/server/db/auth.schema.js`).
 
 ## Key Dependencies
 
 **Critical:**
-- `drizzle-orm` `^0.45.1` — schema and queries; PostgreSQL dialect (`drizzle-orm/pg-core` in `src/lib/server/db/schema.js`, `auth.schema.js`)
-- `drizzle-kit` `^0.31.8` — migrations/generate/push/studio; config in `drizzle.config.js`
-- `@neondatabase/serverless` `^1.0.2` — HTTP driver wired in `src/lib/server/db/index.js` with `drizzle-orm/neon-http`
-- `better-auth` `~1.4.21` — authentication; minimal build + SvelteKit cookies + Drizzle adapter in `src/lib/server/auth.js`
-- `@better-auth/cli` `~1.4.21` — `npm run auth:schema` generates `src/lib/server/db/auth.schema.js` from `src/lib/server/auth.js`
+- `drizzle-orm` `^0.45.1` + `@neondatabase/serverless` `^1.0.2` — ORM and Postgres driver, wired for the Neon serverless HTTP driver (`drizzle-orm/neon-http`) in `src/lib/server/db/index.js`.
+- `better-auth` `~1.4.21` — authentication framework (session, OAuth, Drizzle adapter, SvelteKit cookie plugin) in `src/lib/server/auth.js`.
+- `svelte-realtime` `^0.4.6` — all real-time draft/chat/room functionality depends on this package's RPC/pub-sub model (`src/live/`, `src/hooks.ws.js`).
+- `nanoid` `^5.1.7` — short ID generation, used in `src/lib/server/rooms.js` (e.g. room public codes) and exercised in `src/lib/components/molecules/DraftSettingsPanel.svelte.spec.js`.
 
-**Infrastructure / unused in source:**
-- `svelte-realtime` `^0.4.6` and `svelte-adapter-uws` `^0.4.4` — listed in `package.json` `dependencies`; no imports under `src/` (adapter in use is `@sveltejs/adapter-node` in `svelte.config.js`)
+**Infrastructure:**
+- `vite-plugin-devtools-json` `^1.0.0` — emits Chrome DevTools project settings JSON for local dev.
+- `playwright` `^1.58.2` — browser automation backing the Vitest browser-mode test project.
 
 ## Configuration
 
 **Environment:**
-- Private dynamic env via SvelteKit `$env/dynamic/private` in `src/lib/server/db/index.js` and `src/lib/server/auth.js`
-- Documented template: `.env.example` (names only — do not commit secrets)
-- Required for DB tooling: `DATABASE_URL` for `drizzle.config.js` (throws if unset)
+- Environment variables are read exclusively through SvelteKit's `$env/dynamic/private` (never `process.env` directly in app code — the one `process.env.DATABASE_URL` reference in `src/lib/server/rooms.spec.js:573` is a test-only optional-integration guard, and `drizzle.config.js` reads `process.env.DATABASE_URL` directly since it runs outside the SvelteKit runtime).
+- `.env` is present locally (gitignored) with `.env.example` as the committed template (contents of both are intentionally not read/quoted by this analysis — see forbidden-files policy).
+- Known required variables (from source, not `.env.example` contents): `DATABASE_URL`, `BETTER_AUTH_SECRET`, `ORIGIN`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` (all consumed in `src/lib/server/auth.js` and `src/lib/server/db/index.js`).
 
 **Build:**
-- `svelte.config.js` — Kit adapter, Svelte 5 runes for non-`node_modules` files
-- `vite.config.js` — plugins and Vitest project split
-- `jsconfig.json` — extends `.svelte-kit/tsconfig.json`
+- `vite.config.js` — Vite/Vitest configuration, plugin wiring, and a documented workaround (`server.watch.ignored: ['**/$types.d.ts']`) to prevent an infinite hot-reload loop caused by `svelte-realtime` rewriting its generated types file.
+- `svelte.config.js` — adapter selection (`svelte-adapter-uws`) and forced-runes compile option.
+- `jsconfig.json` — extends `.svelte-kit/tsconfig.json`; `checkJs`/`strict` enabled for JSDoc-based type safety.
+- `drizzle.config.js` — Postgres dialect, schema path `src/lib/server/db/schema.js`, `strict: true`.
+- `eslint.config.js` — flat config: `@eslint/js` recommended + `eslint-plugin-svelte` recommended, `eslint-config-prettier` to disable stylistic conflicts, gitignore-aware via `@eslint/compat`.
+- `.prettierrc` — tabs, single quotes, no trailing commas, `printWidth: 100`, `prettier-plugin-svelte` for `.svelte` parsing.
+- CSS/styling: **no Tailwind CSS despite the original `sv create` scaffold command in `README.md` listing `tailwindcss="plugins:none"`.** Tailwind has since been removed; `src/app.css` is a single hand-authored "cyber" theme stylesheet (confirmed by an in-file comment: "the prototype ul relied on Tailwind preflight, which this milestone removed"). Treat the project as **framework-less CSS**, not Tailwind, for any new UI work.
 
 ## Platform Requirements
 
 **Development:**
-- Node.js compatible with Vite 7 and SvelteKit 2
-- `npm install`; `npm run dev` starts Vite dev server
+- Node 24, npm, local Postgres-compatible `DATABASE_URL` (Neon or any Postgres reachable over HTTP-compatible driver) for `db:*` scripts and integration-guarded tests.
+- MCP server config in `.mcp.json` wires the official Svelte MCP server (`@sveltejs/mcp`) for IDE/agent tooling — not a runtime dependency.
 
 **Production:**
-- Node deployment target matching `@sveltejs/adapter-node` output (`npm run build`, `npm run preview`)
+- Deployed via Docker (`dockerfile`): `node:24-alpine`, secrets mounted at build time for `BETTER_AUTH_SECRET`, `DATABASE_URL`, `ORIGIN`, then `npm install; npm run build; node build`, exposing port 3000.
+- Because the adapter is `svelte-adapter-uws`, the production server binds and serves WebSocket upgrades natively (uWS) rather than through a separate Node `http`/`ws` stack — this rules out serverless/edge deployment targets that don't support long-lived raw socket servers (e.g. Vercel Edge, Cloudflare Workers) unless the adapter is swapped.
 
 ---
 
-*Stack analysis: 2026-04-03*
+*Stack analysis: 2026-09-19*
