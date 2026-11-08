@@ -15,7 +15,21 @@ To recreate this project with the same configuration:
 
 ```sh
 # recreate this project
-npx sv@0.12.8 create --template minimal --types jsdoc --add prettier eslint vitest="usages:unit,component" tailwindcss="plugins:none" sveltekit-adapter="adapter:node" devtools-json drizzle="database:postgresql+postgresql:neon" better-auth="demo:password" mcp="ide:claude-code,cursor+setup:local" --install npm ./
+npx sv@1.1.1 create --template minimal --types ts --no-install draft-utility
+```
+
+## Adding features
+
+Add features to your project with `sv add`:
+
+```sh
+npx sv add
+```
+
+For example, to add Tailwind CSS:
+
+```sh
+npx sv add tailwindcss
 ```
 
 ## Developing
